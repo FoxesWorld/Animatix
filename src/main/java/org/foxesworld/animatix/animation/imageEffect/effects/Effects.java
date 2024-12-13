@@ -1,4 +1,4 @@
-package org.example.animation.imageEffect.effects;
+package org.foxesworld.animatix.animation.imageEffect.effects;
 
 public enum Effects {
     RESIZE,
@@ -7,8 +7,6 @@ public enum Effects {
     DECAY,
     BOUNCE,
     ROTATE;
-
-    // Utility method to get Effects from a string, if needed
     public static Effects fromString(String effect) {
         try {
             return Effects.valueOf(effect.toUpperCase());

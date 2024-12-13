@@ -1,12 +1,12 @@
-package org.example.animation.config;
+package org.foxesworld.animatix.animation.config;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.example.animation.ResizeType;
+import org.foxesworld.animatix.animation.imageEffect.effects.resize.ResizeType;
 
 import java.util.List;
 
 public class AnimationPhase {
-    private List<String> types;
+    private List<String> imageEffects, textEffects;
     private String name;
     private int startWidth, endWidth, startHeight, endHeight, pixelDecaySpeed;
     private int startX, endX, startY, endY;
@@ -18,8 +18,12 @@ public class AnimationPhase {
     private List<Vector2D> controlPoints; // Контрольные точки для кривой Безье
 
     // Геттеры и сеттеры
-    public List<String> getTypes() {
-        return types;
+    public List<String> getImageEffects() {
+        return imageEffects;
+    }
+
+    public List<String> getTextEffects() {
+        return textEffects;
     }
 
     public int getStartWidth() {

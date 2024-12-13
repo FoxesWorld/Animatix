@@ -1,8 +1,8 @@
-package org.example.animation.imageEffect;
+package org.foxesworld.animatix.animation.imageEffect;
 
 import org.apache.commons.math3.util.FastMath;
-import org.example.animation.AnimationFactory;
-import org.example.animation.ResizeType;
+import org.foxesworld.animatix.AnimationFactory;
+import org.foxesworld.animatix.animation.imageEffect.effects.resize.ResizeType;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

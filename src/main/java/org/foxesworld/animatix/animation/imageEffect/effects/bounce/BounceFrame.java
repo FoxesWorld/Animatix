@@ -1,8 +1,8 @@
-package org.example.animation.imageEffect.effects;
+package org.foxesworld.animatix.animation.imageEffect.effects.bounce;
 
-import org.example.Main;
-import org.example.animation.AnimationFactory;
-import org.example.animation.imageEffect.AnimationFrame;
+import org.foxesworld.Main;
+import org.foxesworld.animatix.AnimationFactory;
+import org.foxesworld.animatix.animation.AnimationFrame;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;

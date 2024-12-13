@@ -1,11 +1,13 @@
-package org.example.animation;
+package org.foxesworld.animatix;
 
-import org.example.animation.config.AnimationConfigLoader;
-import org.example.animation.config.AnimationPhase;
-import org.example.animation.imageEffect.AnimationFrame;
-import org.example.animation.imageEffect.AnimationStatus;
-import org.example.animation.config.AnimationConfig;
-import org.example.animation.imageEffect.ImageWorks;
+import org.foxesworld.animatix.animation.AnimationEffectFactory;
+import org.foxesworld.animatix.animation.AnimationFrame;
+import org.foxesworld.animatix.animation.AnimationPhaseExecutor;
+import org.foxesworld.animatix.animation.config.AnimationConfigLoader;
+import org.foxesworld.animatix.animation.config.AnimationPhase;
+import org.foxesworld.animatix.animation.AnimationStatus;
+import org.foxesworld.animatix.animation.config.AnimationConfig;
+import org.foxesworld.animatix.animation.imageEffect.ImageWorks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +86,7 @@ public class AnimationFactory implements AnimationStatus {
         do {
             for (AnimationPhase phase : phases) {
                 currentPhase = phase;
-                logger.info("Starting phase: {}", phase.getTypes());
+                logger.info("Starting phase: {}", phase.getImageEffects());
 
                 List<AnimationFrame> animationFrames = effectFactory.createEffectsForPhase(phase);
                 phaseExecutor.executePhase(phase, animationFrames);

@@ -1,8 +1,7 @@
-package org.example.animation.config;
+package org.foxesworld.animatix.animation.config;
 
 import com.google.gson.Gson;
-import org.example.Main;
-import org.example.animation.config.AnimationConfig;
+import org.foxesworld.Main;
 
 import java.io.InputStream;
 

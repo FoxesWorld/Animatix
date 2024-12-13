@@ -1,4 +1,4 @@
-package org.example.animation.config;
+package org.foxesworld.animatix.animation.config;
 
 import java.util.List;
 

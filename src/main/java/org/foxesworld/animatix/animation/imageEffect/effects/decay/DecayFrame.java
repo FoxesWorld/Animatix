@@ -1,10 +1,10 @@
-package org.example.animation.imageEffect.effects;
+package org.foxesworld.animatix.animation.imageEffect.effects.decay;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 
-import org.example.animation.AnimationFactory;
-import org.example.animation.imageEffect.AnimationFrame;
+import org.foxesworld.animatix.AnimationFactory;
+import org.foxesworld.animatix.animation.AnimationFrame;
 
 public class DecayFrame extends AnimationFrame {
 

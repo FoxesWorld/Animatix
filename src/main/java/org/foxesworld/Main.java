@@ -1,8 +1,8 @@
-package org.example;
+package org.foxesworld;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.example.animation.AnimationFactory;
+import org.foxesworld.animatix.AnimationFactory;
 
 import javax.swing.*;
 import java.io.InputStream;

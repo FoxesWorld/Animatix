@@ -1,9 +1,7 @@
-package org.example.animation.imageEffect.effects;
+package org.foxesworld.animatix.animation.imageEffect.effects.move;
 
-import org.example.animation.AnimationFactory;
-import org.example.animation.imageEffect.AnimationFrame;
-
-import javax.swing.*;
+import org.foxesworld.animatix.AnimationFactory;
+import org.foxesworld.animatix.animation.AnimationFrame;
 
 public class MoveFrame extends AnimationFrame {
 

@@ -3,7 +3,7 @@
   "repeat": false,
   "phases": [
     {
-      "types": ["resize"],
+      "imageEffects": ["resize"],
       "name": "resize",
       "startWidth": 190,
       "startHeight": 190,
@@ -13,7 +13,7 @@
       "resizeType": "SCALE_TO_COVER"
     },
     {
-      "types": ["move"],
+      "imageEffects": ["move"],
       "name": "move to",
       "startX": 50,
       "startY": 50,
@@ -24,7 +24,7 @@
       "endAngle": 320
     },
     {
-      "types": ["decay", "rotate"],
+      "imageEffects": ["decay", "rotate"],
       "name": "decay",
       "startAlpha": 1.0,
       "endAlpha": 0.0,

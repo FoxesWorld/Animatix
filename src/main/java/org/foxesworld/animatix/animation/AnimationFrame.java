@@ -1,7 +1,8 @@
-package org.example.animation.imageEffect;
+package org.foxesworld.animatix.animation;
 
-import org.example.animation.AnimationFactory;
-import org.example.animation.config.AnimationPhase;
+import org.foxesworld.animatix.AnimationFactory;
+import org.foxesworld.animatix.animation.config.AnimationPhase;
+import org.foxesworld.animatix.animation.imageEffect.ImageWorks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

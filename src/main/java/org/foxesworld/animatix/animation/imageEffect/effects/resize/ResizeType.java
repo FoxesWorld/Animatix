@@ -1,4 +1,4 @@
-package org.example.animation;
+package org.foxesworld.animatix.animation.imageEffect.effects.resize;
 
 public enum ResizeType {
     SCALE_TO_FILL,     // Растягивание до указанных размеров, без сохранения пропорций
