@@ -14,7 +14,7 @@
     },
     {
       "types": ["move"],
-      "name": "move",
+      "name": "move to",
       "startX": 50,
       "startY": 50,
       "endX": 190,

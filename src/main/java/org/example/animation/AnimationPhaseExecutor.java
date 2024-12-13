@@ -11,7 +11,7 @@ import java.util.concurrent.CountDownLatch;
 public class AnimationPhaseExecutor {
 
     private static final Logger logger = LoggerFactory.getLogger(AnimationPhaseExecutor.class);
-    private final AnimationFactory animationFactory;
+    private AnimationFactory animationFactory;
 
     public AnimationPhaseExecutor(AnimationFactory animationFactory) {
         this.animationFactory = animationFactory;
@@ -60,5 +60,9 @@ public class AnimationPhaseExecutor {
     private void notifyPhaseCompleted() {
         logger.debug("Notifying factory about phase completion");
         animationFactory.onPhaseCompleted();
+    }
+
+    public void setAnimationFactory(AnimationFactory animationFactory) {
+        this.animationFactory = animationFactory;
     }
 }

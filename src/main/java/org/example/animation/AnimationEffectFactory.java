@@ -10,7 +10,7 @@ import java.util.List;
 
 public class AnimationEffectFactory {
 
-    private final  AnimationFactory animationFactory;
+    private AnimationFactory animationFactory;
     public AnimationEffectFactory(AnimationFactory animationFactory){
         this.animationFactory = animationFactory;
     }
@@ -42,5 +42,9 @@ public class AnimationEffectFactory {
         }
 
         return frames;
+    }
+
+    public void setAnimationFactory(AnimationFactory animationFactory) {
+        this.animationFactory = animationFactory;
     }
 }

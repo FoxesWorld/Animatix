@@ -17,24 +17,43 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class AnimationFactory implements AnimationStatus {
-    ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     private static final Logger logger = LoggerFactory.getLogger(AnimationFactory.class);
+
+    private final ScheduledExecutorService scheduler;
+    private final AnimationConfigLoader configLoader;
+    private final AnimationEffectFactory effectFactory;
+    private final AnimationPhaseExecutor phaseExecutor;
+
     private int phaseNum = 0;
     private AnimationPhase currentPhase;
     private JLabel animLabel;
     private ImageWorks imageWorks;
     private AnimationConfig config;
-    private final AnimationEffectFactory effectFactory;
-    private final AnimationPhaseExecutor phaseExecutor;
-    private final AnimationConfigLoader configLoader;
 
+    // Конструктор с возможностью настройки зависимостей
     public AnimationFactory() {
-        configLoader = new AnimationConfigLoader();
-        phaseExecutor = new AnimationPhaseExecutor(this);
-        effectFactory = new AnimationEffectFactory(this);
+        this(Executors.newSingleThreadScheduledExecutor(),
+                new AnimationConfigLoader(),
+                new AnimationEffectFactory(null),
+                new AnimationPhaseExecutor(null));
     }
 
+    public AnimationFactory(ScheduledExecutorService scheduler,
+                            AnimationConfigLoader configLoader,
+                            AnimationEffectFactory effectFactory,
+                            AnimationPhaseExecutor phaseExecutor) {
+        this.scheduler = scheduler;
+        this.configLoader = configLoader;
+        this.effectFactory = effectFactory;
+        this.phaseExecutor = phaseExecutor;
+
+        // Связываем зависимые компоненты
+        this.effectFactory.setAnimationFactory(this);
+        this.phaseExecutor.setAnimationFactory(this);
+    }
+
+    // Загружаем конфигурацию
     public void loadConfig(InputStream inputStream) {
         if (inputStream == null) {
             throw new IllegalArgumentException("InputStream cannot be null");
@@ -45,10 +64,9 @@ public class AnimationFactory implements AnimationStatus {
         logger.info("Animation config loaded successfully: {}", config);
     }
 
+    // Запускаем анимацию
     public void createAnimation(JFrame frame) {
-        if (config == null) {
-            throw new IllegalStateException("AnimationConfig must be loaded before creating animation");
-        }
+        validateConfig();
 
         this.imageWorks = new ImageWorks(ImageWorks.getImageFromStream(config.getImagePath()));
         animLabel = new JLabel(new ImageIcon(imageWorks.getImage()));
@@ -58,44 +76,51 @@ public class AnimationFactory implements AnimationStatus {
         List<AnimationPhase> phases = config.getPhases();
         boolean repeat = config.isRepeat();
 
-        new Thread(() -> {
-            do {
-                for (AnimationPhase phase : phases) {
-                    this.currentPhase = phase;
-                    logger.info("Starting phase: {}", phase.getTypes());
+        new Thread(() -> executeAnimation(phases, repeat)).start();
+    }
 
-                    // Создаем список всех эффектов для текущей фазы
-                    List<AnimationFrame> animationFrames = effectFactory.createEffectsForPhase(phase);
+    // Основная логика выполнения анимации
+    private void executeAnimation(List<AnimationPhase> phases, boolean repeat) {
+        do {
+            for (AnimationPhase phase : phases) {
+                currentPhase = phase;
+                logger.info("Starting phase: {}", phase.getTypes());
 
-                    // Запускаем фазу
-                    phaseExecutor.executePhase(phase, animationFrames);
+                List<AnimationFrame> animationFrames = effectFactory.createEffectsForPhase(phase);
+                phaseExecutor.executePhase(phase, animationFrames);
 
-                    // Ожидаем завершения фазы
+                waitForPhaseCompletion(phase.getDuration());
+            }
+            incrementPhase();
+        } while (repeat && phaseNum < config.getPhases().size());
+
+        logger.info("Animation complete.");
+        shutdownScheduler();
+    }
+
+    // Ожидание завершения фазы с таймером
+    private void waitForPhaseCompletion(long duration) {
+        synchronized (this) {
+            try {
+                scheduler.schedule(() -> {
                     synchronized (this) {
-                        try {
-                            // Планируем таймер для пробуждения текущего потока
-                            scheduler.schedule(() -> {
-                                synchronized (this) {
-                                    logger.info("Timer expired, notifying...");
-                                    this.notify(); // Уведомляем поток
-                                }
-                            }, currentPhase.getDuration(), TimeUnit.MILLISECONDS);
-
-                            logger.info("Waiting for phase completion...");
-                            this.wait(); // Ждём уведомления
-                        } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
-                            logger.error("Phase waiting interrupted", e);
-                        }
+                        logger.info("Timer expired, notifying...");
+                        notify();
                     }
-                }
+                }, duration, TimeUnit.MILLISECONDS);
 
-                incrementPhase();
-            } while (repeat && phaseNum < config.getPhases().size());
+                logger.info("Waiting for phase completion...");
+                wait();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                logger.error("Phase waiting interrupted", e);
+            }
+        }
+    }
 
-            logger.info("Animation complete.");
-            System.exit(0);
-        }).start();
+    // Завершение работы таймера
+    public void shutdownScheduler() {
+        scheduler.shutdown();
     }
 
     @Override
@@ -105,10 +130,18 @@ public class AnimationFactory implements AnimationStatus {
     }
 
     public synchronized void incrementPhase() {
-        this.phaseNum++;
+        phaseNum++;
         logger.debug("Phase incremented to: {}", phaseNum);
     }
 
+    // Проверка на наличие загруженной конфигурации
+    private void validateConfig() {
+        if (config == null) {
+            throw new IllegalStateException("AnimationConfig must be loaded before creating animation");
+        }
+    }
+
+    // Геттеры для тестирования
     public JLabel getAnimLabel() {
         return animLabel;
     }
