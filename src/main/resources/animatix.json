@@ -1,0 +1,38 @@
+{
+  "animationName": "imageAnimation",
+  "repeat": false,
+  "phases": [
+    {
+      "types": ["resize"],
+      "name": "resize",
+      "startWidth": 190,
+      "startHeight": 190,
+      "endWidth": 90,
+      "endHeight": 90,
+      "duration": 800,
+      "resizeType": "SCALE_TO_COVER"
+    },
+    {
+      "types": ["move"],
+      "name": "move",
+      "startX": 50,
+      "startY": 50,
+      "endX": 190,
+      "endY": 50,
+      "duration": 1000,
+      "startAngle": 0,
+      "endAngle": 320
+    },
+    {
+      "types": ["decay", "rotate"],
+      "name": "decay",
+      "startAlpha": 1.0,
+      "endAlpha": 0.0,
+      "duration": 5000,
+      "pixelDecaySpeed": 1,
+      "startAngle": 0,
+      "endAngle": 32
+    }
+  ],
+  "imagePath": "lastuser.png"
+}
