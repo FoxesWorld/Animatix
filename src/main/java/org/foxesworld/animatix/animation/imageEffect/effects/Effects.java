@@ -6,6 +6,8 @@ public enum Effects {
     FADE,
     DECAY,
     BOUNCE,
+    CRACK,
+    COLOR_FADE,
     ROTATE;
     public static Effects fromString(String effect) {
         try {

@@ -24,6 +24,10 @@
       "endAngle": 320
     },
     {
+      "imageEffects": ["COLOR_FADE"],
+      "duration": 500
+    },
+    {
       "imageEffects": ["decay", "rotate"],
       "name": "decay",
       "startAlpha": 1.0,
@@ -31,8 +35,8 @@
       "duration": 5000,
       "pixelDecaySpeed": 1,
       "startAngle": 0,
-      "endAngle": 32
+      "endAngle": 92
     }
   ],
-  "imagePath": "lastuser.png"
+  "imagePath": "fox.png"
 }

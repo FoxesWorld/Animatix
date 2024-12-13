@@ -1,14 +1,18 @@
-package org.foxesworld.animatix.animation;
+package org.foxesworld.animatix.animation.effect;
 
 import org.foxesworld.animatix.AnimationFactory;
+import org.foxesworld.animatix.animation.AnimationFrame;
 import org.foxesworld.animatix.animation.config.AnimationPhase;
 import org.foxesworld.animatix.animation.imageEffect.effects.*;
 import org.foxesworld.animatix.animation.imageEffect.effects.bounce.BounceFrame;
+import org.foxesworld.animatix.animation.imageEffect.effects.colorFade.ColorFadeFrame;
+import org.foxesworld.animatix.animation.imageEffect.effects.crackFrame.CrackFrame;
 import org.foxesworld.animatix.animation.imageEffect.effects.decay.DecayFrame;
 import org.foxesworld.animatix.animation.imageEffect.effects.move.MoveFrame;
 import org.foxesworld.animatix.animation.imageEffect.effects.resize.ResizeFrame;
 import org.foxesworld.animatix.animation.imageEffect.effects.rotate.RotateFrame;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +35,8 @@ public class AnimationEffectFactory {
                 case ROTATE -> frames.add(new RotateFrame(animationFactory));
                 case BOUNCE -> frames.add(new BounceFrame(animationFactory));
                 case DECAY -> frames.add(new DecayFrame(animationFactory));
+                case CRACK -> frames.add(new CrackFrame(animationFactory));
+                case COLOR_FADE -> frames.add(new ColorFadeFrame(animationFactory, Color.WHITE, Color.RED)); // Пример для эффекта Color Fade
                 default -> throw new UnsupportedOperationException("Effect type not supported: " + effectType);
             }
         }

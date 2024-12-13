@@ -1,8 +1,8 @@
 package org.foxesworld.animatix;
 
-import org.foxesworld.animatix.animation.AnimationEffectFactory;
+import org.foxesworld.animatix.animation.effect.AnimationEffectFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
-import org.foxesworld.animatix.animation.AnimationPhaseExecutor;
+import org.foxesworld.animatix.animation.phase.AnimationPhaseExecutor;
 import org.foxesworld.animatix.animation.config.AnimationConfigLoader;
 import org.foxesworld.animatix.animation.config.AnimationPhase;
 import org.foxesworld.animatix.animation.AnimationStatus;

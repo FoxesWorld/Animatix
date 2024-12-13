@@ -1,6 +1,7 @@
-package org.foxesworld.animatix.animation;
+package org.foxesworld.animatix.animation.phase;
 
 import org.foxesworld.animatix.AnimationFactory;
+import org.foxesworld.animatix.animation.AnimationFrame;
 import org.foxesworld.animatix.animation.config.AnimationPhase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
