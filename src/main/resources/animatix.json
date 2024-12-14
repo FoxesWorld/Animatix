@@ -24,15 +24,19 @@
       }
     },
     {
-      "imageEffects": ["rotate"],
+      "imageEffects": ["move", "rotate"],
       "name": "move to",
       "duration": 1000,
       "effectParams": {
         "move": {
-          "startX": 50,
-          "startY": 50,
+          "startX": 100,
+          "startY": 100,
           "endX": 190,
           "endY": 50
+        },
+        "rotate": {
+          "startAngle": 0,
+          "endAngle": 180
         }
       }
     }

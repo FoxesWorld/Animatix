@@ -3,6 +3,7 @@ package org.foxesworld.animatix.animation.imageEffect.effects.rotate;
 import org.foxesworld.Main;
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
+
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.util.Map;
@@ -21,7 +22,6 @@ public class RotateFrame extends AnimationFrame {
     private float startAngle;
     private float endAngle;
 
-    // Пул потоков для асинхронного рендеринга
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public RotateFrame(AnimationFactory animationFactory) {
@@ -31,23 +31,21 @@ public class RotateFrame extends AnimationFrame {
 
     @Override
     public void update(float progress) {
-        // Вычисление текущего угла поворота
         float currentAngle = startAngle + progress * (endAngle - startAngle);
 
-        // Применение эффекта поворота в отдельном потоке для улучшения производительности
         executorService.submit(() -> {
             try {
-                BufferedImage rotatedImage = imageWorks.applyRotationEffect(currentAngle);
+                // Освобождение ресурсов после поворота
+                BufferedImage rotatedImage = imageWorks.applyRotationEffect(currentAngle, imageWorks::dispose);
 
-                // Если изображение изменилось, обновляем иконку и кешируем
                 if (rotatedImage != null) {
                     SwingUtilities.invokeLater(() -> {
-                        label.setIcon(new ImageIcon(rotatedImage)); // Обновление UI в главном потоке
+                        label.setIcon(new ImageIcon(rotatedImage));
                     });
-                    imageWorks.setImage(rotatedImage); // Кэширование изображения
+                    imageWorks.setImage(rotatedImage);
                 }
             } catch (Exception e) {
-                Main.LOGGER.error("Error during rotation: " + e.getMessage());
+                Main.LOGGER.error("Error during rotation: {}", e.getMessage());
             }
         });
     }
@@ -56,7 +54,6 @@ public class RotateFrame extends AnimationFrame {
     protected void initializeParams(Map<String, Object>[] params, String effectName) {
         super.initializeParams(params, effectName);
 
-        // Валидация параметров углов
         if (Float.isNaN(startAngle) || Float.isNaN(endAngle)) {
             Main.LOGGER.error("Invalid parameters for RotateFrame: startAngle={}, endAngle={}", startAngle, endAngle);
             throw new IllegalArgumentException("Parameters 'startAngle' and 'endAngle' must be valid float values.");
@@ -66,6 +63,7 @@ public class RotateFrame extends AnimationFrame {
     @Override
     public void dispose() {
         super.dispose();
-        executorService.shutdown();  // Закрытие пула потоков, чтобы избежать утечек памяти
+        executorService.shutdown();
+        this.getAnimationFactory().dispose();
     }
 }

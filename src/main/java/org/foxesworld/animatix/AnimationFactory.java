@@ -13,7 +13,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -26,12 +29,13 @@ public class AnimationFactory implements AnimationStatus {
     private final AnimationConfigLoader configLoader;
     private final AnimationEffectFactory effectFactory;
     private final AnimationPhaseExecutor phaseExecutor;
-
     private int phaseNum = 0;
     private AnimationPhase currentPhase;
     private JLabel animLabel, textLabel;
     private ImageWorks imageWorks;
     private AnimationConfig config;
+    private boolean isPaused = false;
+    private Map<AnimationPhase, List<AnimationFrame>> cachedFrames = new HashMap<>();
 
     public AnimationFactory() {
         this(Executors.newSingleThreadScheduledExecutor(),
@@ -82,43 +86,66 @@ public class AnimationFactory implements AnimationStatus {
     }
 
     private void executeAnimation(List<AnimationPhase> phases, boolean repeat) {
-        do {
-            for (AnimationPhase phase : phases) {
-                currentPhase = phase;
-                logger.info("Starting phase: {}", phase.getName());
+        try {
+            do {
+                for (AnimationPhase phase : phases) {
+                    currentPhase = phase;
+                    logger.info("Starting phase: {}", phase.getName());
+                    List<AnimationFrame> animationFrames = getOrCacheAnimationFrames(phase);
+                    phaseExecutor.executePhase(phase, animationFrames);
 
-                List<AnimationFrame> animationFrames = effectFactory.createEffectsForPhase(phase);
-                phaseExecutor.executePhase(phase, animationFrames);
-
-                waitForPhaseCompletion(phase.getDuration());
-            }
-            incrementPhase();
-        } while (repeat && phaseNum < config.getPhases().size());
-
-        logger.info("Animation complete.");
-        shutdownScheduler();
-    }
-
-    private void waitForPhaseCompletion(long duration) {
-        synchronized (this) {
-            try {
-                scheduler.schedule(() -> {
-                    synchronized (this) {
-                        logger.info("Timer expired, notifying...");
-                        notify();
-                    }
-                }, duration, TimeUnit.MILLISECONDS);
-
-                logger.info("Waiting for phase completion...");
-                wait();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                logger.error("Phase waiting interrupted", e);
-            }
+                    waitForPhaseCompletion(phase.getDuration());
+                }
+                incrementPhase();
+            } while (repeat && phaseNum < config.getPhases().size());
+            logger.info("Animation complete.");
+        } catch (Exception e) {
+            logger.error("Error during animation execution", e);
+        } finally {
+            shutdownScheduler();
         }
     }
 
-    public void shutdownScheduler() {
+    private List<AnimationFrame> getOrCacheAnimationFrames(AnimationPhase phase) {
+        if (!cachedFrames.containsKey(phase)) {
+            cachedFrames.put(phase, effectFactory.createEffectsForPhase(phase));
+        }
+        return cachedFrames.get(phase);
+    }
+
+    private void waitForPhaseCompletion(long duration) {
+        try {
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                try {
+                    Thread.sleep(duration);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            });
+
+            future.join();
+        } catch (Exception e) {
+            logger.error("Error during waiting for phase completion", e);
+        }
+    }
+
+    public synchronized void pause() {
+        isPaused = true;
+        logger.info("Animation paused.");
+    }
+
+    public synchronized void resume() {
+        isPaused = false;
+        logger.info("Animation resumed.");
+        notify();
+    }
+
+    public synchronized void incrementPhase() {
+        phaseNum++;
+        logger.debug("Phase incremented to: {}", phaseNum);
+    }
+
+    private void shutdownScheduler() {
         scheduler.shutdown();
     }
 
@@ -128,33 +155,32 @@ public class AnimationFactory implements AnimationStatus {
         notify();
     }
 
-    public synchronized void incrementPhase() {
-        phaseNum++;
-        logger.debug("Phase incremented to: {}", phaseNum);
-    }
-
     private void validateConfig() {
         if (config == null) {
             throw new IllegalStateException("AnimationConfig must be loaded before creating animation");
         }
     }
 
+    public void dispose() {
+        if (imageWorks != null) {
+            imageWorks.dispose();
+            imageWorks = null;
+        }
+        scheduler.shutdown();
+    }
+
     public JLabel getAnimLabel() {
         return animLabel;
     }
-
     public JLabel getTextLabel() {
         return textLabel;
     }
-
     public ImageWorks getImageWorks() {
         return imageWorks;
     }
-
     public AnimationPhase getCurrentPhase() {
         return currentPhase;
     }
-
     public int getPhaseNum() {
         return phaseNum;
     }
