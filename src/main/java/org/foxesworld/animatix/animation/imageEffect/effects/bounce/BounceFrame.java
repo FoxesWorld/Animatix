@@ -1,11 +1,7 @@
 package org.foxesworld.animatix.animation.imageEffect.effects.bounce;
 
-import org.foxesworld.Main;
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
-
-import javax.swing.*;
-import java.awt.image.BufferedImage;
 
 public class BounceFrame extends AnimationFrame {
     public BounceFrame(AnimationFactory animationFactory) {

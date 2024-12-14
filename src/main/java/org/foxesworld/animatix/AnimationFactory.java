@@ -23,7 +23,6 @@ import java.util.concurrent.ScheduledExecutorService;
 public class AnimationFactory implements AnimationStatus {
 
     private static final Logger logger = LoggerFactory.getLogger(AnimationFactory.class);
-
     private final ScheduledExecutorService scheduler;
     private final AnimationConfigLoader configLoader;
     private final AnimationEffectFactory effectFactory;
@@ -34,13 +33,26 @@ public class AnimationFactory implements AnimationStatus {
     private ImageWorks imageWorks;
     private AnimationConfig config;
     private boolean isPaused = false;
-    private Map<AnimationPhase, List<AnimationFrame>> cachedFrames = new HashMap<>();
+    private final Map<AnimationPhase, List<AnimationFrame>> cachedFrames = new HashMap<>();
 
-    public AnimationFactory() {
+    public AnimationFactory(String configPath) {
         this(Executors.newSingleThreadScheduledExecutor(),
                 new AnimationConfigLoader(),
-                new AnimationEffectFactory(null),
-                new AnimationPhaseExecutor(null));
+                new AnimationEffectFactory(),
+                new AnimationPhaseExecutor());
+        this.loadConfig(configPath);
+    }
+
+    private void loadConfig(String configPath){
+        try (InputStream inputStream = Main.class.getClassLoader().getResourceAsStream(configPath)) {
+            if (inputStream == null) {
+                throw new RuntimeException("Configuration file not found!");
+            }
+            logger.info("Loading animation config...");
+            this.config = configLoader.loadConfig(inputStream);
+        } catch (Exception e) {
+            Main.LOGGER.error("Failed to initialize animation factory", e);
+        }
     }
 
     public AnimationFactory(ScheduledExecutorService scheduler,
@@ -56,32 +68,34 @@ public class AnimationFactory implements AnimationStatus {
         this.phaseExecutor.setAnimationFactory(this);
     }
 
-    public void loadConfig(InputStream inputStream) {
-        if (inputStream == null) {
-            throw new IllegalArgumentException("InputStream cannot be null");
-        }
-
-        logger.info("Loading animation config...");
-        this.config = configLoader.loadConfig(inputStream);
-        logger.info("Animation config loaded successfully: {}", config);
-    }
-
     public void createAnimation(JFrame frame) {
         validateConfig();
 
         this.imageWorks = new ImageWorks(ImageWorks.getImageFromStream(config.getImagePath()));
-        animLabel = new JLabel(new ImageIcon(imageWorks.getImage()));
-        animLabel.setBounds(this.config.getBounds());
-        frame.add(animLabel);
+        if (animLabel == null) {
+            animLabel = new JLabel(new ImageIcon(imageWorks.getImage()));
+            animLabel.setBounds(this.config.getBounds());
+            frame.add(animLabel);
+        }
 
-        textLabel = new JLabel("", SwingConstants.CENTER);
-        textLabel.setBounds(0, 200, frame.getWidth(), 50);
-        frame.add(textLabel);
+        if (textLabel == null) {
+            textLabel = new JLabel("", SwingConstants.CENTER);
+            textLabel.setBounds(0, 200, frame.getWidth(), 50);
+            frame.add(textLabel);
+        }
 
         List<AnimationPhase> phases = config.getPhases();
         boolean repeat = config.isRepeat();
 
         new Thread(() -> executeAnimation(phases, repeat)).start();
+    }
+
+    public void setAnimLabel(JLabel animLabel) {
+        this.animLabel = animLabel;
+    }
+
+    public void setTextLabel(JLabel textLabel) {
+        this.textLabel = textLabel;
     }
 
     private void executeAnimation(List<AnimationPhase> phases, boolean repeat) {

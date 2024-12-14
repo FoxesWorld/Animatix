@@ -1,6 +1,6 @@
 package org.foxesworld.animatix.animation.config;
 
-import org.foxesworld.Main;
+import org.foxesworld.animatix.Main;
 
 import java.util.List;
 import java.util.Map;

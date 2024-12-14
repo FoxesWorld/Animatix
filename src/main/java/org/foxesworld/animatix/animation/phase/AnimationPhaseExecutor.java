@@ -14,8 +14,7 @@ public class AnimationPhaseExecutor {
     private static final Logger logger = LoggerFactory.getLogger(AnimationPhaseExecutor.class);
     private AnimationFactory animationFactory;
 
-    public AnimationPhaseExecutor(AnimationFactory animationFactory) {
-        this.animationFactory = animationFactory;
+    public AnimationPhaseExecutor() {
     }
 
     public void executePhase(AnimationPhase phase, List<AnimationFrame> animationFrames) {

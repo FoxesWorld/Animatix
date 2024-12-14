@@ -19,8 +19,7 @@ import java.util.List;
 public class AnimationEffectFactory {
 
     private AnimationFactory animationFactory;
-    public AnimationEffectFactory(AnimationFactory animationFactory){
-        this.animationFactory = animationFactory;
+    public AnimationEffectFactory(){
     }
 
     public List<AnimationFrame> createEffectsForPhase(AnimationPhase phase) {

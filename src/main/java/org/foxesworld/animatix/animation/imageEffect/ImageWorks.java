@@ -1,7 +1,7 @@
 package org.foxesworld.animatix.animation.imageEffect;
 
 import org.apache.commons.math3.util.FastMath;
-import org.foxesworld.Main;
+import org.foxesworld.animatix.Main;
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.imageEffect.effects.resize.ResizeFrame;
 
