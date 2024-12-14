@@ -1,9 +1,11 @@
 package org.foxesworld.animatix.animation.config;
 
+import java.awt.*;
 import java.util.List;
 
 public class AnimationConfig {
     private String animationName;
+    private Bounds bounds;
     private boolean repeat;
     private String imagePath;
     private List<AnimationPhase> phases;
@@ -27,5 +29,20 @@ public class AnimationConfig {
 
     public List<AnimationPhase> getPhases() {
         return phases;
+    }
+
+    public Rectangle getBounds() {
+        return new Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
+    }
+
+    public static class  Bounds {
+        private int x,y,width, height;
+
+        public Bounds(int x, int y, int width, int height) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+        }
     }
 }

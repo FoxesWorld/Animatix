@@ -16,13 +16,13 @@ public class ResizeFrame extends AnimationFrame {
             createParam("endWidth", "endWidth", Integer.class, 20),
             createParam("startHeight", "startHeight", Integer.class, 100),
             createParam("endHeight", "endHeight", Integer.class, 20),
-            createParam("resizeType", "resizeType", ResizeType.class, ResizeType.SCALE_TO_COVER)
+            createParam("resizeType", "resizeType", String.class, "SCALE_TO_COVER")
     };
     private final String effectName = "resize";
 
     // Поля для хранения параметров
     private int startWidth, endWidth, startHeight, endHeight;
-    private ResizeType resizeType;
+    private String resizeType;
 
     public ResizeFrame(AnimationFactory animationFactory) {
         super(animationFactory);
@@ -36,7 +36,7 @@ public class ResizeFrame extends AnimationFrame {
         int newHeight = (int) (startHeight + progress * (endHeight - startHeight));
 
         // Меняем размеры изображения
-        BufferedImage resizedImage = imageWorks.resizeImage(newWidth, newHeight, resizeType);
+        BufferedImage resizedImage = imageWorks.resizeImage(newWidth, newHeight, ResizeType.valueOf(resizeType));
         label.setIcon(new ImageIcon(resizedImage));
         label.setSize(newWidth, newHeight);
         imageWorks.setImage(resizedImage);
@@ -49,7 +49,7 @@ public class ResizeFrame extends AnimationFrame {
         // Убедимся, что resizeType правильно задан
         if (resizeType == null) {
             Main.LOGGER.warn("resizeType is not set. Using default value: SCALE_TO_COVER");
-            resizeType = ResizeType.SCALE_TO_COVER;
+            resizeType = "SCALE_TO_COVER";
         }
     }
 

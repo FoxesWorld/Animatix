@@ -155,4 +155,23 @@ public abstract class AnimationFrame implements Runnable {
         param.put("defaultValue", defaultValue);
         return param;
     }
+
+    /**
+     * Метод для очистки ресурсов и завершения анимации.
+     */
+    public void dispose() {
+        // Остановить таймер, если он существует
+        if (timer != null) {
+            timer.stop();
+            timer = null;
+        }
+
+        // Если анимация завершена, установить флаг
+        finished = true;
+
+        // Освободить другие ресурсы, если необходимо
+        if (imageWorks != null) {
+            imageWorks.dispose();
+        }
+    }
 }

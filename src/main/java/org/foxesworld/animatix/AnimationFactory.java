@@ -29,8 +29,7 @@ public class AnimationFactory implements AnimationStatus {
 
     private int phaseNum = 0;
     private AnimationPhase currentPhase;
-    private JLabel animLabel;
-    private JLabel textLabel;
+    private JLabel animLabel, textLabel;
     private ImageWorks imageWorks;
     private AnimationConfig config;
 
@@ -69,7 +68,7 @@ public class AnimationFactory implements AnimationStatus {
 
         this.imageWorks = new ImageWorks(ImageWorks.getImageFromStream(config.getImagePath()));
         animLabel = new JLabel(new ImageIcon(imageWorks.getImage()));
-        animLabel.setBounds(50, 50, 100, 100);
+        animLabel.setBounds(this.config.getBounds());
         frame.add(animLabel);
 
         textLabel = new JLabel("", SwingConstants.CENTER);

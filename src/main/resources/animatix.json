@@ -1,6 +1,13 @@
 {
   "animationName": "imageAnimation",
-  "repeat": false,
+  "imagePath": "img/fox.png",
+  "repeat": true,
+  "bounds": {
+    "x": 100,
+    "y": 100,
+    "width": 350,
+    "height": 350
+  },
   "phases": [
     {
       "imageEffects": ["resize"],
@@ -8,16 +15,16 @@
       "duration": 800,
       "effectParams": {
         "resize": {
-          "startWidth": 190,
-          "startHeight": 190,
-          "endWidth": 90,
-          "endHeight": 90,
-          "resizeType": "SCALE_TO_COVER"
+          "startWidth": 290,
+          "startHeight": 290,
+          "endWidth": 50,
+          "endHeight": 50,
+          "resizeType": "SCALE_TO_FIT"
         }
       }
     },
     {
-      "imageEffects": ["move"],
+      "imageEffects": ["rotate"],
       "name": "move to",
       "duration": 1000,
       "effectParams": {
@@ -28,30 +35,6 @@
           "endY": 50
         }
       }
-    },
-    {
-      "imageEffects": ["COLOR_FADE"],
-      "name": "color fade",
-      "duration": 500,
-      "effectParams": {
-        "colorFade": {
-          "startAlpha": 1.0,
-          "endAlpha": 0.0
-        }
-      }
-    },
-    {
-      "imageEffects": ["decay"],
-      "name": "decay effect",
-      "duration": 2000,
-      "effectParams": {
-        "decay": {
-          "startAlpha": 1.0,
-          "endAlpha": 0.0,
-          "decaySpeed": 10
-        }
-      }
     }
-  ],
-  "imagePath": "fox.png"
+  ]
 }

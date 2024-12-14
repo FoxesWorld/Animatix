@@ -2,17 +2,12 @@ package org.foxesworld.animatix.animation.imageEffect.effects.colorFade;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class ColorFadeFrame extends AnimationFrame {
-
-    private static final Logger logger = LoggerFactory.getLogger(ColorFadeFrame.class);
-
     private Color startColor;  // Начальный цвет
     private Color endColor;    // Конечный цвет
     private Color currentColor; // Текущий цвет
