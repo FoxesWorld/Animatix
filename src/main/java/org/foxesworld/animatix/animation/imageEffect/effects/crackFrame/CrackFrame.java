@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class CrackFrame extends AnimationFrame {
 
-    private List<Crack> cracks;  // Список трещин
+    private List<Crack> cracks;
     private Random random;
 
     public CrackFrame(AnimationFactory animationFactory) {
@@ -23,59 +23,58 @@ public class CrackFrame extends AnimationFrame {
 
     @Override
     public void update(float progress) {
-        // Применяем прогресс к размеру трещин
         for (Crack crack : cracks) {
             crack.update(progress);
         }
-
-        // Рисуем трещины на изображении
         drawCracks(progress);
     }
 
     @Override
     public void run() {
         super.run();
-
-        // Создаем случайные трещины
         generateCracks();
     }
 
     private void generateCracks() {
-        // Генерация случайных трещин на изображении
-        int numCracks = 5 + random.nextInt(5); // 5-10 случайных трещин
+        int numCracks = 5 + random.nextInt(5);
         for (int i = 0; i < numCracks; i++) {
             cracks.add(new Crack(random.nextInt(label.getWidth()), random.nextInt(label.getHeight())));
         }
     }
 
     private void drawCracks(float progress) {
-        // Получаем текущее изображение для рисования трещин
         BufferedImage currentImage = imageWorks.getImage();
         if (currentImage == null) return;
 
-        Graphics2D g = currentImage.createGraphics();
-        g.setColor(Color.BLACK); // Цвет трещин
-        g.setStroke(new BasicStroke(2));  // Устанавливаем толщину линии для трещин
+        BufferedImage rgbImage = new BufferedImage(currentImage.getWidth(), currentImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = rgbImage.createGraphics();
+        g.drawImage(currentImage, 0, 0, null);
 
-        // Рисуем каждую трещину, увеличивая ее с прогрессом
+        g.setColor(Color.BLACK);
+        g.setStroke(new BasicStroke(2));
+
         for (Crack crack : cracks) {
             crack.draw(g, progress);
         }
 
-        // Завершаем рисование
         g.dispose();
 
-        // Обновляем изображение в анимации
-        SwingUtilities.invokeLater(() -> {
-            label.setIcon(new ImageIcon(currentImage));
-        });
+        for (int y = 0; y < currentImage.getHeight(); y++) {
+            for (int x = 0; x < currentImage.getWidth(); x++) {
+                int rgb = rgbImage.getRGB(x, y);
+                int alpha = currentImage.getRGB(x, y) & 0xFF000000;
+                int finalColor = alpha | (rgb & 0x00FFFFFF);
+                currentImage.setRGB(x, y, finalColor);
+            }
+        }
+
+        SwingUtilities.invokeLater(() -> label.setIcon(new ImageIcon(currentImage)));
     }
 
-    // Внутренний класс для описания трещин
     private class Crack {
         private int startX, startY, endX, endY;
         private float length;
-        private float maxLength = 100f; // Максимальная длина трещины
+        private float maxLength = 100f;
         private int angle;
 
         public Crack(int startX, int startY) {
@@ -83,24 +82,18 @@ public class CrackFrame extends AnimationFrame {
             this.startY = startY;
             this.angle = random.nextInt(360);
             this.length = 0;
-            // Определяем случайную конечную точку для трещины
             this.endX = startX + (int) (Math.cos(Math.toRadians(angle)) * maxLength);
             this.endY = startY + (int) (Math.sin(Math.toRadians(angle)) * maxLength);
         }
 
         public void update(float progress) {
-            // Увеличиваем длину трещины с прогрессом
             length = maxLength * progress;
         }
 
         public void draw(Graphics2D g, float progress) {
-            // Рисуем трещину
-            int x1 = startX;
-            int y1 = startY;
             int x2 = (int) (startX + Math.cos(Math.toRadians(angle)) * length);
             int y2 = (int) (startY + Math.sin(Math.toRadians(angle)) * length);
-
-            g.drawLine(x1, y1, x2, y2);
+            g.drawLine(startX, startY, x2, y2);
         }
     }
 }

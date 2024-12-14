@@ -1,6 +1,6 @@
 {
   "animationName": "imageAnimation",
-  "imagePath": "img/fox.png",
+  "imagePath": "img/diamond.png",
   "repeat": true,
   "bounds": {
     "x": 100,
@@ -24,7 +24,12 @@
       }
     },
     {
-      "imageEffects": ["move", "rotate"],
+      "imageEffects": ["crack"],
+      "name": "resize",
+      "duration": 900
+    },
+    {
+      "imageEffects": ["decay"],
       "name": "move to",
       "duration": 1000,
       "effectParams": {
