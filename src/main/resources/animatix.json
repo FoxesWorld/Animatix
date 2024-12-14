@@ -5,37 +5,52 @@
     {
       "imageEffects": ["resize"],
       "name": "resize",
-      "startWidth": 190,
-      "startHeight": 190,
-      "endWidth": 90,
-      "endHeight": 90,
       "duration": 800,
-      "resizeType": "SCALE_TO_COVER"
+      "effectParams": {
+        "resize": {
+          "startWidth": 190,
+          "startHeight": 190,
+          "endWidth": 90,
+          "endHeight": 90,
+          "resizeType": "SCALE_TO_COVER"
+        }
+      }
     },
     {
       "imageEffects": ["move"],
       "name": "move to",
-      "startX": 50,
-      "startY": 50,
-      "endX": 190,
-      "endY": 50,
       "duration": 1000,
-      "startAngle": 0,
-      "endAngle": 320
+      "effectParams": {
+        "move": {
+          "startX": 50,
+          "startY": 50,
+          "endX": 190,
+          "endY": 50
+        }
+      }
     },
     {
       "imageEffects": ["COLOR_FADE"],
-      "duration": 500
+      "name": "color fade",
+      "duration": 500,
+      "effectParams": {
+        "colorFade": {
+          "startAlpha": 1.0,
+          "endAlpha": 0.0
+        }
+      }
     },
     {
-      "imageEffects": ["decay", "rotate"],
-      "name": "decay",
-      "startAlpha": 1.0,
-      "endAlpha": 0.0,
-      "duration": 5000,
-      "pixelDecaySpeed": 1,
-      "startAngle": 0,
-      "endAngle": 92
+      "imageEffects": ["decay"],
+      "name": "decay effect",
+      "duration": 2000,
+      "effectParams": {
+        "decay": {
+          "startAlpha": 1.0,
+          "endAlpha": 0.0,
+          "decaySpeed": 10
+        }
+      }
     }
   ],
   "imagePath": "fox.png"

@@ -1,12 +1,12 @@
 package org.foxesworld.animatix.animation.textEffect.effects;
 
-public enum Effects {
+public enum TextEffects {
     COLOR_CHANGE,
     ZOOM_IN;
 
-    public static Effects fromString(String effect) {
+    public static TextEffects fromString(String effect) {
         try {
-            return Effects.valueOf(effect.toUpperCase());
+            return TextEffects.valueOf(effect.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid effect type: " + effect);
         }

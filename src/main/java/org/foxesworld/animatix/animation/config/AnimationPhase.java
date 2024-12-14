@@ -1,133 +1,24 @@
 package org.foxesworld.animatix.animation.config;
 
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.foxesworld.animatix.animation.imageEffect.effects.resize.ResizeType;
+import org.foxesworld.Main;
 
 import java.util.List;
+import java.util.Map;
 
 public class AnimationPhase {
-    private List<String> imageEffects, textEffects;
-    private String name;
-    private int startWidth, endWidth, startHeight, endHeight, pixelDecaySpeed;
-    private int startX, endX, startY, endY;
-    private float startAlpha, endAlpha;
-    private float startAngle, endAngle;
-    private boolean bounce;
-    private ResizeType resizeType;
-    private long duration;
-    private List<Vector2D> controlPoints; // Контрольные точки для кривой Безье
+    private String name; // Название фазы
+    private List<String> imageEffects; // Эффекты для изображений
+    private List<String> textEffects;  // Эффекты для текста
+    private long duration; // Длительность фазы в миллисекундах
+    private Map<String, Map<String, Object>> effectParams; // Параметры эффектов
 
     // Геттеры и сеттеры
-    public List<String> getImageEffects() {
-        return imageEffects;
+    public String getName() {
+        return name;
     }
 
-    public List<String> getTextEffects() {
-        return textEffects;
-    }
-
-    public int getStartWidth() {
-        return startWidth;
-    }
-
-    public void setStartWidth(int startWidth) {
-        this.startWidth = startWidth;
-    }
-
-    public int getEndWidth() {
-        return endWidth;
-    }
-
-    public void setEndWidth(int endWidth) {
-        this.endWidth = endWidth;
-    }
-
-    public int getStartHeight() {
-        return startHeight;
-    }
-
-    public void setStartHeight(int startHeight) {
-        this.startHeight = startHeight;
-    }
-
-    public int getEndHeight() {
-        return endHeight;
-    }
-
-    public void setEndHeight(int endHeight) {
-        this.endHeight = endHeight;
-    }
-
-    public int getStartX() {
-        return startX;
-    }
-
-    public void setStartX(int startX) {
-        this.startX = startX;
-    }
-
-    public int getEndX() {
-        return endX;
-    }
-
-    public void setEndX(int endX) {
-        this.endX = endX;
-    }
-
-    public int getStartY() {
-        return startY;
-    }
-
-    public void setStartY(int startY) {
-        this.startY = startY;
-    }
-
-    public int getEndY() {
-        return endY;
-    }
-
-    public void setEndY(int endY) {
-        this.endY = endY;
-    }
-
-    public float getStartAlpha() {
-        return startAlpha;
-    }
-
-    public void setStartAlpha(float startAlpha) {
-        this.startAlpha = startAlpha;
-    }
-
-    public float getEndAlpha() {
-        return endAlpha;
-    }
-
-    public void setEndAlpha(float endAlpha) {
-        this.endAlpha = endAlpha;
-    }
-
-    public float getStartAngle() {
-        return startAngle;
-    }
-
-    public void setStartAngle(float startAngle) {
-        this.startAngle = startAngle;
-    }
-
-    public float getEndAngle() {
-        return endAngle;
-    }
-
-    public void setEndAngle(float endAngle) {
-        this.endAngle = endAngle;
-    }
-
-    public ResizeType getResizeType() {
-        return resizeType;
-    }
-
-    public void setResizeType(ResizeType resizeType) {
-        this.resizeType = resizeType;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public long getDuration() {
@@ -138,23 +29,89 @@ public class AnimationPhase {
         this.duration = duration;
     }
 
-    public List<Vector2D> getControlPoints() {
-        return controlPoints;
+    public Map<String, Map<String, Object>> getEffectParams() {
+        return effectParams;
     }
 
-    public void setControlPoints(List<Vector2D> controlPoints) {
-        this.controlPoints = controlPoints;
+    public void setEffectParams(Map<String, Map<String, Object>> effectParams) {
+        this.effectParams = effectParams;
     }
 
-    public int getPixelDecaySpeed() {
-        return pixelDecaySpeed;
+    public List<String> getImageEffects() {
+        return imageEffects;
     }
 
-    public boolean isBounce() {
-        return bounce;
+    public void setImageEffects(List<String> imageEffects) {
+        this.imageEffects = imageEffects;
     }
 
-    public String getName() {
-        return name;
+    public List<String> getTextEffects() {
+        return textEffects;
+    }
+
+    public void setTextEffects(List<String> textEffects) {
+        this.textEffects = textEffects;
+    }
+
+    /**
+     * Возвращает параметр для конкретного эффекта.
+     *
+     * @param effectName Название эффекта (например, "resize").
+     * @param paramName  Название параметра (например, "startWidth").
+     * @param clazz      Тип параметра.
+     * @param <T>        Обобщенный тип.
+     * @return Значение параметра или null, если оно отсутствует.
+     */
+    public <T> T getEffectParam(String effectName, String paramName, Class<T> clazz) {
+        if (effectParams == null || !effectParams.containsKey(effectName)) {
+            Main.LOGGER.warn("Effect name not found: " + effectName);
+            return null;
+        }
+
+        Map<String, Object> effectMap = effectParams.get(effectName);
+        if (!effectMap.containsKey(paramName)) {
+            Main.LOGGER.warn("Parameter name not found: " + paramName + " for effect: " + effectName);
+            return null;
+        }
+
+        Object value = effectMap.get(paramName);
+
+        // Проверяем, если нужно конвертировать типы
+        if (clazz == Float.class && value instanceof Double) {
+            return clazz.cast(((Double) value).floatValue());
+        }
+        if (clazz == Integer.class && value instanceof Number) {
+            return clazz.cast(((Number) value).intValue());
+        }
+        if (clazz.isInstance(value)) {
+            return clazz.cast(value);
+        }
+
+        Main.LOGGER.error("Type mismatch for parameter: " + paramName + " (expected: " + clazz.getSimpleName() + ", found: " + value.getClass().getSimpleName() + ")");
+        return null;
+    }
+
+
+    /**
+     * Устанавливает параметры для конкретного эффекта из карты параметров.
+     *
+     * @param effectName Название эффекта.
+     * @param params     Карта параметров.
+     */
+    public void setEffectParams(String effectName, Map<String, Object> params) {
+        if (effectParams != null) {
+            effectParams.put(effectName, params);
+        }
+    }
+
+    /**
+     * Проверяет, используется ли указанный эффект в текущей фазе.
+     *
+     * @param effectName Название эффекта.
+     * @return true, если эффект используется, иначе false.
+     */
+    public boolean hasEffect(String effectName) {
+        return (imageEffects != null && imageEffects.contains(effectName)) ||
+                (textEffects != null && textEffects.contains(effectName));
     }
 }

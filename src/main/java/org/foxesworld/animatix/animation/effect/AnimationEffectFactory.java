@@ -27,7 +27,7 @@ public class AnimationEffectFactory {
         List<AnimationFrame> frames = new ArrayList<>();
 
         for (String effectType : phase.getImageEffects()) {
-            Effects effect = Effects.fromString(effectType);
+            ImageEffects effect = ImageEffects.fromString(effectType);
 
             switch (effect) {
                 case RESIZE -> frames.add(new ResizeFrame(animationFactory));

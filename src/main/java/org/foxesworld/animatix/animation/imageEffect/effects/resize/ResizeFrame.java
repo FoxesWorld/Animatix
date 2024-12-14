@@ -1,25 +1,64 @@
 package org.foxesworld.animatix.animation.imageEffect.effects.resize;
 
+import org.foxesworld.Main;
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;
+import java.util.Map;
 
 public class ResizeFrame extends AnimationFrame {
 
+    // Параметры эффекта
+    private final Map<String, Object>[] params = new Map[]{
+            createParam("startWidth", "startWidth", Integer.class, 100),
+            createParam("endWidth", "endWidth", Integer.class, 20),
+            createParam("startHeight", "startHeight", Integer.class, 100),
+            createParam("endHeight", "endHeight", Integer.class, 20),
+            createParam("resizeType", "resizeType", ResizeType.class, ResizeType.SCALE_TO_COVER)
+    };
+    private final String effectName = "resize";
+
+    // Поля для хранения параметров
+    private int startWidth, endWidth, startHeight, endHeight;
+    private ResizeType resizeType;
+
     public ResizeFrame(AnimationFactory animationFactory) {
         super(animationFactory);
+        initializeParams(params, effectName);
     }
 
     @Override
     public void update(float progress) {
-        int newWidth = (int) (phase.getStartWidth() + progress * (phase.getEndWidth() - phase.getStartWidth()));
-        int newHeight = (int) (phase.getStartHeight() + progress * (phase.getEndHeight() - phase.getStartHeight()));
+        // Вычисляем новые размеры
+        int newWidth = (int) (startWidth + progress * (endWidth - startWidth));
+        int newHeight = (int) (startHeight + progress * (endHeight - startHeight));
 
-        BufferedImage resizedImage = imageWorks.resizeImage(newWidth, newHeight, phase.getResizeType());
+        // Меняем размеры изображения
+        BufferedImage resizedImage = imageWorks.resizeImage(newWidth, newHeight, resizeType);
         label.setIcon(new ImageIcon(resizedImage));
         label.setSize(newWidth, newHeight);
         imageWorks.setImage(resizedImage);
+    }
+
+    @Override
+    protected void initializeParams(Map<String, Object>[] params, String effectName) {
+        super.initializeParams(params, effectName);
+
+        // Убедимся, что resizeType правильно задан
+        if (resizeType == null) {
+            Main.LOGGER.warn("resizeType is not set. Using default value: SCALE_TO_COVER");
+            resizeType = ResizeType.SCALE_TO_COVER;
+        }
+    }
+
+    /**
+     * Типы изменения размеров.
+     */
+    public enum ResizeType {
+        SCALE_TO_COVER,
+        SCALE_TO_FIT,
+        STRETCH
     }
 }

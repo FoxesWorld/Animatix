@@ -1,25 +1,28 @@
 package org.foxesworld.animatix.animation;
 
+import org.foxesworld.Main;
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.config.AnimationPhase;
 import org.foxesworld.animatix.animation.imageEffect.ImageWorks;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AnimationFrame implements Runnable {
 
+    private static final int DEFAULT_FPS = 60;
+
     private final AnimationFactory animationFactory;
-    private static final Logger logger = LoggerFactory.getLogger(AnimationFrame.class);
-    protected AnimationPhase phase;
-    protected ImageWorks imageWorks;
-    protected JLabel label;
     private final long duration;
     private Timer timer;
     private long startTime;
-    private long endTime;
     private boolean finished = false;
+
+    protected final AnimationPhase phase;
+    protected final ImageWorks imageWorks;
+    protected final JLabel label;
 
     public AnimationFrame(AnimationFactory animationFactory) {
         this.animationFactory = animationFactory;
@@ -29,40 +32,127 @@ public abstract class AnimationFrame implements Runnable {
         this.duration = phase.getDuration();
     }
 
+    /**
+     * Метод для обновления состояния анимации. Реализуется подклассами.
+     *
+     * @param progress Процент завершения анимации (0.0 - 1.0)
+     */
     public abstract void update(float progress);
-
 
     @Override
     public void run() {
         startTime = System.currentTimeMillis();
-        endTime = startTime + duration;
+        finished = false;
 
-        // Timer для обновлений UI
-        timer = new Timer(1000 / 60, e -> updateFrame()); // 60 FPS
+        timer = new Timer(1000 / DEFAULT_FPS, e -> {
+            try {
+                updateFrame();
+            } catch (Exception ex) {
+                Main.LOGGER.error("Error during animation frame update", ex);
+                stopAnimation();
+            }
+        });
+
         timer.start();
-
-        // После завершения анимации
-        logger.info("Animation completed for phase: {}", animationFactory.getPhaseNum());
-        animationFactory.incrementPhase();
-
-        // Уведомление о завершении фазы
-        ((AnimationStatus) animationFactory).onPhaseCompleted();
+        Main.LOGGER.info("Animation started for phase: {}", animationFactory.getPhaseNum());
     }
 
-    protected void updateFrame() {
+    private void updateFrame() {
         long elapsedTime = System.currentTimeMillis() - startTime;
         float progress = Math.min((float) elapsedTime / duration, 1.0f);
 
-        // Обновляем UI в EDT
-        SwingUtilities.invokeLater(() -> update(progress));
+        // Обновляем UI
+        SwingUtilities.invokeLater(() -> {
+            try {
+                update(progress);
+            } catch (Exception ex) {
+                Main.LOGGER.error("Error in UI update", ex);
+            }
+        });
 
         if (elapsedTime >= duration) {
-            // Останавливаем таймер, когда анимация завершена
-            timer.stop();
-            finished = true;
-
-            // Финальный апдейт
+            stopAnimation();
             SwingUtilities.invokeLater(() -> update(1.0f));
+            Main.LOGGER.info("Animation completed for phase: {}", animationFactory.getPhaseNum());
+            animationFactory.incrementPhase();
+
+            if (animationFactory instanceof AnimationStatus) {
+                ((AnimationStatus) animationFactory).onPhaseCompleted();
+            }
         }
+    }
+
+    private void stopAnimation() {
+        if (timer != null) {
+            timer.stop();
+            timer = null;
+        }
+        finished = true;
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public AnimationPhase getPhase() {
+        return phase;
+    }
+
+    /**
+     * нициализация параметров с использованием конфигурации фазы.
+     *
+     * @param params     Карта параметров.
+     * @param effectName Название эффекта.
+     */
+    protected void initializeParams(Map<String, Object>[] params, String effectName) {
+        for (Map<String, Object> param : params) {
+            try {
+                String field = (String) param.get("field");
+                String paramName = (String) param.get("paramName");
+                Class<?> type = (Class<?>) param.get("type");
+                Object defaultValue = param.get("defaultValue");
+
+                // Получаем значение параметра из конфигурации фазы
+                Object value = phase.getEffectParam(effectName, paramName, type);
+                if (value == null) {
+                    value = defaultValue;
+                }
+
+                // Устанавливаем значение в поле
+                setFieldValue(field, value);
+            } catch (Exception e) {
+                Main.LOGGER.error("Error initializing parameter: {}", param, e);
+            }
+        }
+    }
+
+    /**
+     * Устанавливает значение поля через рефлексию.
+     *
+     * @param fieldName Название поля.
+     * @param value     Значение для установки.
+     */
+    private void setFieldValue(String fieldName, Object value) throws Exception {
+        Field field = this.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(this, value);
+    }
+
+    /**
+     * Создает карту параметров для инициализации.
+     *
+     * @param field        Название поля.
+     * @param paramName    Название параметра.
+     * @param type         Тип значения.
+     * @param defaultValue Значение по умолчанию.
+     * @return Карта параметров.
+     */
+    protected Map<String, Object> createParam(String field, String paramName, Class<?> type, Object defaultValue) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("field", field);
+        param.put("paramName", paramName);
+        param.put("type", type);
+        param.put("defaultValue", defaultValue);
+        return param;
     }
 }

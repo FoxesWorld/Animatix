@@ -30,10 +30,10 @@ public class AnimationFactory implements AnimationStatus {
     private int phaseNum = 0;
     private AnimationPhase currentPhase;
     private JLabel animLabel;
+    private JLabel textLabel;
     private ImageWorks imageWorks;
     private AnimationConfig config;
 
-    // Конструктор с возможностью настройки зависимостей
     public AnimationFactory() {
         this(Executors.newSingleThreadScheduledExecutor(),
                 new AnimationConfigLoader(),
@@ -50,12 +50,10 @@ public class AnimationFactory implements AnimationStatus {
         this.effectFactory = effectFactory;
         this.phaseExecutor = phaseExecutor;
 
-        // Связываем зависимые компоненты
         this.effectFactory.setAnimationFactory(this);
         this.phaseExecutor.setAnimationFactory(this);
     }
 
-    // Загружаем конфигурацию
     public void loadConfig(InputStream inputStream) {
         if (inputStream == null) {
             throw new IllegalArgumentException("InputStream cannot be null");
@@ -66,7 +64,6 @@ public class AnimationFactory implements AnimationStatus {
         logger.info("Animation config loaded successfully: {}", config);
     }
 
-    // Запускаем анимацию
     public void createAnimation(JFrame frame) {
         validateConfig();
 
@@ -75,18 +72,21 @@ public class AnimationFactory implements AnimationStatus {
         animLabel.setBounds(50, 50, 100, 100);
         frame.add(animLabel);
 
+        textLabel = new JLabel("", SwingConstants.CENTER);
+        textLabel.setBounds(0, 200, frame.getWidth(), 50);
+        frame.add(textLabel);
+
         List<AnimationPhase> phases = config.getPhases();
         boolean repeat = config.isRepeat();
 
         new Thread(() -> executeAnimation(phases, repeat)).start();
     }
 
-    // Основная логика выполнения анимации
     private void executeAnimation(List<AnimationPhase> phases, boolean repeat) {
         do {
             for (AnimationPhase phase : phases) {
                 currentPhase = phase;
-                logger.info("Starting phase: {}", phase.getImageEffects());
+                logger.info("Starting phase: {}", phase.getName());
 
                 List<AnimationFrame> animationFrames = effectFactory.createEffectsForPhase(phase);
                 phaseExecutor.executePhase(phase, animationFrames);
@@ -100,7 +100,6 @@ public class AnimationFactory implements AnimationStatus {
         shutdownScheduler();
     }
 
-    // Ожидание завершения фазы с таймером
     private void waitForPhaseCompletion(long duration) {
         synchronized (this) {
             try {
@@ -120,7 +119,6 @@ public class AnimationFactory implements AnimationStatus {
         }
     }
 
-    // Завершение работы таймера
     public void shutdownScheduler() {
         scheduler.shutdown();
     }
@@ -136,16 +134,18 @@ public class AnimationFactory implements AnimationStatus {
         logger.debug("Phase incremented to: {}", phaseNum);
     }
 
-    // Проверка на наличие загруженной конфигурации
     private void validateConfig() {
         if (config == null) {
             throw new IllegalStateException("AnimationConfig must be loaded before creating animation");
         }
     }
 
-    // Геттеры для тестирования
     public JLabel getAnimLabel() {
         return animLabel;
+    }
+
+    public JLabel getTextLabel() {
+        return textLabel;
     }
 
     public ImageWorks getImageWorks() {

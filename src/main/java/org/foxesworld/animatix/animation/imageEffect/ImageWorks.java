@@ -2,7 +2,7 @@ package org.foxesworld.animatix.animation.imageEffect;
 
 import org.apache.commons.math3.util.FastMath;
 import org.foxesworld.animatix.AnimationFactory;
-import org.foxesworld.animatix.animation.imageEffect.effects.resize.ResizeType;
+import org.foxesworld.animatix.animation.imageEffect.effects.resize.ResizeFrame;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -19,16 +19,16 @@ public class ImageWorks {
         this.image = image;
     }
 
-    public BufferedImage resizeImage(int targetWidth, int targetHeight, ResizeType resizeType) {
+    public BufferedImage resizeImage(int targetWidth, int targetHeight, ResizeFrame.ResizeType resizeType) {
         int newWidth = targetWidth;
         int newHeight = targetHeight;
 
-        if (resizeType == ResizeType.SCALE_TO_FIT || resizeType == ResizeType.SCALE_TO_COVER) {
+        if (resizeType == ResizeFrame.ResizeType.SCALE_TO_FIT || resizeType == ResizeFrame.ResizeType.SCALE_TO_COVER) {
             float originalAspect = (float) image.getWidth() / image.getHeight();
             float targetAspect = (float) targetWidth / targetHeight;
 
-            if ((resizeType == ResizeType.SCALE_TO_FIT && originalAspect > targetAspect) ||
-                    (resizeType == ResizeType.SCALE_TO_COVER && originalAspect < targetAspect)) {
+            if ((resizeType == ResizeFrame.ResizeType.SCALE_TO_FIT && originalAspect > targetAspect) ||
+                    (resizeType == ResizeFrame.ResizeType.SCALE_TO_COVER && originalAspect < targetAspect)) {
                 newWidth = (int) (targetHeight * originalAspect);
                 newHeight = targetHeight;
             } else {
@@ -96,14 +96,24 @@ public class ImageWorks {
     public BufferedImage applyPixelDecayEffect(BufferedImage image, float alpha, int pixelDecaySpeed) {
         BufferedImage result = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = result.createGraphics();
+
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
 
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                if (Math.random() > alpha) {
-                    result.setRGB(x, y, 0);
+                // Random pixel removement
+                if (Math.random() < alpha) {
+                    int pixel = image.getRGB(x, y);
+                    int a = (pixel >> 24) & 0xFF; // Alpha
+                    int r = (pixel >> 16) & 0xFF; // Red
+                    int gValue = (pixel >> 8) & 0xFF; // Green
+                    int b = pixel & 0xFF; // Blue
+                    a = Math.max(0, a - pixelDecaySpeed);
+
+                    int newPixel = (a << 24) | (r << 16) | (gValue << 8) | b;
+                    result.setRGB(x, y, newPixel);
                 } else {
-                    result.setRGB(x, y, image.getRGB(x, y));
+                    result.setRGB(x, y, 0); // full transparent
                 }
             }
         }
@@ -111,6 +121,8 @@ public class ImageWorks {
         g.dispose();
         return result;
     }
+
+
 
     public static BufferedImage getImageFromStream(String path) {
         BufferedImage image = null;

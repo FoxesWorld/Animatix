@@ -1,6 +1,6 @@
 package org.foxesworld.animatix.animation.imageEffect.effects;
 
-public enum Effects {
+public enum ImageEffects {
     RESIZE,
     MOVE,
     FADE,
@@ -9,9 +9,9 @@ public enum Effects {
     CRACK,
     COLOR_FADE,
     ROTATE;
-    public static Effects fromString(String effect) {
+    public static ImageEffects fromString(String effect) {
         try {
-            return Effects.valueOf(effect.toUpperCase());
+            return ImageEffects.valueOf(effect.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid effect type: " + effect);
         }

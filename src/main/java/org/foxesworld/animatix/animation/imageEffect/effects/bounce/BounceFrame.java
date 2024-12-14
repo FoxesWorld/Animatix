@@ -8,7 +8,15 @@ import javax.swing.*;
 import java.awt.image.BufferedImage;
 
 public class BounceFrame extends AnimationFrame {
+    public BounceFrame(AnimationFactory animationFactory) {
+        super(animationFactory);
+    }
 
+    @Override
+    public void update(float progress) {
+
+    }
+/*
     private boolean bounce;
     private double startX, endX, startY, endY;
     private double startWidth, endWidth, startHeight, endHeight;
@@ -48,4 +56,5 @@ public class BounceFrame extends AnimationFrame {
         label.setIcon(new ImageIcon(resizedImage));
         imageWorks.setImage(resizedImage);
     }
+    */
 }
