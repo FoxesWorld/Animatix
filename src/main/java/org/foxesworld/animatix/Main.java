@@ -1,17 +1,10 @@
 package org.foxesworld.animatix;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import javax.swing.*;
 
 public class Main {
-    public static Logger LOGGER;
 
     public static void main(String[] args) {
-        System.setProperty("log.dir", System.getProperty("user.dir"));
-        System.setProperty("log.level", "DEBUG");
-        LOGGER = LogManager.getLogger(Main.class);
 
             AnimationFactory animationFactory = new AnimationFactory("animatix.json");
 

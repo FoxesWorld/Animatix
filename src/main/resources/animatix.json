@@ -24,34 +24,26 @@
       }
     },
     {
-      "imageEffects": ["crack"],
-      "name": "resize",
+      "imageEffects": ["borderHighlight"],
+      "name": "borderHighlight",
       "duration": 1200,
       "effectParams": {
-        "crack": {
-          "numCracks": 30
-        }
+        "borderHighlight":
+          {
+            "borderColor": "#FF5733" ,
+            "shadowColor": "#FFFFFF" ,
+            "borderSize": 1,
+            "shadowSize": 9
+          }
       }
     },
     {
-      "imageEffects": ["decay", "move"],
-      "name": "move to",
-      "duration": 1000,
-      "effectParams": {
-        "move": {
-          "startX": 100,
-          "startY": 100,
-          "endX": 190,
-          "endY": 50,
-          "traceColor": "gray",
-          "traceThickness": 2
-        },
-        "rotate": {
-          "startAngle": 0,
-          "endAngle": 180
-        }
-      }
+      "imageEffects": ["crack"],
+      "duration": 1000
+    },
+    {
+      "imageEffects": ["decay"],
+      "duration": 1000
     }
-
   ]
 }

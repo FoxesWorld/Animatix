@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Properties>
-        <Property name="logDir">${sys:log.dir}</Property>
+        <Property name="logDir"></Property>
     </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
@@ -14,7 +14,7 @@
         </File>
     </Appenders>
     <Loggers>
-        <Root level="${sys:log.level}">
+        <Root level="info">
             <AppenderRef ref="Console" />
             <AppenderRef ref="File" />
         </Root>

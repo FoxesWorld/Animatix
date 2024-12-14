@@ -45,7 +45,7 @@ public class RotateFrame extends AnimationFrame {
                     imageWorks.setImage((BufferedImage) rotatedImage);
                 }
             } catch (Exception e) {
-                Main.LOGGER.error("Error during rotation: {}", e.getMessage());
+                AnimationFactory.logger.error("Error during rotation: {}", e.getMessage());
             }
         });
     }
@@ -55,7 +55,7 @@ public class RotateFrame extends AnimationFrame {
         super.initializeParams(params, effectName);
 
         if (Float.isNaN(startAngle) || Float.isNaN(endAngle)) {
-            Main.LOGGER.error("Invalid parameters for RotateFrame: startAngle={}, endAngle={}", startAngle, endAngle);
+            AnimationFactory.logger.error("Invalid parameters for RotateFrame: startAngle={}, endAngle={}", startAngle, endAngle);
             throw new IllegalArgumentException("Parameters 'startAngle' and 'endAngle' must be valid float values.");
         }
     }

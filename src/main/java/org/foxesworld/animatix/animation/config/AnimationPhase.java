@@ -1,5 +1,6 @@
 package org.foxesworld.animatix.animation.config;
 
+import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.Main;
 
 import java.util.List;
@@ -64,13 +65,13 @@ public class AnimationPhase {
      */
     public <T> T getEffectParam(String effectName, String paramName, Class<T> clazz) {
         if (effectParams == null || !effectParams.containsKey(effectName)) {
-            Main.LOGGER.warn("Effect name not found: " + effectName);
+            AnimationFactory.logger.warn("Effect name not found: " + effectName);
             return null;
         }
 
         Map<String, Object> effectMap = effectParams.get(effectName);
         if (!effectMap.containsKey(paramName)) {
-            Main.LOGGER.warn("Parameter name not found: " + paramName + " for effect: " + effectName);
+            AnimationFactory.logger.warn("Parameter name not found: " + paramName + " for effect: " + effectName);
             return null;
         }
 
@@ -87,7 +88,7 @@ public class AnimationPhase {
             return clazz.cast(value);
         }
 
-        Main.LOGGER.error("Type mismatch for parameter: " + paramName + " (expected: " + clazz.getSimpleName() + ", found: " + value.getClass().getSimpleName() + ")");
+        AnimationFactory.logger.error("Type mismatch for parameter: " + paramName + " (expected: " + clazz.getSimpleName() + ", found: " + value.getClass().getSimpleName() + ")");
         return null;
     }
 

@@ -3,11 +3,11 @@ package org.foxesworld.animatix.animation.imageEffect.effects;
 public enum ImageEffects {
     RESIZE,
     MOVE,
-    FADE,
     DECAY,
     BOUNCE,
     CRACK,
     COLOR_FADE,
+    BORDERHIGHLIGHT,
     ROTATE;
     public static ImageEffects fromString(String effect) {
         try {

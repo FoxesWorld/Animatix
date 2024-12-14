@@ -67,8 +67,14 @@ shadowJar {
     archiveClassifier.set('')
     destinationDirectory.set(file("${buildDir}/libs/shadow"))
     archiveFileName.set("${project.name}-${project.version}-all.jar")
-}
 
+    // Исключаем Log4j из финальной сборки
+    dependencies {
+        exclude(dependency('org.apache.logging.log4j:log4j-api'))
+        exclude(dependency('org.apache.logging.log4j:log4j-core'))
+        exclude(dependency('org.apache.logging.log4j:log4j-slf4j-impl'))
+    }
+}
 test {
     useJUnitPlatform()
 }

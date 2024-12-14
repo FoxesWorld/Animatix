@@ -48,7 +48,7 @@ public class ResizeFrame extends AnimationFrame {
 
         // Убедимся, что resizeType правильно задан
         if (resizeType == null) {
-            Main.LOGGER.warn("resizeType is not set. Using default value: SCALE_TO_COVER");
+            AnimationFactory.logger.warn("resizeType is not set. Using default value: SCALE_TO_COVER");
             resizeType = "SCALE_TO_COVER";
         }
     }

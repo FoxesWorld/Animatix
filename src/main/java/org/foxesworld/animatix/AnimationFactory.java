@@ -1,5 +1,6 @@
 package org.foxesworld.animatix;
 
+import org.foxesworld.animatix.animation.area.KWindow;
 import org.foxesworld.animatix.animation.effect.AnimationEffectFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
 import org.foxesworld.animatix.animation.phase.AnimationPhaseExecutor;
@@ -8,8 +9,9 @@ import org.foxesworld.animatix.animation.config.AnimationPhase;
 import org.foxesworld.animatix.animation.AnimationStatus;
 import org.foxesworld.animatix.animation.config.AnimationConfig;
 import org.foxesworld.animatix.animation.imageEffect.ImageWorks;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import javax.swing.*;
 import java.io.InputStream;
@@ -22,7 +24,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class AnimationFactory implements AnimationStatus {
 
-    private static final Logger logger = LoggerFactory.getLogger(AnimationFactory.class);
+    public static Logger logger;
     private final ScheduledExecutorService scheduler;
     private final AnimationConfigLoader configLoader;
     private final AnimationEffectFactory effectFactory;
@@ -40,6 +42,10 @@ public class AnimationFactory implements AnimationStatus {
                 new AnimationConfigLoader(),
                 new AnimationEffectFactory(),
                 new AnimationPhaseExecutor());
+        System.setProperty("log.dir", System.getProperty("user.dir"));
+        System.setProperty("log.level", "DEBUG");
+        logger = LogManager.getLogger(Main.class);
+
         this.loadConfig(configPath);
     }
 
@@ -51,7 +57,7 @@ public class AnimationFactory implements AnimationStatus {
             logger.info("Loading animation config...");
             this.config = configLoader.loadConfig(inputStream);
         } catch (Exception e) {
-            Main.LOGGER.error("Failed to initialize animation factory", e);
+            AnimationFactory.logger.error("Failed to initialize animation factory", e);
         }
     }
 
@@ -68,20 +74,20 @@ public class AnimationFactory implements AnimationStatus {
         this.phaseExecutor.setAnimationFactory(this);
     }
 
-    public void createAnimation(JFrame frame) {
+    public void createAnimation(Object window) {
         validateConfig();
 
         this.imageWorks = new ImageWorks(ImageWorks.getImageFromStream(config.getImagePath()));
         if (animLabel == null) {
             animLabel = new JLabel(new ImageIcon(imageWorks.getImage()));
             animLabel.setBounds(this.config.getBounds());
-            frame.add(animLabel);
+            addLabelToWindow(window, animLabel);
         }
 
         if (textLabel == null) {
             textLabel = new JLabel("", SwingConstants.CENTER);
-            textLabel.setBounds(0, 200, frame.getWidth(), 50);
-            frame.add(textLabel);
+            textLabel.setBounds(0, 200, getWindowWidth(window), 50);
+            addLabelToWindow(window, textLabel);
         }
 
         List<AnimationPhase> phases = config.getPhases();
@@ -90,12 +96,28 @@ public class AnimationFactory implements AnimationStatus {
         new Thread(() -> executeAnimation(phases, repeat)).start();
     }
 
-    public void setAnimLabel(JLabel animLabel) {
-        this.animLabel = animLabel;
+    private void addLabelToWindow(Object window, JLabel label) {
+        if (window instanceof JFrame) {
+            ((JFrame) window).add(label);
+        } else if (window instanceof KWindow) {
+            ((KWindow) window).add(label);
+        } else if (window instanceof JWindow) {
+            ((JWindow) window).add(label);
+        } else {
+            throw new IllegalArgumentException("Unsupported window type: " + window.getClass().getName());
+        }
     }
 
-    public void setTextLabel(JLabel textLabel) {
-        this.textLabel = textLabel;
+    private int getWindowWidth(Object window) {
+        if (window instanceof JFrame) {
+            return ((JFrame) window).getWidth();
+        } else if (window instanceof KWindow) {
+            return ((KWindow) window).getWidth();
+        } else if (window instanceof JWindow) {
+            return ((JWindow) window).getWidth();
+        } else {
+            throw new IllegalArgumentException("Unsupported window type: " + window.getClass().getName());
+        }
     }
 
     private void executeAnimation(List<AnimationPhase> phases, boolean repeat) {

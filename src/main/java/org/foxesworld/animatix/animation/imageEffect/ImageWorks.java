@@ -20,13 +20,21 @@ public class ImageWorks {
     }
 
     public BufferedImage resizeImage(int targetWidth, int targetHeight, ResizeFrame.ResizeType resizeType) {
+        // Получаем исходные размеры изображения
+        int originalWidth = image.getWidth();
+        int originalHeight = image.getHeight();
+
+        // Рассчитываем исходные и целевые соотношения сторон
+        float originalAspect = (float) originalWidth / originalHeight;
+        float targetAspect = (float) targetWidth / targetHeight;
+
+        // Определяем размеры для нового изображения с учетом типа ресайза
         int newWidth = targetWidth;
         int newHeight = targetHeight;
-        float originalAspect = (float) image.getWidth() / image.getHeight();
-        float targetAspect = (float) targetWidth / targetHeight;
 
         switch (resizeType) {
             case SCALE_TO_FIT -> {
+                // Масштабируем так, чтобы изображение полностью помещалось в целевые размеры (не выходило за границы)
                 if (originalAspect > targetAspect) {
                     newWidth = targetWidth;
                     newHeight = (int) (targetWidth / originalAspect);
@@ -36,6 +44,7 @@ public class ImageWorks {
                 }
             }
             case SCALE_TO_COVER -> {
+                // Масштабируем так, чтобы изображение полностью покрывало целевую область (могут быть обрезки)
                 if (originalAspect > targetAspect) {
                     newHeight = targetHeight;
                     newWidth = (int) (targetHeight * originalAspect);
@@ -45,19 +54,31 @@ public class ImageWorks {
                 }
             }
             case STRETCH -> {
+                // Просто растягиваем изображение по целевым размерам
                 newWidth = targetWidth;
                 newHeight = targetHeight;
             }
             default -> throw new IllegalArgumentException("Unsupported ResizeType: " + resizeType);
         }
 
+        // Если новое изображение меньше исходного по размеру, не изменяем его (используем оригинал)
+        if (newWidth >= originalWidth && newHeight >= originalHeight) {
+            // В случае уменьшения изображения, возвращаем оригинал, чтобы избежать размытия
+            return image;
+        }
+
+        // Создаем новое изображение для ресайза
         BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = resizedImage.createGraphics();
+
+        // Устанавливаем более качественные параметры интерполяции для уменьшения или растягивания изображения
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         g.drawImage(image, 0, 0, newWidth, newHeight, null);
         g.dispose();
+
         return resizedImage;
     }
+
 
     public double applyBounceEffect(double startValue, double endValue, double elapsedTime, double duration, boolean bounce) {
         double progress = elapsedTime / duration;
@@ -82,7 +103,7 @@ public class ImageWorks {
 
         long endTime = System.nanoTime();
         double elapsedTimeInSeconds = (endTime - startTime) / 1_000_000_000.0;
-        Main.LOGGER.info("Rotation effect applied in {} seconds.", elapsedTimeInSeconds);
+        AnimationFactory.logger.info("Rotation effect applied in {} seconds.", elapsedTimeInSeconds);
         return rotatedImage;
     }
 

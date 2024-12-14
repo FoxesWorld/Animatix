@@ -47,13 +47,13 @@ public abstract class AnimationFrame implements Runnable {
             try {
                 updateFrame();
             } catch (Exception ex) {
-                Main.LOGGER.error("Error during animation frame update", ex);
+                AnimationFactory.logger.error("Error during animation frame update", ex);
                 stopAnimation();
             }
         });
 
         timer.start();
-        Main.LOGGER.info("Animation started for phase: {}", animationFactory.getPhaseNum());
+        AnimationFactory.logger.info("Animation started for phase: {}", animationFactory.getPhaseNum());
     }
 
     private void updateFrame() {
@@ -65,14 +65,14 @@ public abstract class AnimationFrame implements Runnable {
             try {
                 update(progress);
             } catch (Exception ex) {
-                Main.LOGGER.error("Error in UI update", ex);
+                AnimationFactory.logger.error("Error in UI update", ex);
             }
         });
 
         if (elapsedTime >= duration) {
             stopAnimation();
             SwingUtilities.invokeLater(() -> update(1.0f));
-            Main.LOGGER.info("Animation completed for phase: {}", animationFactory.getPhaseNum());
+            AnimationFactory.logger.info("Animation completed for phase: {}", animationFactory.getPhaseNum());
             animationFactory.incrementPhase();
 
             if (animationFactory instanceof AnimationStatus) {
@@ -120,7 +120,7 @@ public abstract class AnimationFrame implements Runnable {
                 // Устанавливаем значение в поле
                 setFieldValue(field, value);
             } catch (Exception e) {
-                Main.LOGGER.error("Error initializing parameter: {}", param, e);
+                AnimationFactory.logger.error("Error initializing parameter: {}", param, e);
             }
         }
     }

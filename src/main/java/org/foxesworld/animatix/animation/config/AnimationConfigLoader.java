@@ -1,6 +1,7 @@
 package org.foxesworld.animatix.animation.config;
 
 import com.google.gson.Gson;
+import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.Main;
 
 import java.io.InputStream;
@@ -15,7 +16,7 @@ public class AnimationConfigLoader {
         try (InputStream stream = inputStream) {
             Gson gson = new Gson();
             AnimationConfig config = gson.fromJson(new java.io.InputStreamReader(stream), AnimationConfig.class);
-            Main.LOGGER.info("Loaded animation config: {}", config);
+            AnimationFactory.logger.info("Loaded animation config: {}", config);
             return config;
         } catch (Exception e) {
             throw new RuntimeException("Failed to load animation config from InputStream", e);

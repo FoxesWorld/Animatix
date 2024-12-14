@@ -4,6 +4,7 @@ import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
 import org.foxesworld.animatix.animation.config.AnimationPhase;
 import org.foxesworld.animatix.animation.imageEffect.effects.*;
+import org.foxesworld.animatix.animation.imageEffect.effects.borderHighlight.BorderHighlightFrame;
 import org.foxesworld.animatix.animation.imageEffect.effects.bounce.BounceFrame;
 import org.foxesworld.animatix.animation.imageEffect.effects.colorFade.ColorFadeFrame;
 import org.foxesworld.animatix.animation.imageEffect.effects.crackFrame.CrackFrame;
@@ -35,7 +36,8 @@ public class AnimationEffectFactory {
                 case BOUNCE -> frames.add(new BounceFrame(animationFactory));
                 case DECAY -> frames.add(new DecayFrame(animationFactory));
                 case CRACK -> frames.add(new CrackFrame(animationFactory));
-                case COLOR_FADE -> frames.add(new ColorFadeFrame(animationFactory, Color.WHITE, Color.RED)); // Пример для эффекта Color Fade
+                case COLOR_FADE -> frames.add(new ColorFadeFrame(animationFactory));
+                case BORDERHIGHLIGHT ->  frames.add(new BorderHighlightFrame(animationFactory));
                 default -> throw new UnsupportedOperationException("Effect type not supported: " + effectType);
             }
         }

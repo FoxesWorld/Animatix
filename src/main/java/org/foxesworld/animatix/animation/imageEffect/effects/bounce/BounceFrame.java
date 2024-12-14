@@ -35,7 +35,7 @@ public class BounceFrame extends AnimationFrame {
 
     @Override
     public void update(float progress) {
-        Main.LOGGER.info(progress);
+        AnimationFactory.logger.info(progress);
         double newX = imageWorks.applyBounceEffect(startX, endX, progress * duration, duration, bounce);
         double newY = imageWorks.applyBounceEffect(startY, endY, progress * duration, duration, bounce);
 
