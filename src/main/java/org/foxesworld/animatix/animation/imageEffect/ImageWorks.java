@@ -7,7 +7,6 @@ import org.foxesworld.animatix.animation.imageEffect.effects.resize.ResizeFrame;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.Objects;
@@ -82,10 +81,10 @@ public class ImageWorks {
         }
 
         long endTime = System.nanoTime();
-        Main.LOGGER.info("Rotation effect applied in {} nanoseconds.", endTime - startTime);
+        double elapsedTimeInSeconds = (endTime - startTime) / 1_000_000_000.0;
+        Main.LOGGER.info("Rotation effect applied in {} seconds.", elapsedTimeInSeconds);
         return rotatedImage;
     }
-
 
     public BufferedImage applyPixelDecayEffect(BufferedImage image, float alpha, int pixelDecaySpeed) {
         BufferedImage result = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -131,7 +130,6 @@ public class ImageWorks {
 
     public void dispose() {
         if (image != null) {
-            image.flush();
             image = null;
         }
         System.gc();

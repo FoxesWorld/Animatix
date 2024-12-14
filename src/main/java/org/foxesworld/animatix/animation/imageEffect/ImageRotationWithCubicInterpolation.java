@@ -66,7 +66,7 @@ public class ImageRotationWithCubicInterpolation {
         // Clear old image resources if no longer needed
         image.flush();
 
-        return rotatedImage;
+        return (BufferedImage) rotatedImage;
     }
 
 

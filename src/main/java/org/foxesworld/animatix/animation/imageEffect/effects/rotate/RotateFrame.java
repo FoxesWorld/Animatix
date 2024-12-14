@@ -36,13 +36,13 @@ public class RotateFrame extends AnimationFrame {
         executorService.submit(() -> {
             try {
                 // Освобождение ресурсов после поворота
-                BufferedImage rotatedImage = imageWorks.applyRotationEffect(currentAngle, imageWorks::dispose);
+                BufferedImage rotatedImage = imageWorks.applyRotationEffect(currentAngle, getAnimationFactory()::dispose);
 
                 if (rotatedImage != null) {
                     SwingUtilities.invokeLater(() -> {
                         label.setIcon(new ImageIcon(rotatedImage));
                     });
-                    imageWorks.setImage(rotatedImage);
+                    imageWorks.setImage((BufferedImage) rotatedImage);
                 }
             } catch (Exception e) {
                 Main.LOGGER.error("Error during rotation: {}", e.getMessage());

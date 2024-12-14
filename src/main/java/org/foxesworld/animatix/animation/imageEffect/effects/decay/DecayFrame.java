@@ -34,6 +34,6 @@ public class DecayFrame extends AnimationFrame {
         float alpha = (float) (startAlpha + progress * (endAlpha - startAlpha));
         BufferedImage decayedImage = imageWorks.applyPixelDecayEffect(imageWorks.getImage(), alpha, decaySpeed);
         label.setIcon(new ImageIcon(decayedImage));
-        imageWorks.setImage(decayedImage);
+        imageWorks.setImage((BufferedImage) decayedImage);
     }
 }

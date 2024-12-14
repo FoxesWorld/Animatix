@@ -18,17 +18,10 @@ public class AnimationPhaseExecutor {
         this.animationFactory = animationFactory;
     }
 
-    /**
-     * Выполняет анимацию для указанной фазы.
-     *
-     * @param phase            текущая анимационная фаза
-     * @param animationFrames  список фреймов анимации для выполнения
-     */
     public void executePhase(AnimationPhase phase, List<AnimationFrame> animationFrames) {
         logger.info("Executing phase: {}", phase.getName());
         CountDownLatch latch = new CountDownLatch(animationFrames.size());
 
-        // Запускаем все фреймы в отдельных потоках
         for (AnimationFrame animationFrame : animationFrames) {
             new Thread(() -> {
                 try {
@@ -42,7 +35,6 @@ public class AnimationPhaseExecutor {
             }).start();
         }
 
-        // Ждём завершения всех фреймов
         try {
             latch.await();
             logger.info("Phase {} completed", phase.getName());
@@ -51,13 +43,9 @@ public class AnimationPhaseExecutor {
             logger.warn("Phase execution interrupted: {}", phase.getName());
         }
 
-        // Уведомляем фабрику о завершении фазы
         notifyPhaseCompleted();
     }
 
-    /**
-     * Уведомляет фабрику о завершении текущей фазы.
-     */
     private void notifyPhaseCompleted() {
         logger.debug("Notifying factory about phase completion");
         animationFactory.onPhaseCompleted();

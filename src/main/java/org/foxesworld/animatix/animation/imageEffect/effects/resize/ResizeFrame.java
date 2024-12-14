@@ -39,7 +39,7 @@ public class ResizeFrame extends AnimationFrame {
         BufferedImage resizedImage = imageWorks.resizeImage(newWidth, newHeight, ResizeType.valueOf(resizeType));
         label.setIcon(new ImageIcon(resizedImage));
         label.setSize(newWidth, newHeight);
-        imageWorks.setImage(resizedImage);
+        imageWorks.setImage((BufferedImage) resizedImage);
     }
 
     @Override
