@@ -17,8 +17,8 @@
         "resize": {
           "startWidth": 290,
           "startHeight": 290,
-          "endWidth": 50,
-          "endHeight": 50,
+          "endWidth": 100,
+          "endHeight": 100,
           "resizeType": "SCALE_TO_FIT"
         }
       }
@@ -26,10 +26,15 @@
     {
       "imageEffects": ["crack"],
       "name": "resize",
-      "duration": 900
+      "duration": 1200,
+      "effectParams": {
+        "crack": {
+          "numCracks": 30
+        }
+      }
     },
     {
-      "imageEffects": ["decay"],
+      "imageEffects": ["decay", "move"],
       "name": "move to",
       "duration": 1000,
       "effectParams": {
@@ -37,7 +42,9 @@
           "startX": 100,
           "startY": 100,
           "endX": 190,
-          "endY": 50
+          "endY": 50,
+          "traceColor": "gray",
+          "traceThickness": 2
         },
         "rotate": {
           "startAngle": 0,
@@ -45,5 +52,6 @@
         }
       }
     }
+
   ]
 }

@@ -8,15 +8,22 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class CrackFrame extends AnimationFrame {
 
     private List<Crack> cracks;
     private Random random;
+    private int numCracks = 0;
+    private final Map<String, Object>[] params = new Map[]{
+            createParam("numCracks", "numCracks", Integer.class, 10)
+    };
+    private final String effectName = "crack";
 
     public CrackFrame(AnimationFactory animationFactory) {
         super(animationFactory);
+        initializeParams(params, effectName);
         cracks = new ArrayList<>();
         random = new Random();
     }
@@ -36,7 +43,7 @@ public class CrackFrame extends AnimationFrame {
     }
 
     private void generateCracks() {
-        int numCracks = 5 + random.nextInt(5);
+        //int numCracks = 5 + random.nextInt(5);
         for (int i = 0; i < numCracks; i++) {
             cracks.add(new Crack(random.nextInt(label.getWidth()), random.nextInt(label.getHeight())));
         }
@@ -96,4 +103,10 @@ public class CrackFrame extends AnimationFrame {
             g.drawLine(startX, startY, x2, y2);
         }
     }
+
+    @Override
+    protected void initializeParams(Map<String, Object>[] params, String effectName) {
+        super.initializeParams(params, effectName);
+    }
+
 }
