@@ -28,6 +28,7 @@ public class BorderHighlightFrame extends AnimationFrame {
 
     public BorderHighlightFrame(AnimationFactory animationFactory) {
         super(animationFactory);
+        this.label = animationFactory.getAnimLabels().get(animationFactory.getLabelIndex());
         this.originalImage = animationFactory.getImageWorks().getImage();
         initializeParams(params, effectName);
     }

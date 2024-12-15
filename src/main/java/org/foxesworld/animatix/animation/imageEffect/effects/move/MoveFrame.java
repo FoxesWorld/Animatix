@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 public class MoveFrame extends AnimationFrame {
-
     private final Map<String, Object>[] params = new Map[] {
             createParam("startX", "startX", Integer.class, 0),
             createParam("startY", "startY", Integer.class, 0),
@@ -29,6 +28,8 @@ public class MoveFrame extends AnimationFrame {
 
     public MoveFrame(AnimationFactory animationFactory) {
         super(animationFactory);
+        System.out.println(animationFactory.getImageWorks().getLabelIndex());
+        this.label = animationFactory.getAnimLabels().get(animationFactory.getImageWorks().getLabelIndex());
         pathPoints = new ArrayList<>();
         initializeParams(params, effectName);
     }

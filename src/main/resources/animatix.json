@@ -1,49 +1,105 @@
 {
-  "animationName": "imageAnimation",
-  "imagePath": "img/diamond.png",
-  "repeat": true,
-  "bounds": {
-    "x": 100,
-    "y": 100,
-    "width": 350,
-    "height": 350
-  },
-  "phases": [
+  "images": [
     {
-      "imageEffects": ["resize"],
-      "name": "resize",
-      "duration": 800,
-      "effectParams": {
-        "resize": {
-          "startWidth": 290,
-          "startHeight": 290,
-          "endWidth": 100,
-          "endHeight": 100,
-          "resizeType": "SCALE_TO_FIT"
-        }
-      }
-    },
-    {
-      "imageEffects": ["borderHighlight"],
-      "name": "borderHighlight",
-      "duration": 1200,
-      "effectParams": {
-        "borderHighlight":
-          {
-            "borderColor": "#FF5733" ,
-            "shadowColor": "#FFFFFF" ,
-            "borderSize": 1,
-            "shadowSize": 9
+      "animationName": "imageAnimation" ,
+      "imagePath": "img/diamond.png" ,
+      "repeat": true ,
+      "bounds": {
+        "x": 100 ,
+        "y": 100 ,
+        "width": 350 ,
+        "height": 350
+      } ,
+      "phases": [
+        {
+          "imageEffects": [
+            "resize"
+          ] ,
+          "name": "resize" ,
+          "duration": 800 ,
+          "effectParams": {
+            "resize": {
+              "startX": 1000 ,
+              "startY": 1000 ,
+              "exdX": 240 ,
+              "endY": 240
+            }
           }
-      }
+        }
+      ]
     },
     {
-      "imageEffects": ["crack"],
-      "duration": 1000
+      "animationName": "imageAnimation" ,
+      "imagePath": "img/fox.png" ,
+      "repeat": true,
+      "bounds": {
+        "x": 140,
+        "y": 140,
+        "width": 350,
+        "height": 350
+      } ,
+      "phases": [
+        {
+          "imageEffects": [
+            "resize"
+          ] ,
+          "name": "resize" ,
+          "duration": 800 ,
+          "effectParams": {
+            "resize": {
+              "startWidth": 290 ,
+              "startHeight": 290 ,
+              "endWidth": 290 ,
+              "endHeight": 150 ,
+              "resizeType": "SCALE_TO_FIT"
+            }
+          }
+        },
+        {
+          "imageEffects": [
+            "move"
+          ] ,
+          "name": "move" ,
+          "duration": 12000 ,
+          "effectParams": {
+            "move": {
+              "startX": 290 ,
+              "startY": 290 ,
+              "endX": 290 ,
+              "endY": 150
+            }
+          }
+        }
+      ]
     },
     {
-      "imageEffects": ["decay"],
-      "duration": 1000
+      "animationName": "imageAnimation" ,
+      "imagePath": "img/gold.png" ,
+      "repeat": true,
+      "bounds": {
+        "x": 140,
+        "y": 140,
+        "width": 512,
+        "height": 512
+      } ,
+      "phases": [
+        {
+          "imageEffects": [
+            "resize"
+          ] ,
+          "name": "resize" ,
+          "duration": 800 ,
+          "effectParams": {
+            "resize": {
+              "startWidth": 290 ,
+              "startHeight": 290 ,
+              "endWidth": 256 ,
+              "endHeight": 256 ,
+              "resizeType": "SCALE_TO_FIT"
+            }
+          }
+        }
+      ]
     }
   ]
 }

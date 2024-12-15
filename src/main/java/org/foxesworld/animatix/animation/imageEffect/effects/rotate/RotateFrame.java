@@ -1,6 +1,5 @@
 package org.foxesworld.animatix.animation.imageEffect.effects.rotate;
 
-import org.foxesworld.animatix.Main;
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
 
@@ -26,6 +25,7 @@ public class RotateFrame extends AnimationFrame {
 
     public RotateFrame(AnimationFactory animationFactory) {
         super(animationFactory);
+        this.label = animationFactory.getImageWorks().getLabel();
         initializeParams(params, effectName);
     }
 
@@ -42,7 +42,7 @@ public class RotateFrame extends AnimationFrame {
                     SwingUtilities.invokeLater(() -> {
                         label.setIcon(new ImageIcon(rotatedImage));
                     });
-                    imageWorks.setImage((BufferedImage) rotatedImage);
+                    imageWorks.setImage(rotatedImage);
                 }
             } catch (Exception e) {
                 AnimationFactory.logger.error("Error during rotation: {}", e.getMessage());

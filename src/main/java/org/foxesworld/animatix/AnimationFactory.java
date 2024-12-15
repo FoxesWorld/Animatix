@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,8 @@ public class AnimationFactory implements AnimationStatus {
     private final AnimationPhaseExecutor phaseExecutor;
     private int phaseNum = 0;
     private AnimationPhase currentPhase;
-    private JLabel animLabel, textLabel;
+    private List<JLabel> animLabels = new ArrayList<>();
+    private int labelIndex = 0;
     private ImageWorks imageWorks;
     private AnimationConfig config;
     private boolean isPaused = false;
@@ -49,7 +51,7 @@ public class AnimationFactory implements AnimationStatus {
         this.loadConfig(configPath);
     }
 
-    private void loadConfig(String configPath){
+    private void loadConfig(String configPath) {
         try (InputStream inputStream = Main.class.getClassLoader().getResourceAsStream(configPath)) {
             if (inputStream == null) {
                 throw new RuntimeException("Configuration file not found!");
@@ -76,24 +78,19 @@ public class AnimationFactory implements AnimationStatus {
 
     public void createAnimation(Object window) {
         validateConfig();
-
-        this.imageWorks = new ImageWorks(ImageWorks.getImageFromStream(config.getImagePath()));
-        if (animLabel == null) {
-            animLabel = new JLabel(new ImageIcon(imageWorks.getImage()));
-            animLabel.setBounds(this.config.getBounds());
+        for (AnimationConfig.ImageConfig imageConfig : config.getImages()) {
+            JLabel animLabel = new JLabel(new ImageIcon(ImageWorks.getImageFromStream(imageConfig.getImagePath())));
+            animLabel.setBounds(imageConfig.getBounds());
             addLabelToWindow(window, animLabel);
+            this.animLabels.add(animLabel);
+            this.imageWorks = new ImageWorks(animLabel, labelIndex);
+
+            for (AnimationPhase phase : imageConfig.getPhases()) {
+                new Thread(() -> executeAnimation(phase, imageConfig.getPhases().size(), imageConfig.isRepeat())).start();
+                incrementPhase();
+            }
+            labelIndex += 1;
         }
-
-        if (textLabel == null) {
-            textLabel = new JLabel("", SwingConstants.CENTER);
-            textLabel.setBounds(0, 200, getWindowWidth(window), 50);
-            addLabelToWindow(window, textLabel);
-        }
-
-        List<AnimationPhase> phases = config.getPhases();
-        boolean repeat = config.isRepeat();
-
-        new Thread(() -> executeAnimation(phases, repeat)).start();
     }
 
     private void addLabelToWindow(Object window, JLabel label) {
@@ -120,19 +117,15 @@ public class AnimationFactory implements AnimationStatus {
         }
     }
 
-    private void executeAnimation(List<AnimationPhase> phases, boolean repeat) {
+    private void executeAnimation(AnimationPhase phase, int phasesAmount, boolean isRepeat) {
         try {
             do {
-                for (AnimationPhase phase : phases) {
-                    currentPhase = phase;
-                    logger.info("Starting phase: {}", phase.getName());
-                    List<AnimationFrame> animationFrames = getOrCacheAnimationFrames(phase);
-                    phaseExecutor.executePhase(phase, animationFrames);
-
-                    waitForPhaseCompletion(phase.getDuration());
-                }
-                incrementPhase();
-            } while (repeat && phaseNum < config.getPhases().size());
+                currentPhase = phase;
+                logger.info("Starting phase: {}", phase.getName());
+                List<AnimationFrame> animationFrames = getOrCacheAnimationFrames(phase);
+                phaseExecutor.executePhase(phase, animationFrames);
+                waitForPhaseCompletion(phase.getDuration());
+            } while (isRepeat && phaseNum < phasesAmount);
             logger.info("Animation complete.");
         } catch (Exception e) {
             logger.error("Error during animation execution", e);
@@ -204,18 +197,22 @@ public class AnimationFactory implements AnimationStatus {
         scheduler.shutdown();
     }
 
-    public JLabel getAnimLabel() {
-        return animLabel;
+    public List<JLabel> getAnimLabels() {
+        return animLabels;
     }
-    public JLabel getTextLabel() {
-        return textLabel;
+
+    public int getLabelIndex() {
+        return labelIndex;
     }
+
     public ImageWorks getImageWorks() {
         return imageWorks;
     }
+
     public AnimationPhase getCurrentPhase() {
         return currentPhase;
     }
+
     public int getPhaseNum() {
         return phaseNum;
     }

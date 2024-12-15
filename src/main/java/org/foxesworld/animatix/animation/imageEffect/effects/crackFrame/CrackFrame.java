@@ -23,6 +23,7 @@ public class CrackFrame extends AnimationFrame {
 
     public CrackFrame(AnimationFactory animationFactory) {
         super(animationFactory);
+        this.label = animationFactory.getImageWorks().getLabel();
         initializeParams(params, effectName);
         cracks = new ArrayList<>();
         random = new Random();

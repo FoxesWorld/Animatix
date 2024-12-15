@@ -1,6 +1,5 @@
 package org.foxesworld.animatix.animation;
 
-import org.foxesworld.animatix.Main;
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.config.AnimationPhase;
 import org.foxesworld.animatix.animation.imageEffect.ImageWorks;
@@ -21,13 +20,13 @@ public abstract class AnimationFrame implements Runnable {
 
     protected final AnimationPhase phase;
     protected final ImageWorks imageWorks;
-    protected final JLabel label;
+    protected JLabel label;
 
     public AnimationFrame(AnimationFactory animationFactory) {
         this.animationFactory = animationFactory;
         this.phase = animationFactory.getCurrentPhase();
         this.imageWorks = animationFactory.getImageWorks();
-        this.label = animationFactory.getAnimLabel();
+        //this.label = animationFactory.getAnimLabels().get(imageWorks.getLabelIndex());
         this.duration = phase.getDuration();
     }
 

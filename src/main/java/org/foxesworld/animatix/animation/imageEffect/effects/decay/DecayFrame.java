@@ -22,6 +22,7 @@ public class DecayFrame extends AnimationFrame {
 
     public DecayFrame(AnimationFactory animationFactory) {
         super(animationFactory);
+        this.label = animationFactory.getImageWorks().getLabel();
         initializeParams(params, effectName);
     }
 

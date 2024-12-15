@@ -6,6 +6,7 @@ import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.imageEffect.effects.resize.ResizeFrame;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
@@ -14,9 +15,14 @@ import java.util.Objects;
 public class ImageWorks {
 
     private BufferedImage image;
+    private final  int labelIndex;
+    private JLabel label;
 
-    public ImageWorks(BufferedImage image) {
-        this.image = image;
+    public ImageWorks(JLabel label, int index) {
+        this.labelIndex = index;
+        this.label = label;
+        this.image = (BufferedImage) ((ImageIcon) label.getIcon()).getImage();
+
     }
 
     public BufferedImage resizeImage(int targetWidth, int targetHeight, ResizeFrame.ResizeType resizeType) {
@@ -154,5 +160,13 @@ public class ImageWorks {
             image = null;
         }
         System.gc();
+    }
+
+    public int getLabelIndex() {
+        return labelIndex;
+    }
+
+    public JLabel getLabel() {
+        return label;
     }
 }

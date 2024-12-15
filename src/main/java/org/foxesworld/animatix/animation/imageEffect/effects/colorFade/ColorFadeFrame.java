@@ -24,6 +24,7 @@ public class ColorFadeFrame extends AnimationFrame {
 
     public ColorFadeFrame(AnimationFactory animationFactory) {
         super(animationFactory);
+        this.label = animationFactory.getImageWorks().getLabel();
         initializeParams(params, effectName);
     }
 

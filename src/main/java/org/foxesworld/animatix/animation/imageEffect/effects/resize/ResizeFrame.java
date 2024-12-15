@@ -26,6 +26,7 @@ public class ResizeFrame extends AnimationFrame {
 
     public ResizeFrame(AnimationFactory animationFactory) {
         super(animationFactory);
+        this.label = animationFactory.getImageWorks().getLabel();
         initializeParams(params, effectName);
     }
 
@@ -39,7 +40,7 @@ public class ResizeFrame extends AnimationFrame {
         BufferedImage resizedImage = imageWorks.resizeImage(newWidth, newHeight, ResizeType.valueOf(resizeType));
         label.setIcon(new ImageIcon(resizedImage));
         label.setSize(newWidth, newHeight);
-        imageWorks.setImage((BufferedImage) resizedImage);
+        imageWorks.setImage(resizedImage);
     }
 
     @Override
