@@ -26,14 +26,14 @@ public abstract class AnimationFrame implements Runnable {
         this.animationFactory = animationFactory;
         this.phase = animationFactory.getCurrentPhase();
         this.imageWorks = animationFactory.getImageWorks();
-        //this.label = animationFactory.getAnimLabels().get(imageWorks.getLabelIndex());
+        this.label = animationFactory.getAnimLabels().get(imageWorks.getLabelIndex());
         this.duration = phase.getDuration();
     }
 
     /**
-     * Метод для обновления состояния анимации. Реализуется подклассами.
+     * Method to update the animation state. Implemented by subclasses.
      *
-     * @param progress Процент завершения анимации (0.0 - 1.0)
+     * @param progress Percentage of animation completion (0.0 - 1.0)
      */
     public abstract void update(float progress);
 
@@ -52,27 +52,26 @@ public abstract class AnimationFrame implements Runnable {
         });
 
         timer.start();
-        AnimationFactory.logger.log(System.Logger.Level.INFO, "Animation started for phase: "+ animationFactory.getPhaseNum());
+        AnimationFactory.logger.log(System.Logger.Level.INFO, "Animation started for phase: " + animationFactory.getPhaseNum());
     }
 
     private void updateFrame() {
         long elapsedTime = System.currentTimeMillis() - startTime;
         float progress = Math.min((float) elapsedTime / duration, 1.0f);
 
-        // Обновляем UI
+        // Update UI
         SwingUtilities.invokeLater(() -> {
             try {
                 update(progress);
             } catch (Exception ex) {
-                AnimationFactory.logger.log(System.Logger.Level.ERROR,"Error in UI update", ex);
+                AnimationFactory.logger.log(System.Logger.Level.ERROR, "Error in UI update", ex);
             }
         });
 
         if (elapsedTime >= duration) {
             stopAnimation();
             SwingUtilities.invokeLater(() -> update(1.0f));
-            AnimationFactory.logger.log(System.Logger.Level.INFO,"Animation completed for phase: "+ animationFactory.getPhaseNum());
-            //animationFactory.incrementPhase();
+            AnimationFactory.logger.log(System.Logger.Level.INFO, "Animation completed for phase: " + animationFactory.getPhaseNum());
 
             if (animationFactory instanceof AnimationStatus) {
                 ((AnimationStatus) animationFactory).onPhaseCompleted(phase);
@@ -97,10 +96,10 @@ public abstract class AnimationFrame implements Runnable {
     }
 
     /**
-     * нициализация параметров с использованием конфигурации фазы.
+     * Initializes parameters using phase configuration.
      *
-     * @param params     Карта параметров.
-     * @param effectName Название эффекта.
+     * @param params     Map of parameters.
+     * @param effectName Effect name.
      */
     protected void initializeParams(Map<String, Object>[] params, String effectName) {
         for (Map<String, Object> param : params) {
@@ -110,25 +109,25 @@ public abstract class AnimationFrame implements Runnable {
                 Class<?> type = (Class<?>) param.get("type");
                 Object defaultValue = param.get("defaultValue");
 
-                // Получаем значение параметра из конфигурации фазы
+                // Get parameter value from phase configuration
                 Object value = phase.getEffectParam(effectName, paramName, type);
                 if (value == null) {
                     value = defaultValue;
                 }
 
-                // Устанавливаем значение в поле
+                // Set value to field
                 setFieldValue(field, value);
             } catch (Exception e) {
-                AnimationFactory.logger.log(System.Logger.Level.ERROR,"Error initializing parameter: {}", param, e);
+                AnimationFactory.logger.log(System.Logger.Level.ERROR, "Error initializing parameter: {}", param, e);
             }
         }
     }
 
     /**
-     * Устанавливает значение поля через рефлексию.
+     * Sets the value of a field using reflection.
      *
-     * @param fieldName Название поля.
-     * @param value     Значение для установки.
+     * @param fieldName Field name.
+     * @param value     Value to set.
      */
     private void setFieldValue(String fieldName, Object value) throws Exception {
         Field field = this.getClass().getDeclaredField(fieldName);
@@ -137,13 +136,13 @@ public abstract class AnimationFrame implements Runnable {
     }
 
     /**
-     * Создает карту параметров для инициализации.
+     * Creates a parameter map for initialization.
      *
-     * @param field        Название поля.
-     * @param paramName    Название параметра.
-     * @param type         Тип значения.
-     * @param defaultValue Значение по умолчанию.
-     * @return Карта параметров.
+     * @param field        Field name.
+     * @param paramName    Parameter name.
+     * @param type         Value type.
+     * @param defaultValue Default value.
+     * @return Parameter map.
      */
     protected Map<String, Object> createParam(String field, String paramName, Class<?> type, Object defaultValue) {
         Map<String, Object> param = new HashMap<>();
@@ -155,7 +154,7 @@ public abstract class AnimationFrame implements Runnable {
     }
 
     /**
-     * Метод для очистки ресурсов и завершения анимации.
+     * Method to clean up resources and end the animation.
      */
     public void dispose() {
         if (timer != null) {

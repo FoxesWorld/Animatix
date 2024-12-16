@@ -127,7 +127,6 @@ public class AnimationFactory implements AnimationStatus {
         }
     }
 
-
     private List<AnimationFrame> getOrCacheAnimationFrames(AnimationPhase phase) {
         return cachedFrames.computeIfAbsent(phase, effectFactory::createEffectsForPhase);
     }
@@ -137,8 +136,7 @@ public class AnimationFactory implements AnimationStatus {
             Thread.sleep(duration);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            AnimationFactory.logger.log(System.Logger.Level.WARNING,
-                    "Phase wait interrupted. Duration: {0} ms", duration);
+            AnimationFactory.logger.log(System.Logger.Level.WARNING, "Phase wait interrupted. Duration: {0} ms", duration);
             throw new RuntimeException("Phase wait interrupted", e);
         }
     }
@@ -174,7 +172,7 @@ public class AnimationFactory implements AnimationStatus {
 
     @Override
     public synchronized void onPhaseCompleted(AnimationPhase phase) {
-        logger.log(System.Logger.Level.INFO,"Phase "+this.phaseNum+" completed, notifying main thread.");
+        logger.log(System.Logger.Level.INFO, "Phase {0} completed, notifying main thread.", phaseNum);
         notify();
     }
 
@@ -197,6 +195,4 @@ public class AnimationFactory implements AnimationStatus {
     public List<JLabel> getAnimLabels() {
         return animLabels;
     }
-
-
 }
