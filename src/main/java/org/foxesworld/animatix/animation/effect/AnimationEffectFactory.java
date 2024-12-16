@@ -3,6 +3,7 @@ package org.foxesworld.animatix.animation.effect;
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
 import org.foxesworld.animatix.animation.config.AnimationPhase;
+import org.foxesworld.animatix.animation.config.Effect;
 import org.foxesworld.animatix.animation.imageEffect.effects.ImageEffects;
 import org.foxesworld.animatix.animation.imageEffect.effects.borderHighlight.BorderHighlightFrame;
 import org.foxesworld.animatix.animation.imageEffect.effects.bounce.BounceFrame;
@@ -26,16 +27,17 @@ import java.util.List;
 public class AnimationEffectFactory {
 
     private AnimationFactory animationFactory;
-    public AnimationEffectFactory(){
+
+    public AnimationEffectFactory() {
     }
 
     public List<AnimationFrame> createImageEffects(AnimationPhase phase, JLabel label) {
         List<AnimationFrame> frames = new ArrayList<>();
 
-        for (String effectType : phase.getEffects()) {
-            ImageEffects effect = ImageEffects.fromString(effectType);
+        for (Effect effect : phase.getEffects()) {
+            ImageEffects imageEffect = ImageEffects.fromString(effect.getType());
 
-            switch (effect) {
+            switch (imageEffect) {
                 case RESIZE -> frames.add(new ResizeFrame(animationFactory, phase, label));
                 case MOVE -> frames.add(new MoveFrame(animationFactory, phase, label));
                 case ROTATE -> frames.add(new RotateFrame(animationFactory, phase, label));
@@ -45,8 +47,8 @@ public class AnimationEffectFactory {
                 case FADE -> frames.add(new FadeFrame(animationFactory, phase, label));
                 case COLORFADE -> frames.add(new ColorFadeFrame(animationFactory, phase, label));
                 case SPIN -> frames.add(new SpinFrame(animationFactory, phase, label));
-                case BORDERHIGHLIGHT ->  frames.add(new BorderHighlightFrame(animationFactory, phase, label));
-                default -> throw new UnsupportedOperationException("Effect type not supported: " + effectType);
+                case BORDERHIGHLIGHT -> frames.add(new BorderHighlightFrame(animationFactory, phase, label));
+                default -> throw new UnsupportedOperationException("Effect type not supported: " + effect.getType());
             }
         }
 
@@ -55,20 +57,21 @@ public class AnimationEffectFactory {
 
     public List<AnimationFrame> createTextEffects(AnimationPhase phase, JLabel label) {
         List<AnimationFrame> frames = new ArrayList<>();
-        for (String effect : phase.getEffects()) {
-            switch (effect.toLowerCase()) {
+
+        for (Effect effect : phase.getEffects()) {
+            switch (effect.getType().toLowerCase()) {
                 case "fade" -> frames.add(new FadeTextAnimationFrame(this.animationFactory, phase, label));
                 case "slide" -> frames.add(new SlideTextAnimationFrame(this.animationFactory, phase, label));
                 case "bounce" -> frames.add(new BounceTextAnimationFrame(this.animationFactory, phase, label));
                 case "colorchange" -> frames.add(new TextColorChangeFrame(this.animationFactory, phase, label));
 
                 // Добавьте другие эффекты
+                default -> throw new UnsupportedOperationException("Text effect type not supported: " + effect.getType());
             }
         }
+
         return frames;
     }
-
-
 
     public void setAnimationFactory(AnimationFactory animationFactory) {
         this.animationFactory = animationFactory;

@@ -17,7 +17,7 @@ public class FadeTextAnimationFrame extends AnimationFrame {
             createParam("fadeSpeed", "fadeSpeed", Integer.class, 5)
     };
 
-    private final String effectName = "fadeText";
+    private final String effectName = "fade";
 
     private Double startAlpha, endAlpha;
     private String fadeType;

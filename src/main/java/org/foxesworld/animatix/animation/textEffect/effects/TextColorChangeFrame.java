@@ -15,7 +15,7 @@ public class TextColorChangeFrame extends AnimationFrame {
             createParam("endColor", "endColor", Color.class, Color.RED)
     };
 
-    private final String effectName = "textColorChange";
+    private final String effectName = "colorchange";
 
     private Color startColor, endColor;
 

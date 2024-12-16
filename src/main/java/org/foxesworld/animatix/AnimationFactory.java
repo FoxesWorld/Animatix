@@ -1,6 +1,7 @@
 package org.foxesworld.animatix;
 
 import org.foxesworld.animatix.animation.TaskExecutor;
+import org.foxesworld.animatix.animation.config.Effect;
 import org.foxesworld.animatix.animation.effect.AnimationEffectFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
 import org.foxesworld.animatix.animation.phase.AnimationPhaseExecutor;
@@ -133,13 +134,18 @@ public class AnimationFactory implements AnimationStatus {
     }
 
     private void setupImagePhase(JLabel animLabel, AnimationPhase phase) {
+        // Получение изображения из пути
         BufferedImage labelImage = ImageWorks.getImageFromStream(phase.getImagePath());
         animLabel.setIcon(new ImageIcon(labelImage));
-        if (phase.hasEffect("alpha")) {
-            labelImage = ImageWorks.setBaseAlpha(labelImage, (float) phase.getAlpha());
+
+        if (phase.getAlpha() != 0) {
+                labelImage = ImageWorks.setBaseAlpha(labelImage, (float) phase.getAlpha());
         }
+
+        // Устанавливаем обновленное изображение
         animLabel.setIcon(new ImageIcon(labelImage));
     }
+
 
     private List<AnimationFrame> getOrCacheAnimationFrames(AnimationPhase phase, JLabel label) {
         return cachedFrames.computeIfAbsent(phase, p -> {

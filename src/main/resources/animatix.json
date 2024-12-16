@@ -3,7 +3,7 @@
     {
       "name": "diamondAnimation",
       "bounds": {
-        "x": 120,
+        "x": 130,
         "y": 0,
         "width": 256,
         "height": 256
@@ -13,31 +13,31 @@
           "type": "image",
           "imagePath": "img/diamond.png",
           "effects": [
-            "resize"
-          ],
-          "duration": 1200,
-          "effectParams": {
-            "resize": {
-              "startWidth": 100,
-              "startHeight": 100,
-              "endWidth": 83,
-              "endHeight": 83,
-              "resizeType": "SCALE_TO_FIT"
+            {
+              "type": "resize",
+              "params": {
+                "startWidth": 100,
+                "startHeight": 100,
+                "endWidth": 83,
+                "endHeight": 83,
+                "resizeType": "SCALE_TO_FIT"
+              }
             }
-          }
+          ],
+          "duration": 1200
         },
         {
           "effects": [
-            "move"
-          ],
-          "effectParams": {
-            "move": {
-              "startX": 120,
-              "endX": 200,
-              "startY": 0,
-              "endY": 150
+            {
+              "type": "move",
+              "params": {
+                "startX": 120,
+                "endX": 200,
+                "startY": 0,
+                "endY": 150
+              }
             }
-          }
+          ]
         }
       ]
     },
@@ -53,20 +53,22 @@
       "phases": [
         {
           "type": "text",
-          "font": "Arial",
+          "font": "Lucida Console",
           "fontSize": 18,
-          "text": "Animatix",
+          "text": "Animatix 0.0.8",
           "effects": [
-            "fade"
+            {
+              "type": "fade",
+              "params": {
+                "fadeSpeed": 0.1,
+                "fadeType": "fadeIn",
+                "startAlpha": 0.0,
+                "endAlpha": 1.0
+              }
+            }
           ],
           "alpha": 0.4,
-          "duration": 1500,
-          "effectParams": {
-            "fade": {
-              "startAlpha": 0.0,
-              "endAlpha": 1.0
-            }
-          }
+          "duration": 1500
         }
       ]
     },
@@ -74,32 +76,37 @@
       "name": "versionText",
       "repeat": true,
       "bounds": {
-        "x": 165,
-        "y": 50,
-        "width": 64,
+        "x": 170,
+        "y": 35,
+        "width": 128,
         "height": 28
       },
       "phases": [
         {
           "type": "text",
-          "font": "Arial",
-          "fontSize": 18,
-          "text": "0.0.8",
+          "font": "Consolas",
+          "fontSize": 14,
+          "text": "SNAPSHOT",
           "effects": [
-            "fade", "colorchange"
+            {
+              "type": "fade",
+              "params": {
+                "fadeSpeed": 1,
+                "fadeType": "fadeIn",
+                "startAlpha": 0.0,
+                "endAlpha": 1.0
+              }
+            },
+            {
+              "type": "colorchange",
+              "params": {
+                "startColor": "#986801",
+                "endColor": "#951ac8"
+              }
+            }
           ],
           "alpha": 0.4,
-          "duration": 1500,
-          "effectParams": {
-            "fade": {
-              "startAlpha": 0.0,
-              "endAlpha": 1.0
-            },
-            "colorchange": {
-              "startColor": "#FF0000",
-              "endColor": "#00FF00"
-            }
-          }
+          "duration": 1500
         }
       ]
     }
