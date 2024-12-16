@@ -1,6 +1,6 @@
 package org.foxesworld.animatix;
 
-import org.foxesworld.animatix.animation.area.KWindow;
+import org.foxesworld.animatix.animation.TaskExecutor;
 import org.foxesworld.animatix.animation.effect.AnimationEffectFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
 import org.foxesworld.animatix.animation.phase.AnimationPhaseExecutor;
@@ -14,41 +14,36 @@ import org.apache.logging.log4j.Logger;
 
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 public class AnimationFactory implements AnimationStatus {
 
-    public static Logger logger;
-    private final ScheduledExecutorService scheduler;
-    private final AnimationConfigLoader configLoader;
-    private final AnimationEffectFactory effectFactory;
-    private final AnimationPhaseExecutor phaseExecutor;
-    private int phaseNum = 0;
-    private AnimationPhase currentPhase;
+    public static final Logger logger = LogManager.getLogger(AnimationFactory.class);
+    private final TaskExecutor taskExecutor;
+    private final AnimationConfigLoader configLoader = new AnimationConfigLoader();
+    private final AnimationEffectFactory effectFactory = new AnimationEffectFactory();
+    private final AnimationPhaseExecutor phaseExecutor = new AnimationPhaseExecutor();
     private List<JLabel> animLabels = new ArrayList<>();
-    private int labelIndex = 0;
-    private ImageWorks imageWorks;
-    private AnimationConfig config;
-    private boolean isPaused = false;
     private final Map<AnimationPhase, List<AnimationFrame>> cachedFrames = new HashMap<>();
+    private AnimationConfig config;
+    private ImageWorks imageWorks;
+    private int phaseNum = 0;
+    private int labelIndex = 0;
+    private boolean isPaused = false;
+    private AnimationPhase currentPhase;
 
     public AnimationFactory(String configPath) {
-        this(Executors.newSingleThreadScheduledExecutor(),
-                new AnimationConfigLoader(),
-                new AnimationEffectFactory(),
-                new AnimationPhaseExecutor());
-        System.setProperty("log.dir", System.getProperty("user.dir"));
-        System.setProperty("log.level", "DEBUG");
-        logger = LogManager.getLogger(Main.class);
-
-        this.loadConfig(configPath);
+        this.taskExecutor = new TaskExecutor(this);
+        effectFactory.setAnimationFactory(this);
+        phaseExecutor.setAnimationFactory(this);
+        loadConfig(configPath);
     }
 
     private void loadConfig(String configPath) {
@@ -63,41 +58,59 @@ public class AnimationFactory implements AnimationStatus {
         }
     }
 
-    public AnimationFactory(ScheduledExecutorService scheduler,
-                            AnimationConfigLoader configLoader,
-                            AnimationEffectFactory effectFactory,
-                            AnimationPhaseExecutor phaseExecutor) {
-        this.scheduler = scheduler;
-        this.configLoader = configLoader;
-        this.effectFactory = effectFactory;
-        this.phaseExecutor = phaseExecutor;
-
-        this.effectFactory.setAnimationFactory(this);
-        this.phaseExecutor.setAnimationFactory(this);
-    }
-
     public void createAnimation(Object window) {
         validateConfig();
         for (AnimationConfig.ImageConfig imageConfig : config.getImages()) {
-            JLabel animLabel = new JLabel(new ImageIcon(ImageWorks.getImageFromStream(imageConfig.getImagePath())));
+            Rectangle imageBounds = imageConfig.getBounds();
+            BufferedImage labelImage = createSizedImage(ImageWorks.getImageFromStream(imageConfig.getImagePath()), imageBounds);
+
+            JLabel animLabel = new JLabel(new ImageIcon(labelImage));
             animLabel.setBounds(imageConfig.getBounds());
             addLabelToWindow(window, animLabel);
+            animLabel.setVisible(false);
             this.animLabels.add(animLabel);
             this.imageWorks = new ImageWorks(animLabel, labelIndex);
-
             for (AnimationPhase phase : imageConfig.getPhases()) {
-                new Thread(() -> executeAnimation(phase, imageConfig.getPhases().size(), imageConfig.isRepeat())).start();
+                new Thread(() -> {
+                    try {
+                        if (phase.getDelay() > 0) {
+                            Thread.sleep(phase.getDelay());
+                        }
+                        executeAnimation(phase, imageConfig);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        AnimationFactory.logger.error("Animation interrupted", e);
+                    }
+                    incrementPhase();
+                }).start();
                 incrementPhase();
             }
             labelIndex += 1;
         }
     }
 
+    private BufferedImage createSizedImage(BufferedImage image, Rectangle size) {
+        // Создаём новое изображение нужного размера
+        BufferedImage resizedImage = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = resizedImage.createGraphics();
+
+        // Устанавливаем параметры высокого качества для интерполяции
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Рисуем исходное изображение в новом размере
+        g.drawImage(image, 0, 0, size.width, size.height, null);
+        g.dispose(); // Освобождаем ресурсы Graphics2D
+
+        // Возвращаем новое изображение
+        return resizedImage;
+    }
+
+
     private void addLabelToWindow(Object window, JLabel label) {
         if (window instanceof JFrame) {
             ((JFrame) window).add(label);
-        } else if (window instanceof KWindow) {
-            ((KWindow) window).add(label);
         } else if (window instanceof JWindow) {
             ((JWindow) window).add(label);
         } else {
@@ -105,11 +118,10 @@ public class AnimationFactory implements AnimationStatus {
         }
     }
 
+    @Deprecated
     private int getWindowWidth(Object window) {
         if (window instanceof JFrame) {
             return ((JFrame) window).getWidth();
-        } else if (window instanceof KWindow) {
-            return ((KWindow) window).getWidth();
         } else if (window instanceof JWindow) {
             return ((JWindow) window).getWidth();
         } else {
@@ -117,15 +129,16 @@ public class AnimationFactory implements AnimationStatus {
         }
     }
 
-    private void executeAnimation(AnimationPhase phase, int phasesAmount, boolean isRepeat) {
+    private void executeAnimation(AnimationPhase phase, AnimationConfig.ImageConfig imageConfig) {
         try {
             do {
                 currentPhase = phase;
-                logger.info("Starting phase: {}", phase.getName());
+                this.getImageWorks().getLabel().setVisible(true);
+                logger.info("Starting phase number {} of {}", phaseNum, imageConfig.getAnimationName());
                 List<AnimationFrame> animationFrames = getOrCacheAnimationFrames(phase);
-                phaseExecutor.executePhase(phase, animationFrames);
+                phaseExecutor.executePhase(this, animationFrames, phaseNum);
                 waitForPhaseCompletion(phase.getDuration());
-            } while (isRepeat && phaseNum < phasesAmount);
+            } while (imageConfig.isRepeat() && phaseNum < imageConfig.getPhases().size());
             logger.info("Animation complete.");
         } catch (Exception e) {
             logger.error("Error during animation execution", e);
@@ -174,7 +187,7 @@ public class AnimationFactory implements AnimationStatus {
     }
 
     private void shutdownScheduler() {
-        scheduler.shutdown();
+        taskExecutor.shutdown();
     }
 
     @Override
@@ -190,11 +203,13 @@ public class AnimationFactory implements AnimationStatus {
     }
 
     public void dispose() {
+        this.labelIndex = 0;
+        this.animLabels = new ArrayList<>();
         if (imageWorks != null) {
             imageWorks.dispose();
             imageWorks = null;
         }
-        scheduler.shutdown();
+        taskExecutor.shutdown();
     }
 
     public List<JLabel> getAnimLabels() {
@@ -215,5 +230,9 @@ public class AnimationFactory implements AnimationStatus {
 
     public int getPhaseNum() {
         return phaseNum;
+    }
+
+    public TaskExecutor getTaskExecutor() {
+        return taskExecutor;
     }
 }

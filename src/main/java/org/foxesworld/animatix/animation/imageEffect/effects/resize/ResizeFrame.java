@@ -39,7 +39,7 @@ public class ResizeFrame extends AnimationFrame {
         // Меняем размеры изображения
         BufferedImage resizedImage = imageWorks.resizeImage(newWidth, newHeight, ResizeType.valueOf(resizeType));
         label.setIcon(new ImageIcon(resizedImage));
-        label.setSize(newWidth, newHeight);
+        //label.setSize(newWidth, newHeight);
         imageWorks.setImage(resizedImage);
     }
 

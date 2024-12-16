@@ -1,29 +1,23 @@
 package org.foxesworld.animatix.animation.config;
 
 import org.foxesworld.animatix.AnimationFactory;
-import org.foxesworld.animatix.Main;
 
 import java.util.List;
 import java.util.Map;
 
 public class AnimationPhase {
-    private String name; // Название фазы
-    private List<String> imageEffects; // Эффекты для изображений
-    private List<String> textEffects;  // Эффекты для текста
-    private long duration; // Длительность фазы в миллисекундах
-    private Map<String, Map<String, Object>> effectParams; // Параметры эффектов
-
-    // Геттеры и сеттеры
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    private int phaseNum;
+    private List<String> imageEffects;
+    private List<String> textEffects;
+    private long duration, delay;
+    private Map<String, Map<String, Object>> effectParams;
 
     public long getDuration() {
         return duration;
+    }
+
+    public long getDelay() {
+        return delay;
     }
 
     public void setDuration(long duration) {

@@ -2,12 +2,10 @@ package org.foxesworld.animatix.animation.phase;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
-import org.foxesworld.animatix.animation.config.AnimationPhase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 public class AnimationPhaseExecutor {
 
@@ -17,31 +15,26 @@ public class AnimationPhaseExecutor {
     public AnimationPhaseExecutor() {
     }
 
-    public void executePhase(AnimationPhase phase, List<AnimationFrame> animationFrames) {
-        logger.info("Executing phase: {}", phase.getName());
-        CountDownLatch latch = new CountDownLatch(animationFrames.size());
+    public void executePhase(AnimationFactory animationFactory, List<AnimationFrame> animationFrames, int phaseNum) {
+        logger.info("Executing phase: {}", phaseNum);
 
-        for (AnimationFrame animationFrame : animationFrames) {
-            new Thread(() -> {
-                try {
-                    animationFrame.run();
-                    logger.debug("Frame completed: {}", animationFrame.getClass().getSimpleName());
-                } catch (Exception e) {
-                    logger.error("Error executing frame: {}", animationFrame.getClass().getSimpleName(), e);
-                } finally {
-                    latch.countDown();
-                }
-            }).start();
-        }
+        List<Runnable> tasks = animationFrames.stream()
+                .<Runnable>map(animationFrame -> () -> {
+                    try {
+                        animationFrame.run();
+                    } catch (Exception e) {
+                        logger.error("Error executing frame: {}", animationFrame.getClass().getSimpleName(), e);
+                    }
+                })
+                .toList();
 
         try {
-            latch.await();
-            logger.info("Phase {} completed", phase.getName());
+            animationFactory.getTaskExecutor().executeTasksWithTimeout(tasks, animationFactory.getCurrentPhase().getDuration());
+            logger.info("Phase {} completed", phaseNum);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            logger.warn("Phase execution interrupted: {}", phase.getName());
+            logger.warn("Phase execution interrupted: {}", phaseNum);
         }
-
         notifyPhaseCompleted();
     }
 
