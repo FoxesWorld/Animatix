@@ -25,7 +25,6 @@ public class AnimationFactory implements AnimationStatus {
     private final AnimationConfigLoader configLoader = new AnimationConfigLoader();
     private final AnimationEffectFactory effectFactory = new AnimationEffectFactory();
     private final AnimationPhaseExecutor phaseExecutor = new AnimationPhaseExecutor();
-    private final ExecutorService executorService = Executors.newCachedThreadPool();
     private final Map<AnimationPhase, List<AnimationFrame>> cachedFrames = new ConcurrentHashMap<>();
     private final List<JLabel> animLabels = new ArrayList<>();
     private AnimationConfig config;
@@ -69,7 +68,9 @@ public class AnimationFactory implements AnimationStatus {
 
             imageWorks = new ImageWorks(animLabel, animLabels.size() - 1);
 
-            executorService.submit(() -> runAnimation(imageConfig));
+            taskExecutor.submitTask(() -> runAnimation(imageConfig), (error) -> {
+                System.out.println(error);
+            });
         }
     }
 
@@ -153,7 +154,7 @@ public class AnimationFactory implements AnimationStatus {
     }
 
     private void shutdownScheduler() {
-        executorService.shutdownNow();
+        taskExecutor.shutdown();
     }
 
     private void validateConfig() {

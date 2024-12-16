@@ -14,7 +14,7 @@ public class TaskExecutor {
     }
 
     public TaskExecutor(int threadPoolSize) {
-        this.executorService = Executors.newFixedThreadPool(threadPoolSize);
+        this.executorService = Executors.newWorkStealingPool(threadPoolSize);
         logger.log(System.Logger.Level.INFO, "TaskExecutor initialized with thread pool size: {0}", threadPoolSize);
     }
 
@@ -28,7 +28,6 @@ public class TaskExecutor {
      */
     public void executeTasksWithTimeout(Collection<? extends Callable<?>> tasks, long timeout, Consumer<Exception> onError) throws InterruptedException {
         List<Future<?>> futures = new ArrayList<>();
-
         for (Callable<?> task : tasks) {
             futures.add(executorService.submit(task));
         }
@@ -41,14 +40,14 @@ public class TaskExecutor {
                     future.get(remainingTime, TimeUnit.MILLISECONDS);
                 } else {
                     future.cancel(true);
-                    logger.log(System.Logger.Level.WARNING, "Task execution timed out");
+                    logger.log(System.Logger.Level.WARNING, "Task execution timed out and was cancelled.");
                 }
             } catch (TimeoutException e) {
                 future.cancel(true);
-                logger.log(System.Logger.Level.WARNING, "Task execution timed out", e);
+                logger.log(System.Logger.Level.WARNING, "Task execution timed out.", e);
                 onError.accept(e);
             } catch (Exception e) {
-                logger.log(System.Logger.Level.ERROR, "Task execution failed", e);
+                logger.log(System.Logger.Level.ERROR, "Task execution failed.", e);
                 onError.accept(e);
             }
         }
@@ -71,7 +70,7 @@ public class TaskExecutor {
             return future.get(timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException e) {
             future.cancel(true);
-            logger.log(System.Logger.Level.WARNING, "Task execution timed out after {0} ms", timeout);
+            logger.log(System.Logger.Level.WARNING, "Task execution timed out after {0} ms.", timeout);
             throw e;
         }
     }
@@ -79,7 +78,7 @@ public class TaskExecutor {
     /**
      * Запускает задачу асинхронно.
      *
-     * @param task Задача для выполнения.
+     * @param task    Задача для выполнения.
      * @param onError Обработчик ошибок выполнения задачи.
      */
     public void submitTask(Runnable task, Consumer<Exception> onError) {
@@ -87,7 +86,7 @@ public class TaskExecutor {
             try {
                 task.run();
             } catch (Exception e) {
-                logger.log(System.Logger.Level.ERROR, "Async task execution failed", e);
+                logger.log(System.Logger.Level.ERROR, "Async task execution failed.", e);
                 onError.accept(e);
             }
         });
@@ -99,16 +98,16 @@ public class TaskExecutor {
     public void shutdown() {
         executorService.shutdown();
         try {
-            if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
+            if (!executorService.awaitTermination(30, TimeUnit.SECONDS)) {
                 List<Runnable> cancelledTasks = executorService.shutdownNow();
                 logger.log(System.Logger.Level.WARNING, "Executor forcefully shutdown. Cancelled tasks: {0}", cancelledTasks.size());
             } else {
-                logger.log(System.Logger.Level.INFO, "Executor shut down gracefully");
+                logger.log(System.Logger.Level.INFO, "Executor shut down gracefully.");
             }
         } catch (InterruptedException e) {
             executorService.shutdownNow();
             Thread.currentThread().interrupt();
-            logger.log(System.Logger.Level.ERROR, "Shutdown interrupted", e);
+            logger.log(System.Logger.Level.ERROR, "Shutdown interrupted.", e);
         }
     }
 }
