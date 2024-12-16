@@ -1,130 +1,103 @@
 {
   "objects": [
     {
-      "name": "diamondAnimation" ,
-      "alpha": 0.4,
-      "repeat": true,
-      "bounds": {
-        "x": 0 ,
-        "y": 0 ,
-        "width": 128 ,
-        "height": 128
-      } ,
-      "phases": [
-        {
-          "type": "image",
-          "imagePath": "img/diamond.png" ,
-          "effects": [
-            "resize"
-          ] ,
-          "alpha": 0.4,
-          "duration": 800 ,
-          "effectParams": {
-            "move": {
-              "startX": 1000 ,
-              "startY": 1000 ,
-              "exdX": 240 ,
-              "endY": 240
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "goldAnimation" ,
-      "repeat": true,
-      "bounds": {
-        "x": 40,
-        "y": -50,
-        "width": 256,
-        "height": 256
-      } ,
-      "phases": [
-        {
-          "type": "image",
-          "imagePath": "img/gold.png" ,
-          "effects": [
-            "resize"
-          ] ,
-          "alpha": 0.9,
-          "duration": 800 ,
-          "effectParams": {
-            "resize": {
-              "startWidth": 290 ,
-              "startHeight": 290 ,
-              "endWidth": 64 ,
-              "endHeight": 64 ,
-              "resizeType": "SCALE_TO_FIT"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "brandAnimation" ,
-      "repeat": true,
+      "name": "diamondAnimation",
       "bounds": {
         "x": 120,
-        "y": 80,
+        "y": 0,
         "width": 256,
-        "height": 128
-      } ,
+        "height": 256
+      },
       "phases": [
         {
           "type": "image",
-          "imagePath": "img/animatix.png" ,
+          "imagePath": "img/diamond.png",
           "effects": [
             "resize"
-          ] ,
-          "alpha": 1.0,
-          "delay": 600,
-          "duration": 1500 ,
+          ],
+          "duration": 1200,
           "effectParams": {
             "resize": {
-              "startWidth": 290 ,
-              "startHeight": 290 ,
-              "endWidth": 128 ,
-              "endHeight": 64 ,
+              "startWidth": 100,
+              "startHeight": 100,
+              "endWidth": 83,
+              "endHeight": 83,
               "resizeType": "SCALE_TO_FIT"
-            },
-            "fade": {
-              "fadeType": "fadeOut"
+            }
+          }
+        },
+        {
+          "effects": [
+            "move"
+          ],
+          "effectParams": {
+            "move": {
+              "startX": 120,
+              "endX": 200,
+              "startY": 0,
+              "endY": 150
             }
           }
         }
       ]
     },
     {
-      "name": "textTest" ,
+      "name": "textTest",
       "repeat": true,
       "bounds": {
-        "x": 170,
-        "y": 90,
+        "x": 0,
+        "y": 0,
         "width": 256,
         "height": 128
-      } ,
+      },
       "phases": [
         {
           "type": "text",
           "font": "Arial",
-          "fontSize": 14,
-          "text": "img/animatix.png" ,
+          "fontSize": 18,
+          "text": "Animatix",
           "effects": [
             "fade"
-          ] ,
-          "alpha": 1.0,
-          "delay": 600,
-          "duration": 1500 ,
+          ],
+          "alpha": 0.4,
+          "duration": 1500,
           "effectParams": {
-            "resize": {
-              "startWidth": 290 ,
-              "startHeight": 290 ,
-              "endWidth": 128 ,
-              "endHeight": 64 ,
-              "resizeType": "SCALE_TO_FIT"
-            },
             "fade": {
-              "fadeType": "fadeOut"
+              "startAlpha": 0.0,
+              "endAlpha": 1.0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "versionText",
+      "repeat": true,
+      "bounds": {
+        "x": 165,
+        "y": 50,
+        "width": 64,
+        "height": 28
+      },
+      "phases": [
+        {
+          "type": "text",
+          "font": "Arial",
+          "fontSize": 18,
+          "text": "0.0.8",
+          "effects": [
+            "fade", "colorchange"
+          ],
+          "alpha": 0.4,
+          "duration": 1500,
+          "effectParams": {
+            "fade": {
+              "startAlpha": 0.0,
+              "endAlpha": 1.0
+            },
+            "colorchange": {
+              "startColor": "#FF0000",
+              "endColor": "#00FF00"
             }
           }
         }

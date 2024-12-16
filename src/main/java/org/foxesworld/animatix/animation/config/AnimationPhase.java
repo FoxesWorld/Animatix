@@ -2,7 +2,6 @@ package org.foxesworld.animatix.animation.config;
 
 import org.foxesworld.animatix.AnimationFactory;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +11,9 @@ public class AnimationPhase {
     private List<String> effects;
     private String type, text, font, textColor, imagePath;
     private int fontSize;
+    private List<String> textEffects;
+    private long duration, delay;
+    private Map<String, Map<String, Object>> effectParams;
 
     public String getType() {
         return type;
@@ -37,9 +39,13 @@ public class AnimationPhase {
         return fontSize;
     }
 
-    private List<String> textEffects;
-    private long duration, delay;
-    private Map<String, Map<String, Object>> effectParams;
+    public List<String> getTextEffects() {
+        return textEffects;
+    }
+
+    public void setTextEffects(List<String> textEffects) {
+        this.textEffects = textEffects;
+    }
 
     public int getPhaseNum() {
         return phaseNum;
@@ -79,14 +85,6 @@ public class AnimationPhase {
 
     public void setEffects(List<String> effects) {
         this.effects = effects;
-    }
-
-    public List<String> getTextEffects() {
-        return textEffects;
-    }
-
-    public void setTextEffects(List<String> textEffects) {
-        this.textEffects = textEffects;
     }
 
     /**
@@ -149,6 +147,7 @@ public class AnimationPhase {
         return (effects != null && effects.contains(effectName)) ||
                 (textEffects != null && textEffects.contains(effectName));
     }
+
     public double getAlpha() {
         return alpha;
     }

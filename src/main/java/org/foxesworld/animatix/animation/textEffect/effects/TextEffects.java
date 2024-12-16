@@ -1,8 +1,10 @@
 package org.foxesworld.animatix.animation.textEffect.effects;
 
+import org.foxesworld.animatix.animation.imageEffect.effects.ImageEffects;
+
 public enum TextEffects {
-    COLOR_CHANGE,
-    ZOOM_IN;
+    FADE,
+    SLIDE;
 
     public static TextEffects fromString(String effect) {
         try {

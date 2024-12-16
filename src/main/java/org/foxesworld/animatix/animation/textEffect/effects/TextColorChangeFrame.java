@@ -1,41 +1,45 @@
 package org.foxesworld.animatix.animation.textEffect.effects;
 
-
 import org.foxesworld.animatix.AnimationFactory;
+import org.foxesworld.animatix.animation.AnimationFrame;
 import org.foxesworld.animatix.animation.config.AnimationPhase;
-import org.foxesworld.animatix.animation.textEffect.TextAnimationFrame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
 
-/**
- * Пример реализации анимации текста с эффектом изменения цвета.
- */
-public class TextColorChangeFrame extends TextAnimationFrame {
+public class TextColorChangeFrame extends AnimationFrame {
 
+    private final Map<String, Object>[] params = new Map[]{
+            createParam("startColor", "startColor", Color.class, Color.BLACK),
+            createParam("endColor", "endColor", Color.class, Color.RED)
+    };
+
+    private final String effectName = "textColorChange";
+
+    private Color startColor, endColor;
 
     public TextColorChangeFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
         super(animationFactory, phase, label);
-        //this.targetColor = Color.decode(targetColor);
+        initializeParams(params, effectName);
     }
 
     @Override
-    public void applyEffect(float progress) {
-        /*
-        // Применяем изменение цвета по прогрессу
-        int r = (int) (progress * targetColor.getRed() + (1 - progress) * Color.decode(textColor).getRed());
-        int g = (int) (progress * targetColor.getGreen() + (1 - progress) * Color.decode(textColor).getGreen());
-        int b = (int) (progress * targetColor.getBlue() + (1 - progress) * Color.decode(textColor).getBlue());
-        label.setForeground(new Color(r, g, b));
+    protected void initializeParams(Map<String, Object>[] params, String effectName) {
+        super.initializeParams(params, effectName);
+    }
 
-        // Применяем текст и шрифт
-        label.setText(text);
-        label.setFont(new Font(font, Font.PLAIN, fontSize));
+    @Override
+    public void update(float progress) {
+        if (progress < 0.0f || progress > 1.0f) return;
 
-        // Центрируем текст
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setVerticalAlignment(SwingConstants.CENTER);
-        *
-         */
+        // Линейная интерполяция цвета
+        int r = (int) ((1 - progress) * startColor.getRed() + progress * endColor.getRed());
+        int g = (int) ((1 - progress) * startColor.getGreen() + progress * endColor.getGreen());
+        int b = (int) ((1 - progress) * startColor.getBlue() + progress * endColor.getBlue());
+        Color currentColor = new Color(r, g, b);
+
+        // Обновляем цвет текста
+        SwingUtilities.invokeLater(() -> label.setForeground(currentColor));
     }
 }

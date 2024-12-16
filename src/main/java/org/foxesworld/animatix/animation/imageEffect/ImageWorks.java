@@ -15,29 +15,27 @@ import java.util.Objects;
 public class ImageWorks {
 
     private BufferedImage image;
-    private final  int labelIndex;
     private JLabel label;
 
-    public ImageWorks(JLabel label, int index) {
-        this.labelIndex = index;
+    public ImageWorks(JLabel label) {
         this.label = label;
         this.image = (BufferedImage) ((ImageIcon) label.getIcon()).getImage();
 
     }
 
-    public static ImageWorks createFromLabel(JLabel label, int index) {
+    public static ImageWorks createFromLabel(JLabel label) {
         BufferedImage img = label.getIcon() instanceof ImageIcon
                 ? (BufferedImage) ((ImageIcon) label.getIcon()).getImage()
                 : null;
 
-        ImageWorks imageWorks = new ImageWorks(label, index);
+        ImageWorks imageWorks = new ImageWorks(label);
         imageWorks.setImage(img);
         return imageWorks;
     }
 
-    public static ImageWorks createFromImage(BufferedImage image, int index) {
+    public static ImageWorks createFromImage(BufferedImage image) {
         JLabel label = new JLabel(new ImageIcon(image));
-        ImageWorks imageWorks = new ImageWorks(label, index);
+        ImageWorks imageWorks = new ImageWorks(label);
         imageWorks.setImage(image);
         return imageWorks;
     }
@@ -217,10 +215,6 @@ public class ImageWorks {
             image = null;
         }
         System.gc();
-    }
-
-    public int getLabelIndex() {
-        return labelIndex;
     }
 
     public JLabel getLabel() {

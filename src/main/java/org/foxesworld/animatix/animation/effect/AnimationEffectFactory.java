@@ -14,8 +14,10 @@ import org.foxesworld.animatix.animation.imageEffect.effects.move.MoveFrame;
 import org.foxesworld.animatix.animation.imageEffect.effects.resize.ResizeFrame;
 import org.foxesworld.animatix.animation.imageEffect.effects.rotate.RotateFrame;
 import org.foxesworld.animatix.animation.imageEffect.effects.spin.SpinFrame;
+import org.foxesworld.animatix.animation.textEffect.effects.BounceTextAnimationFrame;
 import org.foxesworld.animatix.animation.textEffect.effects.FadeTextAnimationFrame;
 import org.foxesworld.animatix.animation.textEffect.effects.SlideTextAnimationFrame;
+import org.foxesworld.animatix.animation.textEffect.effects.TextColorChangeFrame;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -55,12 +57,11 @@ public class AnimationEffectFactory {
         List<AnimationFrame> frames = new ArrayList<>();
         for (String effect : phase.getEffects()) {
             switch (effect.toLowerCase()) {
-                case "fade":
-                    frames.add(new FadeTextAnimationFrame(this.animationFactory, phase, label));
-                    break;
-                case "slide":
-                    frames.add(new SlideTextAnimationFrame(this.animationFactory, phase, label));
-                    break;
+                case "fade" -> frames.add(new FadeTextAnimationFrame(this.animationFactory, phase, label));
+                case "slide" -> frames.add(new SlideTextAnimationFrame(this.animationFactory, phase, label));
+                case "bounce" -> frames.add(new BounceTextAnimationFrame(this.animationFactory, phase, label));
+                case "colorchange" -> frames.add(new TextColorChangeFrame(this.animationFactory, phase, label));
+
                 // Добавьте другие эффекты
             }
         }

@@ -18,14 +18,16 @@ public abstract class AnimationFrame implements Runnable {
     private long startTime;
     private boolean finished = false;
     protected final AnimationPhase phase;
-    protected final ImageWorks imageWorks;
+    protected ImageWorks imageWorks;
     protected JLabel label;
 
     public AnimationFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
         this.animationFactory = animationFactory;
         this.phase = phase;
         this.label = label;
-        this.imageWorks = new ImageWorks(label, 0);
+        if(phase.getType().equals("image")) {
+            this.imageWorks = new ImageWorks(label);
+        }
 
         this.duration = phase.getDuration();
     }

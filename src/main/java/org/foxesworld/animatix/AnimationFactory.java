@@ -26,11 +26,9 @@ public class AnimationFactory implements AnimationStatus {
     private final AnimationEffectFactory effectFactory = new AnimationEffectFactory();
     private final AnimationPhaseExecutor phaseExecutor = new AnimationPhaseExecutor();
     private final Map<AnimationPhase, List<AnimationFrame>> cachedFrames = new ConcurrentHashMap<>();
-    private final List<JLabel> animLabels = new ArrayList<>();
     private AnimationConfig config;
     private volatile int phaseNum = 0;
     private volatile boolean isPaused = false;
-    private AnimationPhase currentPhase;
 
     public AnimationFactory(String configPath) {
         this.taskExecutor = new TaskExecutor();
@@ -61,9 +59,7 @@ public class AnimationFactory implements AnimationStatus {
             JLabel animLabel = new JLabel();
             animLabel.setBounds(objectBounds);
             addLabelToWindow(window, animLabel);
-            animLabel.setVisible(false);
-            animLabels.add(animLabel);
-
+            animLabel.setVisible(animConf.isVisible());
             taskExecutor.submitTask(() -> runAnimation(animLabel, animConf), System.out::println);
         }
     }
@@ -73,6 +69,7 @@ public class AnimationFactory implements AnimationStatus {
             ((JFrame) window).add(label);
         } else if (window instanceof JWindow) {
             ((JWindow) window).add(label);
+            ((JWindow) window).setLayout(null);
         } else {
             throw new IllegalArgumentException("Unsupported window type: " + window.getClass().getName());
         }
@@ -82,14 +79,11 @@ public class AnimationFactory implements AnimationStatus {
         try {
             do {
                 for (AnimationPhase phase : animConf.getPhases()) {
-                    // Обработка паузы
                     if (isPaused) {
                         synchronized (this) {
                             wait();
                         }
                     }
-
-                    currentPhase = phase;
 
                     if (phase.getType().equals("text")) {
                         setupTextPhase(animLabel, phase);
@@ -185,7 +179,6 @@ public class AnimationFactory implements AnimationStatus {
     }
 
     public void dispose() {
-        animLabels.clear();
         taskExecutor.shutdown();
     }
 

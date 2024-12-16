@@ -9,7 +9,7 @@ public class AnimationConfig {
     public static class AnimConf {
         private String name;
         private Bounds bounds;
-        private boolean repeat;
+        private boolean repeat, visible;
         private List<AnimationPhase> phases;
 
         public String getName() {
@@ -18,6 +18,10 @@ public class AnimationConfig {
 
         public boolean isRepeat() {
             return repeat;
+        }
+
+        public boolean isVisible() {
+            return visible;
         }
 
         public List<AnimationPhase> getPhases() {
