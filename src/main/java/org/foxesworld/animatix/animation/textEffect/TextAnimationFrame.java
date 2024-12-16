@@ -2,6 +2,9 @@ package org.foxesworld.animatix.animation.textEffect;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
+import org.foxesworld.animatix.animation.config.AnimationPhase;
+
+import javax.swing.*;
 
 public abstract class TextAnimationFrame extends AnimationFrame {
 
@@ -11,12 +14,12 @@ public abstract class TextAnimationFrame extends AnimationFrame {
     protected final int fontSize;
     protected final String textColor;
 
-    public TextAnimationFrame(AnimationFactory animationFactory, String text, String font, int fontSize, String textColor) {
-        super(animationFactory);
-        this.text = text;
-        this.font = font != null ? font : "Arial";
-        this.fontSize = fontSize > 0 ? fontSize : 16;
-        this.textColor = textColor != null ? textColor : "#000000";
+    public TextAnimationFrame(AnimationFactory animationFactory, AnimationPhase animationPhase, JLabel label) {
+        super(animationFactory, animationPhase, label);
+        this.text = "text";
+        this.font =  "Arial";
+        this.fontSize = 16;
+        this.textColor = "#000000";
     }
 
     /**

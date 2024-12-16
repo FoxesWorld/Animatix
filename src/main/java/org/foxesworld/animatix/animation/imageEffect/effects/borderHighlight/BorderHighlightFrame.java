@@ -2,6 +2,7 @@ package org.foxesworld.animatix.animation.imageEffect.effects.borderHighlight;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
+import org.foxesworld.animatix.animation.config.AnimationPhase;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,10 +27,9 @@ public class BorderHighlightFrame extends AnimationFrame {
     private int borderSize, shadowSize;
     private BufferedImage originalImage;
 
-    public BorderHighlightFrame(AnimationFactory animationFactory) {
-        super(animationFactory);
-        this.label = animationFactory.getAnimLabels().get(animationFactory.getImageWorks().getLabelIndex());
-        this.originalImage = animationFactory.getImageWorks().getImage();
+    public BorderHighlightFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
+        super(animationFactory, phase, label);
+        this.originalImage = imageWorks.getImage();
         initializeParams(params, effectName);
     }
 
@@ -42,7 +42,7 @@ public class BorderHighlightFrame extends AnimationFrame {
         SwingUtilities.invokeLater(() -> {
             label.setIcon(new ImageIcon(currentImage));
         });
-        this.getAnimationFactory().getImageWorks().setImage(currentImage);
+        imageWorks.setImage(currentImage);
     }
 
     private BufferedImage applyBorderHighlightEffect(BufferedImage image, float progress) {

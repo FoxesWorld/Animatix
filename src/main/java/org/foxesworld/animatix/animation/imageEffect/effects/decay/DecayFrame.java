@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
+import org.foxesworld.animatix.animation.config.AnimationPhase;
 
 public class DecayFrame extends AnimationFrame {
 
@@ -20,9 +21,8 @@ public class DecayFrame extends AnimationFrame {
     private Double startAlpha, endAlpha;
     private int decaySpeed;
 
-    public DecayFrame(AnimationFactory animationFactory) {
-        super(animationFactory);
-        this.label = animationFactory.getImageWorks().getLabel();
+    public DecayFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
+        super(animationFactory, phase, label);
         initializeParams(params, effectName);
     }
 

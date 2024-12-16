@@ -2,6 +2,7 @@ package org.foxesworld.animatix.animation.phase;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
+import org.foxesworld.animatix.animation.config.AnimationPhase;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -20,13 +21,12 @@ public class AnimationPhaseExecutor {
      * @param animationFrames  Список кадров анимации для выполнения.
      * @param phaseNum         Номер текущего этапа.
      */
-    public void executePhase(AnimationFactory animationFactory, List<AnimationFrame> animationFrames, int phaseNum) {
+    public void executePhase(AnimationFactory animationFactory, List<AnimationFrame> animationFrames, AnimationPhase phase, int phaseNum) {
         validateAnimationFactory(animationFactory);
-        long phaseDuration = animationFactory.getCurrentPhase().getDuration();
 
+        long phaseDuration = phase.getDuration();
         AnimationFactory.logger.log(System.Logger.Level.INFO,
                 "Starting execution of phase {0}. Duration: {1} ms", phaseNum, phaseDuration);
-
         List<Callable<Void>> tasks = prepareTasks(animationFrames);
 
         try {
@@ -40,7 +40,7 @@ public class AnimationPhaseExecutor {
             AnimationFactory.logger.log(System.Logger.Level.ERROR,
                     "Unexpected error during phase execution. Phase: {0}. Error: {1}", phaseNum, e.getMessage(), e);
         } finally {
-            notifyPhaseCompleted(phaseNum);
+            notifyPhaseCompleted(phase, phaseNum);
         }
     }
 
@@ -70,7 +70,8 @@ public class AnimationPhaseExecutor {
                         return null;
                     } catch (Exception e) {
                         AnimationFactory.logger.log(System.Logger.Level.ERROR,
-                                "Error executing frame: {0}. Error: {1}", animationFrame.getClass().getSimpleName(), e.getMessage(), e);
+                                "Error executing frame: {0}. Error: {1}",
+                                animationFrame.getClass().getSimpleName(), e.getMessage(), e);
                         throw e;
                     }
                 })
@@ -78,16 +79,19 @@ public class AnimationPhaseExecutor {
     }
 
     /**
-     * Выполняет список задач с учетом времени выполнения.
+     * Выполняет задачи через TaskExecutor с учетом времени выполнения.
      *
-     * @param tasks        Список задач.
+     * @param tasks         Список задач.
      * @param phaseDuration Длительность этапа.
-     * @param phaseNum     Номер текущего этапа.
+     * @param phaseNum      Номер текущего этапа.
      */
     private void executeTasksWithTimeout(List<Callable<Void>> tasks, long phaseDuration, int phaseNum) throws Exception {
-        animationFactory.getTaskExecutor().executeTasksWithTimeout(tasks, phaseDuration, e ->
-                AnimationFactory.logger.log(System.Logger.Level.ERROR,
-                        "Task failed during phase {0}. Error: {1}", phaseNum, e.getMessage())
+        animationFactory.getTaskExecutor().executeTasksWithTimeout(
+                tasks,
+                phaseDuration,
+                exception -> AnimationFactory.logger.log(System.Logger.Level.ERROR,
+                        "Task failed during phase {0}. Error: {1}",
+                        phaseNum, exception.getMessage())
         );
     }
 
@@ -96,10 +100,10 @@ public class AnimationPhaseExecutor {
      *
      * @param phaseNum Номер текущего этапа.
      */
-    private void notifyPhaseCompleted(int phaseNum) {
+    private void notifyPhaseCompleted(AnimationPhase phase, int phaseNum) {
         AnimationFactory.logger.log(System.Logger.Level.INFO,
                 "Notifying factory about phase {0} completion.", phaseNum);
-        animationFactory.onPhaseCompleted(animationFactory.getCurrentPhase());
+        animationFactory.onPhaseCompleted(phase);
     }
 
     /**

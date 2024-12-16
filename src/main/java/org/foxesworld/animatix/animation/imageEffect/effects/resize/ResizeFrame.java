@@ -3,6 +3,7 @@ package org.foxesworld.animatix.animation.imageEffect.effects.resize;
 import org.foxesworld.animatix.Main;
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
+import org.foxesworld.animatix.animation.config.AnimationPhase;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;
@@ -24,9 +25,8 @@ public class ResizeFrame extends AnimationFrame {
     private int startWidth, endWidth, startHeight, endHeight;
     private String resizeType;
 
-    public ResizeFrame(AnimationFactory animationFactory) {
-        super(animationFactory);
-        this.label = animationFactory.getImageWorks().getLabel();
+    public ResizeFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
+        super(animationFactory, phase, label);
         initializeParams(params, effectName);
     }
 

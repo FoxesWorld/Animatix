@@ -2,6 +2,7 @@ package org.foxesworld.animatix.animation.imageEffect.effects.colorFade;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
+import org.foxesworld.animatix.animation.config.AnimationPhase;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,9 +23,8 @@ public class ColorFadeFrame extends AnimationFrame {
     private Color currentColor;
     private float progress;
 
-    public ColorFadeFrame(AnimationFactory animationFactory) {
-        super(animationFactory);
-        this.label = animationFactory.getImageWorks().getLabel();
+    public ColorFadeFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
+        super(animationFactory, phase, label);
         initializeParams(params, effectName);
     }
 

@@ -25,6 +25,24 @@ public class ImageWorks {
 
     }
 
+    public static ImageWorks createFromLabel(JLabel label, int index) {
+        BufferedImage img = label.getIcon() instanceof ImageIcon
+                ? (BufferedImage) ((ImageIcon) label.getIcon()).getImage()
+                : null;
+
+        ImageWorks imageWorks = new ImageWorks(label, index);
+        imageWorks.setImage(img);
+        return imageWorks;
+    }
+
+    public static ImageWorks createFromImage(BufferedImage image, int index) {
+        JLabel label = new JLabel(new ImageIcon(image));
+        ImageWorks imageWorks = new ImageWorks(label, index);
+        imageWorks.setImage(image);
+        return imageWorks;
+    }
+
+
     public BufferedImage resizeImage(int targetWidth, int targetHeight, ResizeFrame.ResizeType resizeType) {
         // Получаем исходные размеры изображения
         int originalWidth = image.getWidth();
@@ -163,7 +181,7 @@ public class ImageWorks {
     }
 
 
-    public BufferedImage setBaseAlpha(BufferedImage image, float alpha) {
+    public static BufferedImage setBaseAlpha(BufferedImage image, float alpha) {
         BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
         for (int x = 0; x < image.getWidth(); x++) {

@@ -2,13 +2,41 @@ package org.foxesworld.animatix.animation.config;
 
 import org.foxesworld.animatix.AnimationFactory;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
 public class AnimationPhase {
     private int phaseNum;
     private double alpha;
-    private List<String> imageEffects;
+    private List<String> effects;
+    private String type, text, font, textColor, imagePath;
+    private int fontSize;
+
+    public String getType() {
+        return type;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public String getFont() {
+        return font;
+    }
+
+    public String getTextColor() {
+        return textColor;
+    }
+
+    public int getFontSize() {
+        return fontSize;
+    }
+
     private List<String> textEffects;
     private long duration, delay;
     private Map<String, Map<String, Object>> effectParams;
@@ -45,12 +73,12 @@ public class AnimationPhase {
         this.effectParams = effectParams;
     }
 
-    public List<String> getImageEffects() {
-        return imageEffects;
+    public List<String> getEffects() {
+        return effects;
     }
 
-    public void setImageEffects(List<String> imageEffects) {
-        this.imageEffects = imageEffects;
+    public void setEffects(List<String> effects) {
+        this.effects = effects;
     }
 
     public List<String> getTextEffects() {
@@ -118,10 +146,9 @@ public class AnimationPhase {
      * @return true, если эффект используется, иначе false.
      */
     public boolean hasEffect(String effectName) {
-        return (imageEffects != null && imageEffects.contains(effectName)) ||
+        return (effects != null && effects.contains(effectName)) ||
                 (textEffects != null && textEffects.contains(effectName));
     }
-
     public double getAlpha() {
         return alpha;
     }

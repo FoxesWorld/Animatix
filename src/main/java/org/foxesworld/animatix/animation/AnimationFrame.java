@@ -17,16 +17,16 @@ public abstract class AnimationFrame implements Runnable {
     private Timer timer;
     private long startTime;
     private boolean finished = false;
-
     protected final AnimationPhase phase;
     protected final ImageWorks imageWorks;
     protected JLabel label;
 
-    public AnimationFrame(AnimationFactory animationFactory) {
+    public AnimationFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
         this.animationFactory = animationFactory;
-        this.phase = animationFactory.getCurrentPhase();
-        this.imageWorks = animationFactory.getImageWorks();
-        this.label = animationFactory.getAnimLabels().get(imageWorks.getLabelIndex());
+        this.phase = phase;
+        this.label = label;
+        this.imageWorks = new ImageWorks(label, 0);
+
         this.duration = phase.getDuration();
     }
 
@@ -52,7 +52,7 @@ public abstract class AnimationFrame implements Runnable {
         });
 
         timer.start();
-        AnimationFactory.logger.log(System.Logger.Level.INFO, "Animation started for phase: " + animationFactory.getPhaseNum());
+        //AnimationFactory.logger.log(System.Logger.Level.INFO, "Animation started for phase: " + animationFactory.getPhaseNum());
     }
 
     private void updateFrame() {
@@ -71,7 +71,7 @@ public abstract class AnimationFrame implements Runnable {
         if (elapsedTime >= duration) {
             stopAnimation();
             SwingUtilities.invokeLater(() -> update(1.0f));
-            AnimationFactory.logger.log(System.Logger.Level.INFO, "Animation completed for phase: " + animationFactory.getPhaseNum());
+            //AnimationFactory.logger.log(System.Logger.Level.INFO, "Animation completed for phase: " + animationFactory.getPhaseNum());
 
             if (animationFactory instanceof AnimationStatus) {
                 ((AnimationStatus) animationFactory).onPhaseCompleted(phase);

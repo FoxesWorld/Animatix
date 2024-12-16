@@ -2,6 +2,7 @@ package org.foxesworld.animatix.animation.imageEffect.effects.crackFrame;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
+import org.foxesworld.animatix.animation.config.AnimationPhase;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,9 +22,8 @@ public class CrackFrame extends AnimationFrame {
     };
     private final String effectName = "crack";
 
-    public CrackFrame(AnimationFactory animationFactory) {
-        super(animationFactory);
-        this.label = animationFactory.getImageWorks().getLabel();
+    public CrackFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
+        super(animationFactory, phase, label);
         initializeParams(params, effectName);
         cracks = new ArrayList<>();
         random = new Random();

@@ -2,7 +2,6 @@ package org.foxesworld.animatix.animation.config;
 
 import com.google.gson.Gson;
 import org.foxesworld.animatix.AnimationFactory;
-import org.foxesworld.animatix.Main;
 
 import java.io.InputStream;
 

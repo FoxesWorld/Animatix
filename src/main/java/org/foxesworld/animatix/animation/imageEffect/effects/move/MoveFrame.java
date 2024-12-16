@@ -2,6 +2,7 @@ package org.foxesworld.animatix.animation.imageEffect.effects.move;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
+import org.foxesworld.animatix.animation.config.AnimationPhase;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,9 +27,8 @@ public class MoveFrame extends AnimationFrame {
     private Color traceColor;
     private int traceThickness;
 
-    public MoveFrame(AnimationFactory animationFactory) {
-        super(animationFactory);
-        this.label = animationFactory.getAnimLabels().get(animationFactory.getImageWorks().getLabelIndex());
+    public MoveFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
+        super(animationFactory, phase, label);
         pathPoints = new ArrayList<>();
         initializeParams(params, effectName);
     }

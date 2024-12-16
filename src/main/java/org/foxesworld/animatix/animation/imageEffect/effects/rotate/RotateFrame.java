@@ -2,6 +2,7 @@ package org.foxesworld.animatix.animation.imageEffect.effects.rotate;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
+import org.foxesworld.animatix.animation.config.AnimationPhase;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;
@@ -23,9 +24,8 @@ public class RotateFrame extends AnimationFrame {
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    public RotateFrame(AnimationFactory animationFactory) {
-        super(animationFactory);
-        this.label = animationFactory.getImageWorks().getLabel();
+    public RotateFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
+        super(animationFactory, phase, label);
         initializeParams(params, effectName);
     }
 

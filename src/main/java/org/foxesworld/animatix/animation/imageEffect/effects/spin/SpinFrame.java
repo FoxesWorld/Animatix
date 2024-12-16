@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
+import org.foxesworld.animatix.animation.config.AnimationPhase;
 
 public class SpinFrame extends AnimationFrame {
 
@@ -22,9 +23,8 @@ public class SpinFrame extends AnimationFrame {
     private double startAngle, endAngle;
     private int spinSpeed;
 
-    public SpinFrame(AnimationFactory animationFactory) {
-        super(animationFactory);
-        this.label = animationFactory.getImageWorks().getLabel();
+    public SpinFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
+        super(animationFactory, phase, label);
         initializeParams(params, effectName);
     }
 

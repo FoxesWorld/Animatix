@@ -1,8 +1,7 @@
 {
-  "images": [
+  "objects": [
     {
-      "animationName": "diamondAnimation" ,
-      "imagePath": "img/diamond.png" ,
+      "name": "diamondAnimation" ,
       "alpha": 0.4,
       "repeat": true,
       "bounds": {
@@ -13,7 +12,9 @@
       } ,
       "phases": [
         {
-          "imageEffects": [
+          "type": "image",
+          "imagePath": "img/diamond.png" ,
+          "effects": [
             "resize"
           ] ,
           "alpha": 0.4,
@@ -30,8 +31,7 @@
       ]
     },
     {
-      "animationName": "goldAnimation" ,
-      "imagePath": "img/gold.png" ,
+      "name": "goldAnimation" ,
       "repeat": true,
       "bounds": {
         "x": 40,
@@ -41,10 +41,12 @@
       } ,
       "phases": [
         {
-          "imageEffects": [
+          "type": "image",
+          "imagePath": "img/gold.png" ,
+          "effects": [
             "resize"
           ] ,
-          "alpha": 0.4,
+          "alpha": 0.9,
           "duration": 800 ,
           "effectParams": {
             "resize": {
@@ -59,8 +61,7 @@
       ]
     },
     {
-      "animationName": "brandAnimation" ,
-      "imagePath": "img/animatix.png" ,
+      "name": "brandAnimation" ,
       "repeat": true,
       "bounds": {
         "x": 120,
@@ -70,8 +71,46 @@
       } ,
       "phases": [
         {
-          "imageEffects": [
-            "resize", "spin", "fade"
+          "type": "image",
+          "imagePath": "img/animatix.png" ,
+          "effects": [
+            "resize"
+          ] ,
+          "alpha": 1.0,
+          "delay": 600,
+          "duration": 1500 ,
+          "effectParams": {
+            "resize": {
+              "startWidth": 290 ,
+              "startHeight": 290 ,
+              "endWidth": 128 ,
+              "endHeight": 64 ,
+              "resizeType": "SCALE_TO_FIT"
+            },
+            "fade": {
+              "fadeType": "fadeOut"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "textTest" ,
+      "repeat": true,
+      "bounds": {
+        "x": 170,
+        "y": 90,
+        "width": 256,
+        "height": 128
+      } ,
+      "phases": [
+        {
+          "type": "text",
+          "font": "Arial",
+          "fontSize": 14,
+          "text": "img/animatix.png" ,
+          "effects": [
+            "fade"
           ] ,
           "alpha": 1.0,
           "delay": 600,

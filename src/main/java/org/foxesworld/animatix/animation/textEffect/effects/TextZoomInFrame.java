@@ -1,6 +1,7 @@
 package org.foxesworld.animatix.animation.textEffect.effects;
 
 import org.foxesworld.animatix.AnimationFactory;
+import org.foxesworld.animatix.animation.config.AnimationPhase;
 import org.foxesworld.animatix.animation.textEffect.TextAnimationFrame;
 
 import javax.swing.*;
@@ -8,8 +9,8 @@ import java.awt.*;
 
 public class TextZoomInFrame extends TextAnimationFrame {
 
-    public TextZoomInFrame(AnimationFactory animationFactory, String text, String font, int fontSize, String textColor) {
-        super(animationFactory, text, font, fontSize, textColor);
+    public TextZoomInFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
+        super(animationFactory, phase, label);
     }
 
     @Override

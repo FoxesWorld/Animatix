@@ -4,27 +4,16 @@ import java.awt.*;
 import java.util.List;
 
 public class AnimationConfig {
-    private List<ImageConfig> images;
+    private List<AnimConf> objects;
 
-    public static class ImageConfig {
-
-
-        private String animationName;
+    public static class AnimConf {
+        private String name;
         private Bounds bounds;
         private boolean repeat;
-        private String imagePath;
         private List<AnimationPhase> phases;
 
-        public String getImagePath() {
-            return imagePath;
-        }
-
-        public void setImagePath(String imagePath) {
-            this.imagePath = imagePath;
-        }
-
-        public String getAnimationName() {
-            return animationName;
+        public String getName() {
+            return name;
         }
 
         public boolean isRepeat() {
@@ -51,7 +40,7 @@ public class AnimationConfig {
         }
     }
 
-    public List<ImageConfig> getImages() {
-        return images;
+    public List<AnimConf> getAnimObj() {
+        return objects;
     }
 }

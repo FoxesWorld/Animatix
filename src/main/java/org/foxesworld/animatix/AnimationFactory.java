@@ -28,7 +28,6 @@ public class AnimationFactory implements AnimationStatus {
     private final Map<AnimationPhase, List<AnimationFrame>> cachedFrames = new ConcurrentHashMap<>();
     private final List<JLabel> animLabels = new ArrayList<>();
     private AnimationConfig config;
-    private ImageWorks imageWorks;
     private volatile int phaseNum = 0;
     private volatile boolean isPaused = false;
     private AnimationPhase currentPhase;
@@ -56,35 +55,17 @@ public class AnimationFactory implements AnimationStatus {
         validateConfig();
         phaseNum = 0;
 
-        for (AnimationConfig.ImageConfig imageConfig : config.getImages()) {
-            Rectangle imageBounds = imageConfig.getBounds();
-            BufferedImage labelImage = createSizedImage(ImageWorks.getImageFromStream(imageConfig.getImagePath()), imageBounds);
+        for (AnimationConfig.AnimConf animConf : config.getAnimObj()) {
+            Rectangle objectBounds = animConf.getBounds();
 
-            JLabel animLabel = new JLabel(new ImageIcon(labelImage));
-            animLabel.setBounds(imageBounds);
+            JLabel animLabel = new JLabel();
+            animLabel.setBounds(objectBounds);
             addLabelToWindow(window, animLabel);
             animLabel.setVisible(false);
             animLabels.add(animLabel);
 
-            imageWorks = new ImageWorks(animLabel, animLabels.size() - 1);
-
-            taskExecutor.submitTask(() -> runAnimation(imageConfig), (error) -> {
-                System.out.println(error);
-            });
+            taskExecutor.submitTask(() -> runAnimation(animLabel, animConf), System.out::println);
         }
-    }
-
-    private BufferedImage createSizedImage(BufferedImage image, Rectangle size) {
-        BufferedImage resizedImage = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = resizedImage.createGraphics();
-
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.drawImage(image, 0, 0, size.width, size.height, null);
-        g.dispose();
-
-        return resizedImage;
     }
 
     private void addLabelToWindow(Object window, JLabel label) {
@@ -97,39 +78,84 @@ public class AnimationFactory implements AnimationStatus {
         }
     }
 
-    private void runAnimation(AnimationConfig.ImageConfig imageConfig) {
+    private void runAnimation(JLabel animLabel, AnimationConfig.AnimConf animConf) {
         try {
             do {
-                for (AnimationPhase phase : imageConfig.getPhases()) {
-                    if (isPaused) synchronized (this) { wait(); }
+                for (AnimationPhase phase : animConf.getPhases()) {
+                    // Обработка паузы
+                    if (isPaused) {
+                        synchronized (this) {
+                            wait();
+                        }
+                    }
 
                     currentPhase = phase;
-                    JLabel animLabel = animLabels.get(imageWorks.getLabelIndex());
+
+                    if (phase.getType().equals("text")) {
+                        setupTextPhase(animLabel, phase);
+                    } else if (phase.getType().equals("image")) {
+                        setupImagePhase(animLabel, phase);
+                    }
+
                     animLabel.setVisible(true);
-                    animLabel.setIcon(new ImageIcon(imageWorks.setBaseAlpha((BufferedImage) ((ImageIcon)animLabel.getIcon()).getImage(), (float) phase.getAlpha())));
+
+
                     if (phase.getDelay() > 0) {
-                        logger.log(System.Logger.Level.INFO, "Delaying phase {0} for {1} ms", phaseNum, phase.getDelay());
+                        logger.log(System.Logger.Level.INFO,
+                                "Delaying phase {0} for {1} ms", phaseNum, phase.getDelay());
                         Thread.sleep(phase.getDelay());
                     }
-                    List<AnimationFrame> frames = getOrCacheAnimationFrames(phase);
 
-                    logger.log(System.Logger.Level.INFO, "Executing phase: " + phaseNum + " of " + imageConfig.getAnimationName());
-                    phaseExecutor.executePhase(this, frames, phaseNum);
+                    List<AnimationFrame> frames = getOrCacheAnimationFrames(phase, animLabel);
+                    logger.log(System.Logger.Level.INFO,
+                            "Executing phase {0} of animation: {1}", phaseNum, animConf.getName());
+                    phaseExecutor.executePhase(this, frames, phase, phaseNum);
                     waitForPhaseCompletion(phase.getDuration());
                     phaseNum++;
                 }
-            } while (imageConfig.isRepeat() && phaseNum < imageConfig.getPhases().size());
-            logger.log(System.Logger.Level.INFO, "Animation for " + imageConfig.getAnimationName() + " completed.");
+
+            } while (animConf.isRepeat() && phaseNum < animConf.getPhases().size());
+
+            logger.log(System.Logger.Level.INFO,
+                    "Animation for {0} completed.", animConf.getName());
+
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            logger.log(System.Logger.Level.ERROR, "Animation interrupted: " + e.getMessage(), e);
-        } finally {
-            shutdownScheduler();
+            logger.log(System.Logger.Level.ERROR,
+                    "Animation interrupted: {0}", e.getMessage(), e);
+
+        } catch (Exception e) {
+            logger.log(System.Logger.Level.ERROR,
+                    "Unexpected error during animation: {0}", e.getMessage(), e);
+
         }
     }
 
-    private List<AnimationFrame> getOrCacheAnimationFrames(AnimationPhase phase) {
-        return cachedFrames.computeIfAbsent(phase, effectFactory::createEffectsForPhase);
+    private void setupTextPhase(JLabel animLabel, AnimationPhase phase) {
+        animLabel.setText(phase.getText());
+        animLabel.setFont(new Font(phase.getFont(), Font.PLAIN, phase.getFontSize()));
+        if(phase.getTextColor() != null) {animLabel.setForeground(Color.decode(phase.getTextColor()));}
+        animLabel.setHorizontalAlignment(SwingConstants.CENTER);
+    }
+
+    private void setupImagePhase(JLabel animLabel, AnimationPhase phase) {
+        BufferedImage labelImage = ImageWorks.getImageFromStream(phase.getImagePath());
+        animLabel.setIcon(new ImageIcon(labelImage));
+        if (phase.hasEffect("alpha")) {
+            labelImage = ImageWorks.setBaseAlpha(labelImage, (float) phase.getAlpha());
+        }
+        animLabel.setIcon(new ImageIcon(labelImage));
+    }
+
+    private List<AnimationFrame> getOrCacheAnimationFrames(AnimationPhase phase, JLabel label) {
+        return cachedFrames.computeIfAbsent(phase, p -> {
+            if (p.getType().equals("text")) {
+                return effectFactory.createTextEffects(p, label);
+            } else if (p.getType().equals("image")) {
+                return effectFactory.createImageEffects(p, label);
+            }
+            return Collections.emptyList();
+        });
     }
 
     private void waitForPhaseCompletion(long duration) {
@@ -137,8 +163,7 @@ public class AnimationFactory implements AnimationStatus {
             Thread.sleep(duration);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            AnimationFactory.logger.log(System.Logger.Level.WARNING, "Phase wait interrupted. Duration: {0} ms", duration);
-            throw new RuntimeException("Phase wait interrupted", e);
+            logger.log(System.Logger.Level.WARNING, "Phase wait interrupted. Duration: {0} ms", duration);
         }
     }
 
@@ -153,10 +178,6 @@ public class AnimationFactory implements AnimationStatus {
         notifyAll();
     }
 
-    private void shutdownScheduler() {
-        taskExecutor.shutdown();
-    }
-
     private void validateConfig() {
         if (config == null) {
             throw new IllegalStateException("AnimationConfig must be loaded before creating animation");
@@ -165,10 +186,7 @@ public class AnimationFactory implements AnimationStatus {
 
     public void dispose() {
         animLabels.clear();
-        if (imageWorks != null) {
-            imageWorks.dispose();
-        }
-        shutdownScheduler();
+        taskExecutor.shutdown();
     }
 
     @Override
@@ -177,23 +195,7 @@ public class AnimationFactory implements AnimationStatus {
         notify();
     }
 
-    public AnimationPhase getCurrentPhase() {
-        return currentPhase;
-    }
-
     public TaskExecutor getTaskExecutor() {
         return taskExecutor;
-    }
-
-    public ImageWorks getImageWorks() {
-        return imageWorks;
-    }
-
-    public int getPhaseNum() {
-        return phaseNum;
-    }
-
-    public List<JLabel> getAnimLabels() {
-        return animLabels;
     }
 }
