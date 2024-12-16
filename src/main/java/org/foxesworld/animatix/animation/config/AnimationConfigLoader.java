@@ -16,7 +16,7 @@ public class AnimationConfigLoader {
         try (InputStream stream = inputStream) {
             Gson gson = new Gson();
             AnimationConfig config = gson.fromJson(new java.io.InputStreamReader(stream), AnimationConfig.class);
-            AnimationFactory.logger.info("Loaded animation config: {}", config);
+            AnimationFactory.logger.log(System.Logger.Level.INFO, "Loaded animation config: {}", config);
             return config;
         } catch (Exception e) {
             throw new RuntimeException("Failed to load animation config from InputStream", e);

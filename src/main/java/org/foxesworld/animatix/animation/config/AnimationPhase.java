@@ -59,13 +59,13 @@ public class AnimationPhase {
      */
     public <T> T getEffectParam(String effectName, String paramName, Class<T> clazz) {
         if (effectParams == null || !effectParams.containsKey(effectName)) {
-            AnimationFactory.logger.warn("Effect name not found: " + effectName);
+            AnimationFactory.logger.log(System.Logger.Level.WARNING, "Effect name not found: " + effectName);
             return null;
         }
 
         Map<String, Object> effectMap = effectParams.get(effectName);
         if (!effectMap.containsKey(paramName)) {
-            AnimationFactory.logger.warn("Parameter name not found: " + paramName + " for effect: " + effectName);
+            AnimationFactory.logger.log(System.Logger.Level.WARNING, "Parameter name not found: " + paramName + " for effect: " + effectName);
             return null;
         }
 
@@ -82,7 +82,7 @@ public class AnimationPhase {
             return clazz.cast(value);
         }
 
-        AnimationFactory.logger.error("Type mismatch for parameter: " + paramName + " (expected: " + clazz.getSimpleName() + ", found: " + value.getClass().getSimpleName() + ")");
+        AnimationFactory.logger.log(System.Logger.Level.ERROR, "Type mismatch for parameter: " + paramName + " (expected: " + clazz.getSimpleName() + ", found: " + value.getClass().getSimpleName() + ")");
         return null;
     }
 

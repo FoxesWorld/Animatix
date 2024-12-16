@@ -39,10 +39,6 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.11.0'
-    implementation 'org.fusesource.jansi:jansi:2.4.0'
-    implementation 'org.apache.logging.log4j:log4j-api:2.17.1'
-    implementation 'org.apache.logging.log4j:log4j-core:2.17.1'
-    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.17.1'
     implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
 }
 
@@ -68,12 +64,6 @@ shadowJar {
     destinationDirectory.set(file("${buildDir}/libs/shadow"))
     archiveFileName.set("${project.name}-${project.version}-all.jar")
 
-    // Исключаем Log4j из финальной сборки
-    dependencies {
-        exclude(dependency('org.apache.logging.log4j:log4j-api'))
-        exclude(dependency('org.apache.logging.log4j:log4j-core'))
-        exclude(dependency('org.apache.logging.log4j:log4j-slf4j-impl'))
-    }
 }
 test {
     useJUnitPlatform()

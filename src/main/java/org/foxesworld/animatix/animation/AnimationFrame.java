@@ -46,13 +46,13 @@ public abstract class AnimationFrame implements Runnable {
             try {
                 updateFrame();
             } catch (Exception ex) {
-                AnimationFactory.logger.error("Error during animation frame update", ex);
+                AnimationFactory.logger.log(System.Logger.Level.ERROR, "Error during animation frame update", ex);
                 stopAnimation();
             }
         });
 
         timer.start();
-        AnimationFactory.logger.info("Animation started for phase: {}", animationFactory.getPhaseNum());
+        AnimationFactory.logger.log(System.Logger.Level.INFO, "Animation started for phase: {}", animationFactory.getPhaseNum());
     }
 
     private void updateFrame() {
@@ -64,14 +64,14 @@ public abstract class AnimationFrame implements Runnable {
             try {
                 update(progress);
             } catch (Exception ex) {
-                AnimationFactory.logger.error("Error in UI update", ex);
+                AnimationFactory.logger.log(System.Logger.Level.ERROR,"Error in UI update", ex);
             }
         });
 
         if (elapsedTime >= duration) {
             stopAnimation();
             SwingUtilities.invokeLater(() -> update(1.0f));
-            AnimationFactory.logger.info("Animation completed for phase: {}", animationFactory.getPhaseNum());
+            AnimationFactory.logger.log(System.Logger.Level.INFO,"Animation completed for phase: {}", animationFactory.getPhaseNum());
             animationFactory.incrementPhase();
 
             if (animationFactory instanceof AnimationStatus) {
@@ -119,7 +119,7 @@ public abstract class AnimationFrame implements Runnable {
                 // Устанавливаем значение в поле
                 setFieldValue(field, value);
             } catch (Exception e) {
-                AnimationFactory.logger.error("Error initializing parameter: {}", param, e);
+                AnimationFactory.logger.log(System.Logger.Level.ERROR,"Error initializing parameter: {}", param, e);
             }
         }
     }

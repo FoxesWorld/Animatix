@@ -9,8 +9,6 @@ import org.foxesworld.animatix.animation.config.AnimationPhase;
 import org.foxesworld.animatix.animation.AnimationStatus;
 import org.foxesworld.animatix.animation.config.AnimationConfig;
 import org.foxesworld.animatix.animation.imageEffect.ImageWorks;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 
 import javax.swing.*;
@@ -25,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class AnimationFactory implements AnimationStatus {
 
-    public static final Logger logger = LogManager.getLogger(AnimationFactory.class);
+    public static final System.Logger logger = System.getLogger(AnimationFactory.class.getName());
     private final TaskExecutor taskExecutor;
     private final AnimationConfigLoader configLoader = new AnimationConfigLoader();
     private final AnimationEffectFactory effectFactory = new AnimationEffectFactory();
@@ -51,10 +49,10 @@ public class AnimationFactory implements AnimationStatus {
             if (inputStream == null) {
                 throw new RuntimeException("Configuration file not found!");
             }
-            logger.info("Loading animation config...");
+            logger.log(System.Logger.Level.INFO, "Loading animation config...");
             this.config = configLoader.loadConfig(inputStream);
         } catch (Exception e) {
-            AnimationFactory.logger.error("Failed to initialize animation factory", e);
+            AnimationFactory.logger.log(System.Logger.Level.ERROR, "Failed to initialize animation factory", e.getMessage());
         }
     }
 
@@ -79,7 +77,7 @@ public class AnimationFactory implements AnimationStatus {
                         executeAnimation(phase, imageConfig);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
-                        AnimationFactory.logger.error("Animation interrupted", e);
+                        AnimationFactory.logger.log(System.Logger.Level.ERROR, "Animation interrupted", e);
                     }
                     incrementPhase();
                 }).start();
@@ -134,14 +132,14 @@ public class AnimationFactory implements AnimationStatus {
             do {
                 currentPhase = phase;
                 this.getImageWorks().getLabel().setVisible(true);
-                logger.info("Starting phase number {} of {}", phaseNum, imageConfig.getAnimationName());
+                logger.log(System.Logger.Level.INFO, "Starting phase number {} of {}", phaseNum, imageConfig.getAnimationName());
                 List<AnimationFrame> animationFrames = getOrCacheAnimationFrames(phase);
                 phaseExecutor.executePhase(this, animationFrames, phaseNum);
                 waitForPhaseCompletion(phase.getDuration());
             } while (imageConfig.isRepeat() && phaseNum < imageConfig.getPhases().size());
-            logger.info("Animation complete.");
+            logger.log(System.Logger.Level.INFO, "Animation complete.");
         } catch (Exception e) {
-            logger.error("Error during animation execution", e);
+            logger.log(System.Logger.Level.ERROR, "Error during animation execution", e);
         } finally {
             shutdownScheduler();
         }
@@ -166,24 +164,24 @@ public class AnimationFactory implements AnimationStatus {
 
             future.join();
         } catch (Exception e) {
-            logger.error("Error during waiting for phase completion", e);
+            logger.log(System.Logger.Level.ERROR, "Error during waiting for phase completion", e);
         }
     }
 
     public synchronized void pause() {
         isPaused = true;
-        logger.info("Animation paused.");
+        logger.log(System.Logger.Level.INFO, "Animation paused.");
     }
 
     public synchronized void resume() {
         isPaused = false;
-        logger.info("Animation resumed.");
+        logger.log(System.Logger.Level.INFO, "Animation resumed.");
         notify();
     }
 
     public synchronized void incrementPhase() {
         phaseNum++;
-        logger.debug("Phase incremented to: {}", phaseNum);
+        logger.log(System.Logger.Level.DEBUG,"Phase incremented to: {}", phaseNum);
     }
 
     private void shutdownScheduler() {
@@ -192,7 +190,7 @@ public class AnimationFactory implements AnimationStatus {
 
     @Override
     public synchronized void onPhaseCompleted() {
-        logger.info("Phase completed, notifying main thread.");
+        logger.log(System.Logger.Level.INFO,"Phase completed, notifying main thread.");
         notify();
     }
 

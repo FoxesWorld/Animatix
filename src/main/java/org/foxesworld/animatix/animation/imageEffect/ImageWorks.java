@@ -109,7 +109,7 @@ public class ImageWorks {
 
         long endTime = System.nanoTime();
         double elapsedTimeInSeconds = (endTime - startTime) / 1_000_000_000.0;
-        AnimationFactory.logger.info("Rotation effect applied in {} seconds.", elapsedTimeInSeconds);
+        AnimationFactory.logger.log(System.Logger.Level.INFO, "Rotation effect applied in {} seconds.", elapsedTimeInSeconds);
         return rotatedImage;
     }
 

@@ -2,12 +2,9 @@ package org.foxesworld.animatix.animation.textEffect;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class TextAnimationFrame extends AnimationFrame {
 
-    private static final Logger logger = LoggerFactory.getLogger(TextAnimationFrame.class);
 
     protected final String text;
     protected final String font;

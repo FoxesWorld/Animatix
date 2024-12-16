@@ -28,7 +28,6 @@ public class MoveFrame extends AnimationFrame {
 
     public MoveFrame(AnimationFactory animationFactory) {
         super(animationFactory);
-        System.out.println(animationFactory.getImageWorks().getLabelIndex());
         this.label = animationFactory.getAnimLabels().get(animationFactory.getImageWorks().getLabelIndex());
         pathPoints = new ArrayList<>();
         initializeParams(params, effectName);
@@ -45,7 +44,7 @@ public class MoveFrame extends AnimationFrame {
 
         // Устанавливаем новые координаты для JLabel
         label.setLocation(newX, newY);
-        drawTrace();
+        //drawTrace();
     }
 
     private void drawTrace() {

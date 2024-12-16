@@ -4,12 +4,9 @@ import java.util.Collection;
 import java.util.concurrent.*;
 
 import org.foxesworld.animatix.AnimationFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TaskExecutor {
 
-    private static final Logger logger = LoggerFactory.getLogger(TaskExecutor.class);
     private static final int THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors();
     private static TaskExecutor instance;
 
@@ -17,7 +14,7 @@ public class TaskExecutor {
 
     public TaskExecutor(AnimationFactory animationFactory) {
         this.executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-        logger.info("TaskExecutor initialized with thread pool size: {}", THREAD_POOL_SIZE);
+        AnimationFactory.logger.log(System.Logger.Level.INFO, "TaskExecutor initialized with thread pool size: {}", THREAD_POOL_SIZE);
     }
 
 
@@ -36,7 +33,7 @@ public class TaskExecutor {
                 try {
                     task.run();
                 } catch (Exception e) {
-                    logger.error("Task execution failed", e);
+                    AnimationFactory.logger.log(System.Logger.Level.ERROR, "Task execution failed", e);
                 } finally {
                     latch.countDown();
                 }
@@ -44,9 +41,9 @@ public class TaskExecutor {
         }
 
         if (!latch.await(timeout, TimeUnit.MILLISECONDS)) {
-            logger.warn("Tasks did not complete within the timeout of {} ms", timeout);
+            AnimationFactory.logger.log(System.Logger.Level.WARNING, "Tasks did not complete within the timeout of {} ms", timeout);
         } else {
-            logger.info("All tasks completed successfully");
+            AnimationFactory.logger.log(System.Logger.Level.INFO, "All tasks completed successfully");
         }
     }
 
@@ -62,12 +59,12 @@ public class TaskExecutor {
         Future<?> future = executorService.submit(task);
         try {
             future.get(timeout, TimeUnit.MILLISECONDS);
-            logger.info("Task completed successfully within timeout: {} ms", timeout);
+            AnimationFactory.logger.log(System.Logger.Level.INFO, "Task completed successfully within timeout: {} ms", timeout);
         } catch (TimeoutException e) {
-            logger.error("Task execution timed out after {} ms", timeout);
+            AnimationFactory.logger.log(System.Logger.Level.INFO, "Task execution timed out after {} ms", timeout);
             throw e;
         } catch (Exception e) {
-            logger.error("Error during task execution", e);
+            AnimationFactory.logger.log(System.Logger.Level.ERROR, "Error during task execution", e);
             throw new RuntimeException(e);
         }
     }
@@ -82,7 +79,7 @@ public class TaskExecutor {
             try {
                 task.run();
             } catch (Exception e) {
-                logger.error("Async task execution failed", e);
+                AnimationFactory.logger.log(System.Logger.Level.ERROR, "Async task execution failed", e);
             }
         });
     }
@@ -95,14 +92,14 @@ public class TaskExecutor {
         try {
             if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
                 executorService.shutdownNow();
-                logger.warn("Executor forcefully shutdown due to timeout");
+                AnimationFactory.logger.log(System.Logger.Level.WARNING, "Executor forcefully shutdown due to timeout");
             } else {
-                logger.info("Executor shut down gracefully");
+                AnimationFactory.logger.log(System.Logger.Level.INFO, "Executor shut down gracefully");
             }
         } catch (InterruptedException e) {
             executorService.shutdownNow();
             Thread.currentThread().interrupt();
-            logger.error("Shutdown interrupted", e);
+            AnimationFactory.logger.log(System.Logger.Level.WARNING, "Shutdown interrupted", e);
         }
     }
 }
