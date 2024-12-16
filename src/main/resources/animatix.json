@@ -3,7 +3,8 @@
     {
       "animationName": "diamondAnimation" ,
       "imagePath": "img/diamond.png" ,
-      "repeat": true ,
+      "alpha": 0.4,
+      "repeat": true,
       "bounds": {
         "x": 0 ,
         "y": 0 ,
@@ -15,6 +16,7 @@
           "imageEffects": [
             "resize"
           ] ,
+          "alpha": 0.4,
           "duration": 800 ,
           "effectParams": {
             "move": {
@@ -42,6 +44,7 @@
           "imageEffects": [
             "resize"
           ] ,
+          "alpha": 0.4,
           "duration": 800 ,
           "effectParams": {
             "resize": {
@@ -68,8 +71,9 @@
       "phases": [
         {
           "imageEffects": [
-            "resize"
+            "resize", "spin", "fade"
           ] ,
+          "alpha": 1.0,
           "delay": 600,
           "duration": 1500 ,
           "effectParams": {
@@ -79,6 +83,9 @@
               "endWidth": 128 ,
               "endHeight": 64 ,
               "resizeType": "SCALE_TO_FIT"
+            },
+            "fade": {
+              "fadeType": "fadeOut"
             }
           }
         }

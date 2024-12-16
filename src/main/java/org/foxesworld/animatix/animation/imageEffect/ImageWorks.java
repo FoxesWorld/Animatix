@@ -143,6 +143,45 @@ public class ImageWorks {
         }
     }
 
+    public BufferedImage applyAlphaEffect(BufferedImage image, float alpha, int fadeSpeed) {
+        BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        for (int x = 0; x < image.getWidth(); x++) {
+            for (int y = 0; y < image.getHeight(); y++) {
+                int argb = image.getRGB(x, y);
+                int originalAlpha = (argb >> 24) & 0xFF;
+                int newAlpha = (int) (originalAlpha * alpha);
+                newAlpha = Math.min(255, Math.max(0, newAlpha));
+
+                if (fadeSpeed > 1) {
+                    newAlpha = Math.min(255, newAlpha + fadeSpeed);
+                }
+
+                newImage.setRGB(x, y, (argb & 0x00FFFFFF) | (newAlpha << 24));
+            }
+        }
+        return newImage;
+    }
+
+
+    public BufferedImage setBaseAlpha(BufferedImage image, float alpha) {
+        BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+        for (int x = 0; x < image.getWidth(); x++) {
+            for (int y = 0; y < image.getHeight(); y++) {
+                int argb = image.getRGB(x, y);
+                int originalAlpha = (argb >> 24) & 0xFF;
+
+                int newAlpha = (int) (originalAlpha * alpha);
+                newAlpha = Math.min(255, Math.max(0, newAlpha));
+                newImage.setRGB(x, y, (argb & 0x00FFFFFF) | (newAlpha << 24));
+            }
+        }
+
+        return newImage;
+    }
+
+
+
     public void setImage(BufferedImage image) {
         this.image = image;
     }

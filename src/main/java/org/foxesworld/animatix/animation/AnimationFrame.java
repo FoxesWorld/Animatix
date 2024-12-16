@@ -52,7 +52,7 @@ public abstract class AnimationFrame implements Runnable {
         });
 
         timer.start();
-        AnimationFactory.logger.log(System.Logger.Level.INFO, "Animation started for phase: {}", animationFactory.getPhaseNum());
+        AnimationFactory.logger.log(System.Logger.Level.INFO, "Animation started for phase: "+ animationFactory.getPhaseNum());
     }
 
     private void updateFrame() {
@@ -71,11 +71,11 @@ public abstract class AnimationFrame implements Runnable {
         if (elapsedTime >= duration) {
             stopAnimation();
             SwingUtilities.invokeLater(() -> update(1.0f));
-            AnimationFactory.logger.log(System.Logger.Level.INFO,"Animation completed for phase: {}", animationFactory.getPhaseNum());
-            animationFactory.incrementPhase();
+            AnimationFactory.logger.log(System.Logger.Level.INFO,"Animation completed for phase: "+ animationFactory.getPhaseNum());
+            //animationFactory.incrementPhase();
 
             if (animationFactory instanceof AnimationStatus) {
-                ((AnimationStatus) animationFactory).onPhaseCompleted();
+                ((AnimationStatus) animationFactory).onPhaseCompleted(phase);
             }
         }
     }

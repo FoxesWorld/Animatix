@@ -9,9 +9,11 @@ import org.foxesworld.animatix.animation.imageEffect.effects.bounce.BounceFrame;
 import org.foxesworld.animatix.animation.imageEffect.effects.colorFade.ColorFadeFrame;
 import org.foxesworld.animatix.animation.imageEffect.effects.crackFrame.CrackFrame;
 import org.foxesworld.animatix.animation.imageEffect.effects.decay.DecayFrame;
+import org.foxesworld.animatix.animation.imageEffect.effects.fade.FadeFrame;
 import org.foxesworld.animatix.animation.imageEffect.effects.move.MoveFrame;
 import org.foxesworld.animatix.animation.imageEffect.effects.resize.ResizeFrame;
 import org.foxesworld.animatix.animation.imageEffect.effects.rotate.RotateFrame;
+import org.foxesworld.animatix.animation.imageEffect.effects.spin.SpinFrame;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -36,7 +38,9 @@ public class AnimationEffectFactory {
                 case BOUNCE -> frames.add(new BounceFrame(animationFactory));
                 case DECAY -> frames.add(new DecayFrame(animationFactory));
                 case CRACK -> frames.add(new CrackFrame(animationFactory));
-                case COLOR_FADE -> frames.add(new ColorFadeFrame(animationFactory));
+                case FADE -> frames.add(new FadeFrame(animationFactory));
+                case COLORFADE -> frames.add(new ColorFadeFrame(animationFactory));
+                case SPIN -> frames.add(new SpinFrame(animationFactory));
                 case BORDERHIGHLIGHT ->  frames.add(new BorderHighlightFrame(animationFactory));
                 default -> throw new UnsupportedOperationException("Effect type not supported: " + effectType);
             }

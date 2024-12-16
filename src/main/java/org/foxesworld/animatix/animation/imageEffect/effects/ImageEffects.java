@@ -5,8 +5,10 @@ public enum ImageEffects {
     MOVE,
     DECAY,
     BOUNCE,
+    SPIN,
     CRACK,
-    COLOR_FADE,
+    COLORFADE,
+    FADE,
     BORDERHIGHLIGHT,
     ROTATE;
     public static ImageEffects fromString(String effect) {

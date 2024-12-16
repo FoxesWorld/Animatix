@@ -7,21 +7,34 @@ import java.util.Map;
 
 public class AnimationPhase {
     private int phaseNum;
+    private double alpha;
     private List<String> imageEffects;
     private List<String> textEffects;
     private long duration, delay;
     private Map<String, Map<String, Object>> effectParams;
 
+    public int getPhaseNum() {
+        return phaseNum;
+    }
+
+    public void setPhaseNum(int phaseNum) {
+        this.phaseNum = phaseNum;
+    }
+
     public long getDuration() {
         return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 
     public long getDelay() {
         return delay;
     }
 
-    public void setDuration(long duration) {
-        this.duration = duration;
+    public void setDelay(long delay) {
+        this.delay = delay;
     }
 
     public Map<String, Map<String, Object>> getEffectParams() {
@@ -86,7 +99,6 @@ public class AnimationPhase {
         return null;
     }
 
-
     /**
      * Устанавливает параметры для конкретного эффекта из карты параметров.
      *
@@ -108,5 +120,9 @@ public class AnimationPhase {
     public boolean hasEffect(String effectName) {
         return (imageEffects != null && imageEffects.contains(effectName)) ||
                 (textEffects != null && textEffects.contains(effectName));
+    }
+
+    public double getAlpha() {
+        return alpha;
     }
 }
