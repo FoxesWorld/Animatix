@@ -1,11 +1,22 @@
 package org.foxesworld.animatix.animation.imageEffect.effects.bounce;
 
 import org.foxesworld.animatix.AnimationFactory;
+<<<<<<< Updated upstream
 import org.foxesworld.animatix.animation.AnimationFrame;
 
 public class BounceFrame extends AnimationFrame {
     public BounceFrame(AnimationFactory animationFactory) {
         super(animationFactory);
+=======
+import org.foxesworld.animatix.animation.config.AnimationPhase;
+import org.foxesworld.animatix.animation.imageEffect.ImageAnimationFrame;
+
+import javax.swing.*;
+
+public class BounceFrame extends ImageAnimationFrame {
+    public BounceFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
+        super(animationFactory, phase, label);
+>>>>>>> Stashed changes
     }
 
     @Override

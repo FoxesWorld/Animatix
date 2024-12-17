@@ -3,6 +3,11 @@ package org.foxesworld.animatix.animation.imageEffect.effects.rotate;
 import org.foxesworld.animatix.Main;
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
+<<<<<<< Updated upstream
+=======
+import org.foxesworld.animatix.animation.config.AnimationPhase;
+import org.foxesworld.animatix.animation.imageEffect.ImageAnimationFrame;
+>>>>>>> Stashed changes
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;
@@ -10,7 +15,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class RotateFrame extends AnimationFrame {
+public class RotateFrame extends ImageAnimationFrame {
 
     private final Map<String, Object>[] params = new Map[]{
             createParam("startAngle", "startAngle", Float.class, 0.0f),

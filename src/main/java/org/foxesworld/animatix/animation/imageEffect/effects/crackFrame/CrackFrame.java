@@ -2,6 +2,11 @@ package org.foxesworld.animatix.animation.imageEffect.effects.crackFrame;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
+<<<<<<< Updated upstream
+=======
+import org.foxesworld.animatix.animation.config.AnimationPhase;
+import org.foxesworld.animatix.animation.imageEffect.ImageAnimationFrame;
+>>>>>>> Stashed changes
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class CrackFrame extends AnimationFrame {
+public class CrackFrame extends ImageAnimationFrame {
 
     private List<Crack> cracks;
     private Random random;

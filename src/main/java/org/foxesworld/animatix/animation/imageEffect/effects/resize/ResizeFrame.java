@@ -3,12 +3,17 @@ package org.foxesworld.animatix.animation.imageEffect.effects.resize;
 import org.foxesworld.animatix.Main;
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
+<<<<<<< Updated upstream
+=======
+import org.foxesworld.animatix.animation.config.AnimationPhase;
+import org.foxesworld.animatix.animation.imageEffect.ImageAnimationFrame;
+>>>>>>> Stashed changes
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 
-public class ResizeFrame extends AnimationFrame {
+public class ResizeFrame extends ImageAnimationFrame {
 
     // Параметры эффекта
     private final Map<String, Object>[] params = new Map[]{
@@ -38,8 +43,14 @@ public class ResizeFrame extends AnimationFrame {
         // Меняем размеры изображения
         BufferedImage resizedImage = imageWorks.resizeImage(newWidth, newHeight, ResizeType.valueOf(resizeType));
         label.setIcon(new ImageIcon(resizedImage));
+<<<<<<< Updated upstream
         label.setSize(newWidth, newHeight);
         imageWorks.setImage((BufferedImage) resizedImage);
+=======
+        //label.setSize(newWidth, newHeight);
+        imageWorks.setImage(resizedImage);
+        label.repaint();
+>>>>>>> Stashed changes
     }
 
     @Override

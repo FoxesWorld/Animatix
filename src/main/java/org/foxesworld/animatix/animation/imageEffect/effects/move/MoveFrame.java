@@ -2,6 +2,11 @@ package org.foxesworld.animatix.animation.imageEffect.effects.move;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
+<<<<<<< Updated upstream
+=======
+import org.foxesworld.animatix.animation.config.AnimationPhase;
+import org.foxesworld.animatix.animation.imageEffect.ImageAnimationFrame;
+>>>>>>> Stashed changes
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,8 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+<<<<<<< Updated upstream
 public class MoveFrame extends AnimationFrame {
 
+=======
+public class MoveFrame extends ImageAnimationFrame {
+>>>>>>> Stashed changes
     private final Map<String, Object>[] params = new Map[] {
             createParam("startX", "startX", Integer.class, 0),
             createParam("startY", "startY", Integer.class, 0),

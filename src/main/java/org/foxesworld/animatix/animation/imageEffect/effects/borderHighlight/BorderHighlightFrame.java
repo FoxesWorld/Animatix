@@ -2,6 +2,11 @@ package org.foxesworld.animatix.animation.imageEffect.effects.borderHighlight;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
+<<<<<<< Updated upstream
+=======
+import org.foxesworld.animatix.animation.config.AnimationPhase;
+import org.foxesworld.animatix.animation.imageEffect.ImageAnimationFrame;
+>>>>>>> Stashed changes
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +15,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 
-public class BorderHighlightFrame extends AnimationFrame {
+public class BorderHighlightFrame extends ImageAnimationFrame {
     // Параметры эффекта
     private final Map<String, Object>[] params = new Map[] {
             createParam("borderColor", "borderColor", String.class, "#FF5733"),  // HEX цвет для границы

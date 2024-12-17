@@ -6,8 +6,13 @@ import java.util.Map;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
+<<<<<<< Updated upstream
+=======
+import org.foxesworld.animatix.animation.config.AnimationPhase;
+import org.foxesworld.animatix.animation.imageEffect.ImageAnimationFrame;
+>>>>>>> Stashed changes
 
-public class DecayFrame extends AnimationFrame {
+public class DecayFrame extends ImageAnimationFrame {
 
     private final Map<String, Object>[] params = new Map[]{
             createParam("startAlpha", "startAlpha", Double.class, 1.0),

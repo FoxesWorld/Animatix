@@ -2,13 +2,18 @@ package org.foxesworld.animatix.animation.imageEffect.effects.colorFade;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
+<<<<<<< Updated upstream
+=======
+import org.foxesworld.animatix.animation.config.AnimationPhase;
+import org.foxesworld.animatix.animation.imageEffect.ImageAnimationFrame;
+>>>>>>> Stashed changes
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 
-public class ColorFadeFrame extends AnimationFrame {
+public class ColorFadeFrame extends ImageAnimationFrame {
     // Параметры эффекта
     private final Map<String, Object>[] params = new Map[]{
             createParam("startColor", "startColor", String.class, "#FFFFFF"), // Начальный цвет (в формате HEX)

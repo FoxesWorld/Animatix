@@ -15,8 +15,14 @@ public class AnimationConfigLoader {
 
         try (InputStream stream = inputStream) {
             Gson gson = new Gson();
+<<<<<<< Updated upstream
             AnimationConfig config = gson.fromJson(new java.io.InputStreamReader(stream), AnimationConfig.class);
             AnimationFactory.logger.info("Loaded animation config: {}", config);
+=======
+            AnimationConfig config = gson.fromJson(jsonObject, AnimationConfig.class);
+
+            AnimationFactory.logger.log(System.Logger.Level.INFO, "Loaded animation config: {0}", config);
+>>>>>>> Stashed changes
             return config;
         } catch (Exception e) {
             throw new RuntimeException("Failed to load animation config from InputStream", e);
