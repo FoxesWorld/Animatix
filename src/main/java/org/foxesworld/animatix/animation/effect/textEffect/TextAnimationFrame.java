@@ -32,12 +32,6 @@ public abstract class TextAnimationFrame extends AnimationFrame {
 
     @Override
     public void update(float progress) {
-        // В этом методе просто вызываем абстрактный метод, который будет реализован в подклассах
         applyEffect(progress);
-    }
-
-    @Override
-    public void run() {
-        super.run();  // Запуск базового класса для анимации
     }
 }

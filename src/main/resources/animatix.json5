@@ -4,23 +4,24 @@
       name: "diamondAnimation",
       type: "image",
       imagePath: "img/diamond.png",
+      visible: true,
       bounds: {
-        x: 130,
-        y: 0,
-        width: 256,
-        height: 256
+        x: 140,
+        y: 60,
+        width: 128,
+        height: 128
       },
       phases: [
         {
-          duration: 500,
+          duration: 800,
           effects: [
             {
               type: "resize",
               params: {
-                startWidth: 100,
-                startHeight: 100,
-                endWidth: 83,
-                endHeight: 83,
+                startWidth: 128,
+                startHeight: 128,
+                endWidth: 64,
+                endHeight: 64,
                 resizeType: "SCALE_TO_FIT"
               }
             }
@@ -29,25 +30,26 @@
       ]
     },
     {
-      name: "textTest",
+      name: "brand",
       repeat: true,
+      visible: true,
       type: "text",
-      text: "Animatix 0.0.8",
+      text: "Animatix 0.0.11",
       bounds: {
-        x: 0,
-        y: 0,
+        x: 60,
+        y: 60,
         width: 256,
         height: 128
       },
       phases: [
         {
           font: "Lucida Console",
-          duration: 1500,
-          alpha: 0.4,
+          duration: 1000,
+          alpha: 1.0,
           fontSize: 18,
           effects: [
             {
-              type: "fade",
+              type: "letterfade",
               params: {
                 fadeSpeed: 1,
                 fadeType: "fadeIn",
@@ -61,11 +63,10 @@
     },
     {
       name: "versionText",
-      repeat: true,
       type: "text",
       text: "SNAPSHOT",
       bounds: {
-        x: 170,
+        x: 240,
         y: 35,
         width: 128,
         height: 28
@@ -90,8 +91,8 @@
         {
           font: "Consolas",
           fontSize: 15,
-          duration: 1300,
-          delay: 700,
+          duration: 1100,
+          delay: 2000,
           alpha: 0.4,
           effects: [
             {

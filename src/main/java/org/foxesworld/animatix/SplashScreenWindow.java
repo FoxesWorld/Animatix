@@ -1,5 +1,7 @@
 package org.foxesworld.animatix;
 
+import org.foxesworld.animatix.animation.AnimationFrame;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -37,6 +39,7 @@ public class SplashScreenWindow extends JWindow {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             SplashScreenWindow splashScreen = new SplashScreenWindow();
+            AnimationFrame.setDefaultFps(60);
             splashScreen.setVisible(true);
         });
     }

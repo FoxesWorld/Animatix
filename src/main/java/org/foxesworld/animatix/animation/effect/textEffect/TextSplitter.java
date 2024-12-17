@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 
 public class TextSplitter {
 
@@ -16,7 +17,13 @@ public class TextSplitter {
      * @param color    Цвет текста.
      * @return Список JLabel для каждого символа.
      */
-    public static List<JLabel> splitText(String text, Font font, int fontSize, Color color) {
+    public static <T extends JLabel> List<T> splitText(
+            String text,
+            Font font,
+            int fontSize,
+            Color color,
+            BiFunction<String, Font, T> labelFactory) {
+
         if (text == null || text.isEmpty()) {
             throw new IllegalArgumentException("Text cannot be null or empty");
         }
@@ -27,17 +34,15 @@ public class TextSplitter {
             font = font.deriveFont((float) fontSize);
         }
 
-        List<JLabel> labels = new ArrayList<>();
+        List<T> labels = new ArrayList<>();
         for (char c : text.toCharArray()) {
-            JLabel label = new JLabel(String.valueOf(c));
-            label.setFont(font);
+            T label = labelFactory.apply(String.valueOf(c), font);
             label.setForeground(color);
             label.setOpaque(false);
             labels.add(label);
         }
         return labels;
     }
-
     /**
      * Устанавливает начальное расположение символов для анимации.
      *
@@ -46,11 +51,12 @@ public class TextSplitter {
      * @param startY  Начальная координата Y.
      * @param spacing Расстояние между символами.
      */
-    public static void setInitialPositions(List<JLabel> labels, int startX, int startY, int spacing) {
+    public static void setInitialPositions(List<? extends JLabel> labels, int startX, int startY, int spacing) {
         int currentX = startX;
         for (JLabel label : labels) {
             label.setBounds(currentX, startY, label.getPreferredSize().width, label.getPreferredSize().height);
             currentX += spacing + label.getPreferredSize().width;
         }
     }
+
 }

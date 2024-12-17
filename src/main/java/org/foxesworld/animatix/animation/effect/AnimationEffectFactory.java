@@ -15,10 +15,7 @@ import org.foxesworld.animatix.animation.effect.imageEffect.effects.move.MoveFra
 import org.foxesworld.animatix.animation.effect.imageEffect.effects.resize.ResizeFrame;
 import org.foxesworld.animatix.animation.effect.imageEffect.effects.rotate.RotateFrame;
 import org.foxesworld.animatix.animation.effect.imageEffect.effects.spin.SpinFrame;
-import org.foxesworld.animatix.animation.effect.textEffect.effects.BounceTextAnimationFrame;
-import org.foxesworld.animatix.animation.effect.textEffect.effects.FadeTextAnimationFrame;
-import org.foxesworld.animatix.animation.effect.textEffect.effects.SlideTextAnimationFrame;
-import org.foxesworld.animatix.animation.effect.textEffect.effects.TextColorChangeFrame;
+import org.foxesworld.animatix.animation.effect.textEffect.effects.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -65,6 +62,9 @@ public class AnimationEffectFactory {
                 case "slide" -> frames.add(new SlideTextAnimationFrame(this.animationFactory, phase, label));
                 case "bounce" -> frames.add(new BounceTextAnimationFrame(this.animationFactory, phase, label));
                 case "colorchange" -> frames.add(new TextColorChangeFrame(this.animationFactory, phase, label));
+                case "flip" -> frames.add(new FlipTextAnimationFrame(this.animationFactory, phase, label));
+                case "fontchange" -> frames.add(new FontChangePixelAnimationFrame(this.animationFactory, phase, label));
+                case "letterfade" -> frames.add(new FadeInTextAnimationFrame(this.animationFactory, phase, label));
 
                 // Добавьте другие эффекты
                 default -> throw new UnsupportedOperationException("Text effect type not supported: " + effect.getType());

@@ -1,6 +1,6 @@
 package org.foxesworld.animatix;
 
-import org.foxesworld.animatix.animation.TaskExecutor;
+import org.foxesworld.animatix.animation.task.TaskExecutor;
 import org.foxesworld.animatix.animation.effect.AnimationEffectFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
 import org.foxesworld.animatix.animation.phase.AnimationPhaseExecutor;
@@ -78,28 +78,15 @@ public class AnimationFactory implements AnimationStatus {
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         try {
             // ScheduledExecutorService to avoid using Thread.sleep() and handle delays better
-
-
-            // Loop through animation phases
             do {
                 for (AnimationPhase phase : animConf.getPhases()) {
-                    // Pause logic
                     if (isPaused) {
                         synchronized (this) {
-                            wait(); // Will be used with notify() to pause/unpause animation properly
+                            wait();
                         }
                     }
+                    this.phaseSetUp(animConf.getType(), animLabel, animConf, phase);
 
-                    // Phase setup depending on type
-                    if ("text".equals(animConf.getType())) {
-                        setupTextPhase(animConf.getText(), animLabel, phase);
-                    } else if ("image".equals(animConf.getType())) {
-                        setupImagePhase(animConf.getImagePath(), animLabel, phase);
-                    }
-
-                    animLabel.setVisible(true);
-
-                    // Handling delay between phases
                     if (phase.getDelay() > 0) {
                         logger.log(System.Logger.Level.INFO,
                                 "Delaying phase {0} for {1} ms", phaseNum, phase.getDelay());
@@ -141,6 +128,13 @@ public class AnimationFactory implements AnimationStatus {
                     "Unexpected error during animation: {0}", e.getMessage(), e);
         } finally {
             scheduler.shutdown();
+        }
+    }
+
+    private void phaseSetUp(String type, JLabel label, AnimationConfig.AnimConf config, AnimationPhase phase){
+        switch (type){
+            case "text" -> setupTextPhase(config.getText(), label, phase);
+            case "image" -> setupImagePhase(config.getImagePath(), label, phase);
         }
     }
 

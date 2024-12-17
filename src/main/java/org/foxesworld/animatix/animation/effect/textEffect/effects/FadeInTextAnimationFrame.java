@@ -11,25 +11,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BounceTextAnimationFrame extends AnimationFrame {
+public class FadeInTextAnimationFrame extends AnimationFrame {
 
-    private final Map<String, Object>[] params = new Map[]{
-            createParam("bounceHeight", "bounceHeight", Integer.class, 20),
-            createParam("bounceSpeed", "bounceSpeed", Integer.class, 1000), // Скорость анимации
-            createParam("spacing", "spacing", Integer.class, 2)
+    private final Map<String, Object>[] params = new Map[] {
+            createParam("fadeSpeed", "fadeSpeed", Integer.class, 1000), // Скорость появления
+            createParam("spacing", "spacing", Integer.class, 2) // Расстояние между буквами
     };
 
-    private final String effectName = "bounce";
+    private final String effectName = "letterfade";
 
-    private int bounceHeight, bounceSpeed, spacing;
+    private int fadeSpeed, spacing;
     private final Map<JLabel, Point> originalPositions = new HashMap<>();
     private final List<JLabel> letterLabels;
 
-    public BounceTextAnimationFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
+    public FadeInTextAnimationFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
         super(animationFactory, phase, label);
         initializeParams(params, effectName);
 
-        // Разбиваем текст на отдельные символы
         String text = label.getText();
         Font font = label.getFont();
         Color color = label.getForeground();
@@ -44,6 +42,7 @@ public class BounceTextAnimationFrame extends AnimationFrame {
                     charLabel.setFont(charFont);
                     charLabel.setForeground(color);
                     charLabel.setOpaque(false);
+                    charLabel.setVisible(false);
                     return charLabel;
                 }
         );
@@ -52,7 +51,6 @@ public class BounceTextAnimationFrame extends AnimationFrame {
         int startY = label.getY();
         TextSplitter.setInitialPositions(letterLabels, startX, startY, spacing);
 
-        // Добавляем символы в контейнер родителя
         JPanel parentPanel = (JPanel) label.getParent();
         if (parentPanel != null) {
             for (JLabel letterLabel : letterLabels) {
@@ -73,27 +71,35 @@ public class BounceTextAnimationFrame extends AnimationFrame {
     @Override
     public void update(float progress) {
         if (letterLabels.isEmpty()) return;
-        float scaledProgress = progress * (1000.0f / bounceSpeed);
 
         SwingUtilities.invokeLater(() -> {
             for (int i = 0; i < letterLabels.size(); i++) {
                 JLabel letterLabel = letterLabels.get(i);
-                letterLabel.setForeground(label.getForeground());
                 Point originalPosition = originalPositions.get(letterLabel);
                 if (originalPosition == null) continue;
 
-                // Рассчитываем прогресс для текущей буквы с учетом задержки
+                // Рассчитываем задержку для текущей буквы
                 double delay = (double) i / letterLabels.size();
-                double adjustedProgress = scaledProgress - delay;
+                double adjustedProgress = progress - delay;
 
                 if (adjustedProgress < 0) adjustedProgress = 0;
                 if (adjustedProgress > 1) adjustedProgress = 1;
-                int bounceOffset = (int) (Math.sin(adjustedProgress * Math.PI) * bounceHeight);
 
-                letterLabel.setLocation(
-                        originalPosition.x,
-                        originalPosition.y - bounceOffset
-                );
+                float alpha = (float) adjustedProgress;
+
+                // Обновляем прозрачность буквы
+                letterLabel.setForeground(new Color(
+                        letterLabel.getForeground().getRed(),
+                        letterLabel.getForeground().getGreen(),
+                        letterLabel.getForeground().getBlue(),
+                        (int)(alpha * 255)
+                ));
+
+                if (adjustedProgress > 0) {
+                    letterLabel.setVisible(true);
+                }
+
+                letterLabel.setLocation(originalPosition.x, originalPosition.y);
             }
 
             JPanel parentPanel = (JPanel) letterLabels.get(0).getParent();
@@ -102,4 +108,6 @@ public class BounceTextAnimationFrame extends AnimationFrame {
             }
         });
     }
+
+
 }

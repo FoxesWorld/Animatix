@@ -11,7 +11,7 @@ import java.util.Map;
 
 public abstract class AnimationFrame implements Runnable {
 
-    private static final int DEFAULT_FPS = 144;
+    private static int DEFAULT_FPS = 144;
     private final AnimationFactory animationFactory;
     private final long duration;
     private Timer timer;
@@ -25,9 +25,6 @@ public abstract class AnimationFrame implements Runnable {
         this.animationFactory = animationFactory;
         this.phase = phase;
         this.label = label;
-        //if(animationFactory.isImage()) {
-        //    this.imageWorks = new ImageWorks(label);
-        //}
 
         this.duration = phase.getDuration();
     }
@@ -171,5 +168,9 @@ public abstract class AnimationFrame implements Runnable {
 
     public AnimationFactory getAnimationFactory() {
         return animationFactory;
+    }
+
+    public static void setDefaultFps(int defaultFps) {
+        DEFAULT_FPS = defaultFps;
     }
 }

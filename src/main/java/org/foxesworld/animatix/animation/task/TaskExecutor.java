@@ -1,4 +1,4 @@
-package org.foxesworld.animatix.animation;
+package org.foxesworld.animatix.animation.task;
 
 import java.util.*;
 import java.util.concurrent.*;
