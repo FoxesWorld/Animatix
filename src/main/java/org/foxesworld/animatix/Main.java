@@ -5,7 +5,7 @@ import javax.swing.*;
 public class Main {
 
     public static void main(String[] args) {
-        AnimationFactory animationFactory = new AnimationFactory("animatix.json");
+        AnimationFactory animationFactory = new AnimationFactory("animatix.json5");
 
         // Настройка главного окна
         JFrame frame = new JFrame("Animation Demo");

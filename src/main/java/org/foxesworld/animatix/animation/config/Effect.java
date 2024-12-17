@@ -4,14 +4,19 @@ import java.util.Map;
 
 public class Effect {
     private String type;
+    private long duration, delay;
     private Map<String, Object> params;
 
     public String getType() {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public long getDuration() {
+        return duration;
+    }
+
+    public long getDelay() {
+        return delay;
     }
 
     public Map<String, Object> getParams() {

@@ -1,7 +1,6 @@
 package org.foxesworld.animatix;
 
 import org.foxesworld.animatix.animation.TaskExecutor;
-import org.foxesworld.animatix.animation.config.Effect;
 import org.foxesworld.animatix.animation.effect.AnimationEffectFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
 import org.foxesworld.animatix.animation.phase.AnimationPhaseExecutor;
@@ -30,6 +29,7 @@ public class AnimationFactory implements AnimationStatus {
     private AnimationConfig config;
     private volatile int phaseNum = 0;
     private volatile boolean isPaused = false;
+    private boolean isImage = false;
 
     public AnimationFactory(String configPath) {
         this.taskExecutor = new TaskExecutor();
@@ -86,10 +86,10 @@ public class AnimationFactory implements AnimationStatus {
                         }
                     }
 
-                    if (phase.getType().equals("text")) {
-                        setupTextPhase(animLabel, phase);
-                    } else if (phase.getType().equals("image")) {
-                        setupImagePhase(animLabel, phase);
+                    if (animConf.getType().equals("text")) {
+                        setupTextPhase(animConf.getText(), animLabel, phase);
+                    } else if (animConf.getType().equals("image")) {
+                        setupImagePhase(animConf.getImagePath(), animLabel, phase);
                     }
 
                     animLabel.setVisible(true);
@@ -101,7 +101,7 @@ public class AnimationFactory implements AnimationStatus {
                         Thread.sleep(phase.getDelay());
                     }
 
-                    List<AnimationFrame> frames = getOrCacheAnimationFrames(phase, animLabel);
+                    List<AnimationFrame> frames = getOrCacheAnimationFrames(animConf, phase, animLabel);
                     logger.log(System.Logger.Level.INFO,
                             "Executing phase {0} of animation: {1}", phaseNum, animConf.getName());
                     phaseExecutor.executePhase(this, frames, phase, phaseNum);
@@ -126,16 +126,16 @@ public class AnimationFactory implements AnimationStatus {
         }
     }
 
-    private void setupTextPhase(JLabel animLabel, AnimationPhase phase) {
-        animLabel.setText(phase.getText());
+    private void setupTextPhase(String text, JLabel animLabel, AnimationPhase phase) {
+        animLabel.setText(text);
         animLabel.setFont(new Font(phase.getFont(), Font.PLAIN, phase.getFontSize()));
         if(phase.getTextColor() != null) {animLabel.setForeground(Color.decode(phase.getTextColor()));}
         animLabel.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
-    private void setupImagePhase(JLabel animLabel, AnimationPhase phase) {
+    private void setupImagePhase(String imgPath, JLabel animLabel, AnimationPhase phase) {
         // Получение изображения из пути
-        BufferedImage labelImage = ImageWorks.getImageFromStream(phase.getImagePath());
+        BufferedImage labelImage = ImageWorks.getImageFromStream(imgPath);
         animLabel.setIcon(new ImageIcon(labelImage));
 
         if (phase.getAlpha() != 0) {
@@ -147,11 +147,13 @@ public class AnimationFactory implements AnimationStatus {
     }
 
 
-    private List<AnimationFrame> getOrCacheAnimationFrames(AnimationPhase phase, JLabel label) {
+    private List<AnimationFrame> getOrCacheAnimationFrames(AnimationConfig.AnimConf animConf, AnimationPhase phase, JLabel label) {
         return cachedFrames.computeIfAbsent(phase, p -> {
-            if (p.getType().equals("text")) {
+            if (animConf.getType().equals("text")) {
+                isImage = false;
                 return effectFactory.createTextEffects(p, label);
-            } else if (p.getType().equals("image")) {
+            } else if (animConf.getType().equals("image")) {
+                isImage = true;
                 return effectFactory.createImageEffects(p, label);
             }
             return Collections.emptyList();
@@ -194,7 +196,15 @@ public class AnimationFactory implements AnimationStatus {
         notify();
     }
 
+    public boolean isImage() {
+        return isImage;
+    }
+
     public TaskExecutor getTaskExecutor() {
         return taskExecutor;
+    }
+
+    public int getPhaseNum() {
+        return phaseNum;
     }
 }

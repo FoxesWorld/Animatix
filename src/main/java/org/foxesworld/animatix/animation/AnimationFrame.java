@@ -25,7 +25,7 @@ public abstract class AnimationFrame implements Runnable {
         this.animationFactory = animationFactory;
         this.phase = phase;
         this.label = label;
-        if(phase.getType().equals("image")) {
+        if(animationFactory.isImage()) {
             this.imageWorks = new ImageWorks(label);
         }
 
@@ -72,7 +72,7 @@ public abstract class AnimationFrame implements Runnable {
 
         if (elapsedTime >= duration) {
             stopAnimation();
-            SwingUtilities.invokeLater(() -> update(1.0f));
+            SwingUtilities.invokeLater(() -> update(progress));
             //AnimationFactory.logger.log(System.Logger.Level.INFO, "Animation completed for phase: " + animationFactory.getPhaseNum());
 
             if (animationFactory instanceof AnimationStatus) {

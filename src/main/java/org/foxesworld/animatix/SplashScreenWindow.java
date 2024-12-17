@@ -7,7 +7,7 @@ public class SplashScreenWindow extends JWindow {
     private AnimationFactory animationFactory;
 
     public SplashScreenWindow() {
-        animationFactory = new AnimationFactory("animatix.json");
+        animationFactory = new AnimationFactory("animatix.json5");
 
         SwingUtilities.invokeLater(() -> {
 

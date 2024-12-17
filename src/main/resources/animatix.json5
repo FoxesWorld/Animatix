@@ -1,0 +1,124 @@
+{
+  objects: [
+    {
+      name: "diamondAnimation",
+      type: "image",
+      imagePath: "img/diamond.png",
+      bounds: {
+        x: 130,
+        y: 0,
+        width: 256,
+        height: 256
+      },
+      phases: [
+        {
+          duration: 500,
+          effects: [
+            {
+              type: "resize",
+              params: {
+                startWidth: 100,
+                startHeight: 100,
+                endWidth: 83,
+                endHeight: 83,
+                resizeType: "SCALE_TO_FIT"
+              }
+            }
+          ]
+        },
+        {
+          duration: 200,
+          effects: [
+            {
+              type: "move",
+              params: {
+                startX: 120,
+                endX: 200,
+                startY: 0,
+                endY: 150
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      name: "textTest",
+      repeat: true,
+      type: "text",
+      text: "Animatix 0.0.8",
+      bounds: {
+        x: 0,
+        y: 0,
+        width: 256,
+        height: 128
+      },
+      phases: [
+        {
+          font: "Lucida Console",
+          duration: 1500,
+          alpha: 0.4,
+          fontSize: 18,
+          effects: [
+            {
+              type: "fade",
+              params: {
+                fadeSpeed: 1,
+                fadeType: "fadeIn",
+                startAlpha: 0.0,
+                endAlpha: 1.0
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      name: "versionText",
+      repeat: true,
+      type: "text",
+      text: "SNAPSHOT",
+      bounds: {
+        x: 170,
+        y: 35,
+        width: 128,
+        height: 28
+      },
+      phases: [
+        {
+          font: "Consolas",
+          fontSize: 14,
+          duration: 1300,
+          delay: 500,
+          alpha: 0.4,
+          effects: [
+            {
+              type: "colorchange",
+              params: {
+                startColor: "#986801",
+                endColor: "#951ac8"
+              }
+            }
+          ]
+        },
+        {
+          font: "Consolas",
+          fontSize: 14,
+          duration: 1300,
+          delay: 500,
+          alpha: 0.4,
+          effects: [
+            {
+              type: "bounce",
+              params: {
+                bounceHeight: 10,
+                bounceSpeed: 350,
+                spacing: 1
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

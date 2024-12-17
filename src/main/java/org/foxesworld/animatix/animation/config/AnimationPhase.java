@@ -10,7 +10,7 @@ public class AnimationPhase {
     private int phaseNum;
     private double alpha;
     private List<Effect> effects;
-    private String type, text, font, textColor, imagePath;
+    private String font, textColor;
     private int fontSize;
     private List<String> textEffects;
     private long duration, delay;
@@ -112,18 +112,6 @@ public class AnimationPhase {
         return alpha;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public String getText() {
-        return text;
-    }
-
     public String getFont() {
         return font;
     }
@@ -154,9 +142,5 @@ public class AnimationPhase {
 
     public long getDelay() {
         return delay;
-    }
-
-    public void setDelay(long delay) {
-        this.delay = delay;
     }
 }

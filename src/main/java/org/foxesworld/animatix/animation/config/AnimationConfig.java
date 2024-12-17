@@ -7,7 +7,7 @@ public class AnimationConfig {
     private List<AnimConf> objects;
 
     public static class AnimConf {
-        private String name;
+        private String name, type, imagePath, text;
         private Bounds bounds;
         private boolean repeat, visible;
         private List<AnimationPhase> phases;
@@ -22,6 +22,18 @@ public class AnimationConfig {
 
         public boolean isVisible() {
             return visible;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public String getImagePath() {
+            return imagePath;
+        }
+
+        public String getText() {
+            return text;
         }
 
         public List<AnimationPhase> getPhases() {
