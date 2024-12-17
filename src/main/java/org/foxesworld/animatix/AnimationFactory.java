@@ -8,7 +8,7 @@ import org.foxesworld.animatix.animation.config.AnimationConfigLoader;
 import org.foxesworld.animatix.animation.config.AnimationPhase;
 import org.foxesworld.animatix.animation.AnimationStatus;
 import org.foxesworld.animatix.animation.config.AnimationConfig;
-import org.foxesworld.animatix.animation.imageEffect.ImageWorks;
+import org.foxesworld.animatix.animation.effect.imageEffect.ImageWorks;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,18 +23,16 @@ public class AnimationFactory implements AnimationStatus {
     public static final System.Logger logger = System.getLogger(AnimationFactory.class.getName());
     private final TaskExecutor taskExecutor;
     private final AnimationConfigLoader configLoader = new AnimationConfigLoader();
-    private final AnimationEffectFactory effectFactory = new AnimationEffectFactory();
-    private final AnimationPhaseExecutor phaseExecutor = new AnimationPhaseExecutor();
+    private final AnimationEffectFactory effectFactory;
+    private final AnimationPhaseExecutor phaseExecutor;
     private final Map<AnimationPhase, List<AnimationFrame>> cachedFrames = new ConcurrentHashMap<>();
     private AnimationConfig config;
-    private volatile int phaseNum = 0;
     private volatile boolean isPaused = false;
-    private boolean isImage = false;
 
     public AnimationFactory(String configPath) {
         this.taskExecutor = new TaskExecutor();
-        effectFactory.setAnimationFactory(this);
-        phaseExecutor.setAnimationFactory(this);
+        effectFactory = new AnimationEffectFactory(this);
+        phaseExecutor = new AnimationPhaseExecutor(this);
         loadConfig(configPath);
     }
 
@@ -52,7 +50,6 @@ public class AnimationFactory implements AnimationStatus {
 
     public void createAnimation(Object window) {
         validateConfig();
-        phaseNum = 0;
 
         for (AnimationConfig.AnimConf animConf : config.getAnimObj()) {
             Rectangle objectBounds = animConf.getBounds();
@@ -77,38 +74,59 @@ public class AnimationFactory implements AnimationStatus {
     }
 
     private void runAnimation(JLabel animLabel, AnimationConfig.AnimConf animConf) {
+        int phaseNum = 0;
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         try {
+            // ScheduledExecutorService to avoid using Thread.sleep() and handle delays better
+
+
+            // Loop through animation phases
             do {
                 for (AnimationPhase phase : animConf.getPhases()) {
+                    // Pause logic
                     if (isPaused) {
                         synchronized (this) {
-                            wait();
+                            wait(); // Will be used with notify() to pause/unpause animation properly
                         }
                     }
 
-                    if (animConf.getType().equals("text")) {
+                    // Phase setup depending on type
+                    if ("text".equals(animConf.getType())) {
                         setupTextPhase(animConf.getText(), animLabel, phase);
-                    } else if (animConf.getType().equals("image")) {
+                    } else if ("image".equals(animConf.getType())) {
                         setupImagePhase(animConf.getImagePath(), animLabel, phase);
                     }
 
                     animLabel.setVisible(true);
 
-
+                    // Handling delay between phases
                     if (phase.getDelay() > 0) {
                         logger.log(System.Logger.Level.INFO,
                                 "Delaying phase {0} for {1} ms", phaseNum, phase.getDelay());
-                        Thread.sleep(phase.getDelay());
+                        // Using scheduler to handle delay asynchronously
+                        int finalPhaseNum = phaseNum;
+                        scheduler.schedule(() -> {
+                            try {
+                                List<AnimationFrame> frames = getOrCacheAnimationFrames(animConf, phase, animLabel);
+                                logger.log(System.Logger.Level.INFO,
+                                        "Executing phase {0} of animation: {1}", finalPhaseNum, animConf.getName());
+                                phaseExecutor.executePhase(this, frames, phase, finalPhaseNum);
+                                waitForPhaseCompletion(phase.getDuration());
+                            } catch (Exception ex) {
+                                logger.log(System.Logger.Level.ERROR,
+                                        "Error during phase execution: {0}", ex.getMessage(), ex);
+                            }
+                        }, phase.getDelay(), TimeUnit.MILLISECONDS);
+                    } else {
+                        List<AnimationFrame> frames = getOrCacheAnimationFrames(animConf, phase, animLabel);
+                        logger.log(System.Logger.Level.INFO,
+                                "Executing phase {0} of animation: {1}", phaseNum, animConf.getName());
+                        phaseExecutor.executePhase(this, frames, phase, phaseNum);
+                        waitForPhaseCompletion(phase.getDuration());
                     }
 
-                    List<AnimationFrame> frames = getOrCacheAnimationFrames(animConf, phase, animLabel);
-                    logger.log(System.Logger.Level.INFO,
-                            "Executing phase {0} of animation: {1}", phaseNum, animConf.getName());
-                    phaseExecutor.executePhase(this, frames, phase, phaseNum);
-                    waitForPhaseCompletion(phase.getDuration());
                     phaseNum++;
                 }
-
             } while (animConf.isRepeat() && phaseNum < animConf.getPhases().size());
 
             logger.log(System.Logger.Level.INFO,
@@ -118,13 +136,14 @@ public class AnimationFactory implements AnimationStatus {
             Thread.currentThread().interrupt();
             logger.log(System.Logger.Level.ERROR,
                     "Animation interrupted: {0}", e.getMessage(), e);
-
         } catch (Exception e) {
             logger.log(System.Logger.Level.ERROR,
                     "Unexpected error during animation: {0}", e.getMessage(), e);
-
+        } finally {
+            scheduler.shutdown();
         }
     }
+
 
     private void setupTextPhase(String text, JLabel animLabel, AnimationPhase phase) {
         animLabel.setText(text);
@@ -134,7 +153,6 @@ public class AnimationFactory implements AnimationStatus {
     }
 
     private void setupImagePhase(String imgPath, JLabel animLabel, AnimationPhase phase) {
-        // Получение изображения из пути
         BufferedImage labelImage = ImageWorks.getImageFromStream(imgPath);
         animLabel.setIcon(new ImageIcon(labelImage));
 
@@ -142,7 +160,6 @@ public class AnimationFactory implements AnimationStatus {
                 labelImage = ImageWorks.setBaseAlpha(labelImage, (float) phase.getAlpha());
         }
 
-        // Устанавливаем обновленное изображение
         animLabel.setIcon(new ImageIcon(labelImage));
     }
 
@@ -150,10 +167,8 @@ public class AnimationFactory implements AnimationStatus {
     private List<AnimationFrame> getOrCacheAnimationFrames(AnimationConfig.AnimConf animConf, AnimationPhase phase, JLabel label) {
         return cachedFrames.computeIfAbsent(phase, p -> {
             if (animConf.getType().equals("text")) {
-                isImage = false;
                 return effectFactory.createTextEffects(p, label);
             } else if (animConf.getType().equals("image")) {
-                isImage = true;
                 return effectFactory.createImageEffects(p, label);
             }
             return Collections.emptyList();
@@ -192,19 +207,11 @@ public class AnimationFactory implements AnimationStatus {
 
     @Override
     public synchronized void onPhaseCompleted(AnimationPhase phase) {
-        logger.log(System.Logger.Level.INFO, "Phase {0} completed, notifying main thread.", phaseNum);
+        logger.log(System.Logger.Level.INFO, "Phase {0} completed, notifying main thread.", phase.getPhaseNum());
         notify();
-    }
-
-    public boolean isImage() {
-        return isImage;
     }
 
     public TaskExecutor getTaskExecutor() {
         return taskExecutor;
-    }
-
-    public int getPhaseNum() {
-        return phaseNum;
     }
 }

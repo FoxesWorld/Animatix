@@ -2,7 +2,7 @@ package org.foxesworld.animatix.animation;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.config.AnimationPhase;
-import org.foxesworld.animatix.animation.imageEffect.ImageWorks;
+import org.foxesworld.animatix.animation.effect.imageEffect.ImageWorks;
 
 import javax.swing.*;
 import java.lang.reflect.Field;
@@ -11,7 +11,7 @@ import java.util.Map;
 
 public abstract class AnimationFrame implements Runnable {
 
-    private static final int DEFAULT_FPS = 60;
+    private static final int DEFAULT_FPS = 144;
     private final AnimationFactory animationFactory;
     private final long duration;
     private Timer timer;
@@ -25,9 +25,9 @@ public abstract class AnimationFrame implements Runnable {
         this.animationFactory = animationFactory;
         this.phase = phase;
         this.label = label;
-        if(animationFactory.isImage()) {
-            this.imageWorks = new ImageWorks(label);
-        }
+        //if(animationFactory.isImage()) {
+        //    this.imageWorks = new ImageWorks(label);
+        //}
 
         this.duration = phase.getDuration();
     }

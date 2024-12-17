@@ -9,9 +9,10 @@ import java.util.concurrent.Callable;
 
 public class AnimationPhaseExecutor {
 
-    private AnimationFactory animationFactory;
+    private final AnimationFactory animationFactory;
 
-    public AnimationPhaseExecutor() {
+    public AnimationPhaseExecutor(AnimationFactory animationFactory) {
+        this.animationFactory = animationFactory;
     }
 
     /**
@@ -22,7 +23,6 @@ public class AnimationPhaseExecutor {
      * @param phaseNum         Номер текущего этапа.
      */
     public void executePhase(AnimationFactory animationFactory, List<AnimationFrame> animationFrames, AnimationPhase phase, int phaseNum) {
-        validateAnimationFactory(animationFactory);
 
         long phaseDuration = phase.getDuration();
         AnimationFactory.logger.log(System.Logger.Level.INFO,
@@ -42,18 +42,6 @@ public class AnimationPhaseExecutor {
         } finally {
             notifyPhaseCompleted(phase, phaseNum);
         }
-    }
-
-    /**
-     * Проверяет, что фабрика анимации корректно задана.
-     *
-     * @param animationFactory Экземпляр фабрики.
-     */
-    private void validateAnimationFactory(AnimationFactory animationFactory) {
-        if (animationFactory == null) {
-            throw new IllegalStateException("AnimationFactory is not set. Ensure it is properly initialized.");
-        }
-        this.animationFactory = animationFactory;
     }
 
     /**
@@ -104,14 +92,5 @@ public class AnimationPhaseExecutor {
         AnimationFactory.logger.log(System.Logger.Level.INFO,
                 "Notifying factory about phase {0} completion.", phaseNum);
         animationFactory.onPhaseCompleted(phase);
-    }
-
-    /**
-     * Устанавливает текущую фабрику анимации.
-     *
-     * @param animationFactory Экземпляр фабрики анимации.
-     */
-    public void setAnimationFactory(AnimationFactory animationFactory) {
-        this.animationFactory = animationFactory;
     }
 }

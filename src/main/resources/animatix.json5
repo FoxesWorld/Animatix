@@ -25,20 +25,6 @@
               }
             }
           ]
-        },
-        {
-          duration: 200,
-          effects: [
-            {
-              type: "move",
-              params: {
-                startX: 120,
-                endX: 200,
-                startY: 0,
-                endY: 150
-              }
-            }
-          ]
         }
       ]
     },
@@ -103,9 +89,9 @@
         },
         {
           font: "Consolas",
-          fontSize: 14,
+          fontSize: 15,
           duration: 1300,
-          delay: 500,
+          delay: 700,
           alpha: 0.4,
           effects: [
             {

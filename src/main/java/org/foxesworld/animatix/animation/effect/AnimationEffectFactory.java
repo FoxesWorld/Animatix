@@ -4,21 +4,21 @@ import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
 import org.foxesworld.animatix.animation.config.AnimationPhase;
 import org.foxesworld.animatix.animation.config.Effect;
-import org.foxesworld.animatix.animation.imageEffect.effects.ImageEffects;
-import org.foxesworld.animatix.animation.imageEffect.effects.borderHighlight.BorderHighlightFrame;
-import org.foxesworld.animatix.animation.imageEffect.effects.bounce.BounceFrame;
-import org.foxesworld.animatix.animation.imageEffect.effects.colorFade.ColorFadeFrame;
-import org.foxesworld.animatix.animation.imageEffect.effects.crackFrame.CrackFrame;
-import org.foxesworld.animatix.animation.imageEffect.effects.decay.DecayFrame;
-import org.foxesworld.animatix.animation.imageEffect.effects.fade.FadeFrame;
-import org.foxesworld.animatix.animation.imageEffect.effects.move.MoveFrame;
-import org.foxesworld.animatix.animation.imageEffect.effects.resize.ResizeFrame;
-import org.foxesworld.animatix.animation.imageEffect.effects.rotate.RotateFrame;
-import org.foxesworld.animatix.animation.imageEffect.effects.spin.SpinFrame;
-import org.foxesworld.animatix.animation.textEffect.effects.BounceTextAnimationFrame;
-import org.foxesworld.animatix.animation.textEffect.effects.FadeTextAnimationFrame;
-import org.foxesworld.animatix.animation.textEffect.effects.SlideTextAnimationFrame;
-import org.foxesworld.animatix.animation.textEffect.effects.TextColorChangeFrame;
+import org.foxesworld.animatix.animation.effect.imageEffect.effects.ImageEffects;
+import org.foxesworld.animatix.animation.effect.imageEffect.effects.borderHighlight.BorderHighlightFrame;
+import org.foxesworld.animatix.animation.effect.imageEffect.effects.bounce.BounceFrame;
+import org.foxesworld.animatix.animation.effect.imageEffect.effects.colorFade.ColorFadeFrame;
+import org.foxesworld.animatix.animation.effect.imageEffect.effects.crackFrame.CrackFrame;
+import org.foxesworld.animatix.animation.effect.imageEffect.effects.decay.DecayFrame;
+import org.foxesworld.animatix.animation.effect.imageEffect.effects.fade.FadeFrame;
+import org.foxesworld.animatix.animation.effect.imageEffect.effects.move.MoveFrame;
+import org.foxesworld.animatix.animation.effect.imageEffect.effects.resize.ResizeFrame;
+import org.foxesworld.animatix.animation.effect.imageEffect.effects.rotate.RotateFrame;
+import org.foxesworld.animatix.animation.effect.imageEffect.effects.spin.SpinFrame;
+import org.foxesworld.animatix.animation.effect.textEffect.effects.BounceTextAnimationFrame;
+import org.foxesworld.animatix.animation.effect.textEffect.effects.FadeTextAnimationFrame;
+import org.foxesworld.animatix.animation.effect.textEffect.effects.SlideTextAnimationFrame;
+import org.foxesworld.animatix.animation.effect.textEffect.effects.TextColorChangeFrame;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -26,9 +26,10 @@ import java.util.List;
 
 public class AnimationEffectFactory {
 
-    private AnimationFactory animationFactory;
+    private final AnimationFactory animationFactory;
 
-    public AnimationEffectFactory() {
+    public AnimationEffectFactory(AnimationFactory animationFactory) {
+        this.animationFactory = animationFactory;
     }
 
     public List<AnimationFrame> createImageEffects(AnimationPhase phase, JLabel label) {
@@ -71,9 +72,5 @@ public class AnimationEffectFactory {
         }
 
         return frames;
-    }
-
-    public void setAnimationFactory(AnimationFactory animationFactory) {
-        this.animationFactory = animationFactory;
     }
 }
