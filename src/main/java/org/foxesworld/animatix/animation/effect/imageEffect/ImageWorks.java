@@ -74,13 +74,22 @@ public class ImageWorks {
         return startValue + (endValue - startValue) * Math.min(1.0, Math.max(0.0, progress));
     }
 
-    public BufferedImage applyRotationEffect(BufferedImage image, double angle, Runnable cleanupCallback) {
+    public BufferedImage applyRotationEffect(BufferedImage image, double startAngle, double endAngle, double speed, Runnable cleanupCallback) {
         long startTime = System.nanoTime();
         BufferedImage rotatedImage = null;
 
         try {
             ImageRotationWithCubicInterpolation rotation = new ImageRotationWithCubicInterpolation(image);
-            rotatedImage = rotation.rotateImage(angle);
+            double totalAngle = endAngle - startAngle;
+            double elapsedTimeInSeconds = (System.nanoTime() - startTime) / 1_000_000_000.0;
+            double currentAngle = startAngle + (speed * elapsedTimeInSeconds * totalAngle);
+
+            // Ограничим текущий угол значением endAngle, если скорость слишком велика.
+            if ((speed > 0 && currentAngle > endAngle) || (speed < 0 && currentAngle < endAngle)) {
+                currentAngle = endAngle;
+            }
+
+            rotatedImage = rotation.rotateImage(currentAngle);
         } finally {
             if (cleanupCallback != null) {
                 cleanupCallback.run();
@@ -88,8 +97,9 @@ public class ImageWorks {
         }
 
         long endTime = System.nanoTime();
-        double elapsedTimeInSeconds = (endTime - startTime) / 1_000_000_000.0;
-        AnimationFactory.logger.log(System.Logger.Level.INFO, "Rotation effect applied in {} seconds.", elapsedTimeInSeconds);
+        double totalElapsedTimeInSeconds = (endTime - startTime) / 1_000_000_000.0;
+        AnimationFactory.logger.log(System.Logger.Level.INFO, "Rotation effect applied in {} seconds.", totalElapsedTimeInSeconds);
+
         return rotatedImage;
     }
 

@@ -13,7 +13,6 @@ import org.foxesworld.animatix.animation.effect.imageEffect.effects.decay.DecayF
 import org.foxesworld.animatix.animation.effect.imageEffect.effects.fade.FadeFrame;
 import org.foxesworld.animatix.animation.effect.imageEffect.effects.move.MoveFrame;
 import org.foxesworld.animatix.animation.effect.imageEffect.effects.resize.ResizeFrame;
-import org.foxesworld.animatix.animation.effect.imageEffect.effects.rotate.RotateFrame;
 import org.foxesworld.animatix.animation.effect.imageEffect.effects.spin.SpinFrame;
 import org.foxesworld.animatix.animation.effect.textEffect.effects.*;
 
@@ -38,7 +37,7 @@ public class AnimationEffectFactory {
             switch (imageEffect) {
                 case RESIZE -> frames.add(new ResizeFrame(animationFactory, phase, label));
                 case MOVE -> frames.add(new MoveFrame(animationFactory, phase, label));
-                case ROTATE -> frames.add(new RotateFrame(animationFactory, phase, label));
+                //case ROTATE -> frames.add(new RotateFrame(animationFactory, phase, label));
                 case BOUNCE -> frames.add(new BounceFrame(animationFactory, phase, label));
                 case DECAY -> frames.add(new DecayFrame(animationFactory, phase, label));
                 case CRACK -> frames.add(new CrackFrame(animationFactory, phase, label));

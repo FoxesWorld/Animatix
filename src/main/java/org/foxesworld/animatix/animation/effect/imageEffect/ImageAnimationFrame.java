@@ -13,9 +13,9 @@ public abstract class ImageAnimationFrame extends AnimationFrame {
     protected BufferedImage image;
     public ImageAnimationFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
         super(animationFactory, phase, label);
-        this.imageWorks = animationFactory.getImageWorks();
         this.imageCache = animationFactory.getImageCache();
         this.image = this.imageCache.getCachedImage(label.getName());
+        this.imageWorks = animationFactory.getImageWorks();
     }
 
 }

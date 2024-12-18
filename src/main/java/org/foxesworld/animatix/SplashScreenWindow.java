@@ -28,7 +28,6 @@ public class SplashScreenWindow extends JWindow {
             }
         };
 
-
         getContentPane().add(content);
         setSize(700, 360);
         setLocationRelativeTo(null);

@@ -13,16 +13,24 @@
       },
       phases: [
         {
-          duration: 800,
+          duration: 900,
           effects: [
             {
               type: "resize",
               params: {
-                startWidth: 128,
-                startHeight: 128,
+                startWidth: 256,
+                startHeight: 256,
                 endWidth: 85,
                 endHeight: 85,
                 resizeType: "STRETCH"
+              }
+            },
+            {
+              type: "spin",
+              params: {
+                spinSpeed: 1,
+                startAngle: 500,
+                endAngle: 90
               }
             }
           ]

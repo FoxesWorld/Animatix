@@ -30,8 +30,11 @@ public class AnimationFactory implements AnimationStatus {
     private final Map<CacheKey, List<AnimationFrame>> cachedFrames = new ConcurrentHashMap<>();
     private AnimationConfig config;
     private volatile boolean isPaused = false;
+    private volatile boolean isRunning = false;
+    private volatile boolean isStopped = true;
     private ImageWorks imageWorks;
     private final ImageCache imageCache;
+
     public AnimationFactory(String configPath) {
         this.taskExecutor = new TaskExecutor();
         this.effectFactory = new AnimationEffectFactory(this);
@@ -54,6 +57,8 @@ public class AnimationFactory implements AnimationStatus {
 
     public void createAnimation(Object window) {
         validateConfig();
+        isStopped = false;
+        isRunning = true;
         for (AnimationConfig.AnimConf animConf : config.getAnimObj()) {
             Rectangle objectBounds = animConf.getBounds();
             JLabel animLabel = new JLabel();
@@ -71,10 +76,17 @@ public class AnimationFactory implements AnimationStatus {
         } else if (window instanceof JWindow) {
             ((JWindow) window).add(label);
             ((JWindow) window).setLayout(null);
+        } else if (window instanceof JPanel) {
+            ((JPanel) window).add(label);
+            ((JPanel) window).setLayout(null);
+        } else if (window instanceof JDialog) {
+            ((JDialog) window).add(label);
+            ((JDialog) window).setLayout(null);
         } else {
             throw new IllegalArgumentException("Unsupported window type: " + window.getClass().getName());
         }
     }
+
 
     private void runAnimation(JLabel animLabel, AnimationConfig.AnimConf animConf) {
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -91,6 +103,7 @@ public class AnimationFactory implements AnimationStatus {
                 logger.log(System.Logger.Level.INFO, "Phase {0} completed successfully.", phaseNum);
             }
             logger.log(System.Logger.Level.INFO, "Animation for {0} completed.", animConf.getName());
+            isRunning = false;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             logger.log(System.Logger.Level.ERROR, "Animation interrupted: {0}", e.getMessage(), e);
@@ -168,13 +181,23 @@ public class AnimationFactory implements AnimationStatus {
 
     public synchronized void pause() {
         isPaused = true;
+        isRunning = false;
         logger.log(System.Logger.Level.INFO, "Animation paused.");
     }
 
     public synchronized void resume() {
         isPaused = false;
+        isRunning = true;
         logger.log(System.Logger.Level.INFO, "Animation resumed.");
         notifyAll();
+    }
+
+    public synchronized void stop() {
+        isPaused = false;
+        isRunning = false;
+        isStopped = true;
+        taskExecutor.shutdown();
+        logger.log(System.Logger.Level.INFO, "Animation stopped.");
     }
 
     private void validateConfig() {
@@ -203,5 +226,18 @@ public class AnimationFactory implements AnimationStatus {
 
     public ImageCache getImageCache() {
         return imageCache;
+    }
+
+    // Методы для проверки статуса анимации
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    public boolean isPaused() {
+        return isPaused;
+    }
+
+    public boolean isStopped() {
+        return isStopped;
     }
 }

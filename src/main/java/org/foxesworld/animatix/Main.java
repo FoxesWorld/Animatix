@@ -1,6 +1,7 @@
 package org.foxesworld.animatix;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class Main {
 
@@ -9,53 +10,47 @@ public class Main {
 
         // Настройка главного окна
         JFrame frame = new JFrame("Animation Demo");
-        frame.setSize(600, 400);
-        frame.setLayout(null);
+        frame.setSize(600, 200);
+        frame.setLayout(new BorderLayout());
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Создание панели управления
-        JPanel controlPanel = new JPanel();
-        controlPanel.setBounds(0, 300, 600, 100);
-        controlPanel.setLayout(null);
+        // Создание панели для анимации
+        JPanel animationPanel = new JPanel();
+        animationPanel.setLayout(new BorderLayout());
+        animationPanel.setBackground(Color.WHITE);
 
-        // Кнопка Старт
-        JButton startButton = new JButton("Start");
-        startButton.setBounds(50, 20, 100, 40);
-        startButton.addActionListener(e -> {
-            animationFactory.resume();
-            JOptionPane.showMessageDialog(frame, "Animation started");
-        });
+        // Создание панели для статуса анимации
+        JPanel statusPanel = new JPanel();
+        statusPanel.setPreferredSize(new Dimension(800, 50));
+        statusPanel.setBackground(new Color(0, 0, 0, 150));
+        statusPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-        // Кнопка Пауза
-        JButton pauseButton = new JButton("Pause");
-        pauseButton.setBounds(200, 20, 100, 40);
-        pauseButton.addActionListener(e -> {
-            animationFactory.pause();
-            JOptionPane.showMessageDialog(frame, "Animation paused");
-        });
+        JLabel statusLabel = new JLabel("Animation running...");
+        statusLabel.setForeground(Color.WHITE);
+        statusLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        statusPanel.add(statusLabel);
 
-        // Кнопка Рестарт
-        JButton restartButton = new JButton("Restart");
-        restartButton.setBounds(350, 20, 100, 40);
-        restartButton.addActionListener(e -> {
-            animationFactory.dispose(); // Остановка текущей анимации
-            animationFactory.createAnimation(frame); // Перезапуск
-            JOptionPane.showMessageDialog(frame, "Animation restarted");
-        });
-
-        // Добавляем кнопки в панель управления
-        controlPanel.add(startButton);
-        controlPanel.add(pauseButton);
-        controlPanel.add(restartButton);
-
-        // Добавляем панель управления в главное окно
-        frame.add(controlPanel);
+        // Добавляем панели в главное окно
+        frame.add(animationPanel, BorderLayout.CENTER);
+        frame.add(statusPanel, BorderLayout.SOUTH);
 
         // Создание анимации
-        animationFactory.createAnimation(frame);
+        animationFactory.createAnimation(animationPanel);
 
         // Отображение окна
         frame.setVisible(true);
+
+        // Обновление статуса анимации
+        Timer timer = new Timer(1000, e -> {
+            if (animationFactory.isPaused()) {
+                statusLabel.setText("Animation paused...");
+            } else if (animationFactory.isRunning()) {
+                statusLabel.setText("Animation running...");
+            } else {
+                statusLabel.setText("Animation stopped.");
+            }
+        });
+        timer.start();
     }
 }
