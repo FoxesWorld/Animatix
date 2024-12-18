@@ -6,8 +6,8 @@
       imagePath: "img/diamond.png",
       visible: true,
       bounds: {
-        x: 140,
-        y: 60,
+        x: 0,
+        y: 12,
         width: 128,
         height: 128
       },
@@ -26,32 +26,58 @@
               }
             }
           ]
+        },
+        {
+          duration: 1500,
+          delay: 900,
+          effects: [
+            {
+              type: "move",
+              params: {
+                starX: 0,
+                startY: 0,
+                endX: 430,
+                endY: 12,
+                resizeType: "SCALE_TO_FIT"
+              }
+            }
+          ]
+        },
+        {
+          duration: 800,
+          delay: 2900,
+          effects: [
+            {
+              type: "decay"
+            }
+          ]
         }
       ]
     },
     {
       name: "brand",
       repeat: true,
-      visible: true,
+      visible: false,
       type: "text",
-      text: "Animatix 0.0.11",
+      text: "Animatix 0.0.12",
       bounds: {
         x: 60,
         y: 60,
-        width: 256,
+        width: 512,
         height: 128
       },
       phases: [
         {
           font: "Lucida Console",
+          delay: 2000,
           duration: 1000,
           alpha: 1.0,
-          fontSize: 18,
+          fontSize: 44,
           effects: [
             {
               type: "letterfade",
               params: {
-                fadeSpeed: 1,
+                fadeSpeed: 0.9,
                 fadeType: "fadeIn",
                 startAlpha: 0.0,
                 endAlpha: 1.0
@@ -66,7 +92,7 @@
       type: "text",
       text: "SNAPSHOT",
       bounds: {
-        x: 240,
+        x: 480,
         y: 35,
         width: 128,
         height: 28
@@ -92,7 +118,7 @@
           font: "Consolas",
           fontSize: 15,
           duration: 1100,
-          delay: 2000,
+          delay: 5200,
           alpha: 0.4,
           effects: [
             {
