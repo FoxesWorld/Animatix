@@ -12,12 +12,11 @@ import java.awt.image.BufferedImage;
 import java.util.Map;
 
 public class BorderHighlightFrame extends ImageAnimationFrame {
-    // Параметры эффекта
     private final Map<String, Object>[] params = new Map[] {
-            createParam("borderColor", "borderColor", String.class, "#FF5733"),  // HEX цвет для границы
-            createParam("shadowColor", "shadowColor", String.class, "#000000"),  // HEX цвет для тени
-            createParam("borderSize", "borderSize", Integer.class, 1),          // Размер границы
-            createParam("shadowSize", "shadowSize", Integer.class, 3)            // Размер тени
+            createParam("borderColor", "borderColor", String.class, "#FF5733"),
+            createParam("shadowColor", "shadowColor", String.class, "#000000"),
+            createParam("borderSize", "borderSize", Integer.class, 1),
+            createParam("shadowSize", "shadowSize", Integer.class, 3)
     };
 
     private final String effectName = "borderHighlight";
@@ -25,24 +24,22 @@ public class BorderHighlightFrame extends ImageAnimationFrame {
     // Поля для хранения параметров
     private String borderColor, shadowColor;
     private int borderSize, shadowSize;
-    private BufferedImage originalImage;
 
     public BorderHighlightFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
         super(animationFactory, phase, label);
-        this.originalImage = imageWorks.getImage();
         initializeParams(params, effectName);
     }
 
     @Override
     public void update(float progress) {
         // Применяем эффект на изображение
-        BufferedImage currentImage = applyBorderHighlightEffect(originalImage, progress);
+        BufferedImage currentImage = applyBorderHighlightEffect(image, progress);
 
         // Обновляем изображение в анимации
         SwingUtilities.invokeLater(() -> {
             label.setIcon(new ImageIcon(currentImage));
         });
-        imageWorks.setImage(currentImage);
+        imageCache.cacheImage(label.getName(), currentImage);
     }
 
     private BufferedImage applyBorderHighlightEffect(BufferedImage image, float progress) {

@@ -10,7 +10,6 @@ import java.util.Map;
 
 public class ResizeFrame extends ImageAnimationFrame {
 
-    // Параметры эффекта
     private final Map<String, Object>[] params = new Map[]{
             createParam("startWidth", "startWidth", Integer.class, 100),
             createParam("endWidth", "endWidth", Integer.class, 20),
@@ -20,7 +19,6 @@ public class ResizeFrame extends ImageAnimationFrame {
     };
     private final String effectName = "resize";
 
-    // Поля для хранения параметров
     private int startWidth, endWidth, startHeight, endHeight;
     private String resizeType;
 
@@ -31,31 +29,37 @@ public class ResizeFrame extends ImageAnimationFrame {
 
     @Override
     public void update(float progress) {
-        // Вычисляем новые размеры
         int newWidth = (int) (startWidth + progress * (endWidth - startWidth));
         int newHeight = (int) (startHeight + progress * (endHeight - startHeight));
 
-        // Меняем размеры изображения
-        BufferedImage resizedImage = imageWorks.resizeImage(newWidth, newHeight, ResizeType.valueOf(resizeType));
+
+        BufferedImage resizedImage;
+
+        if (image != null) {
+            resizedImage = image;
+        } else {
+            resizedImage = getAnimationFactory().getImageWorks().resizeImage(
+                    (BufferedImage) ((ImageIcon) label.getIcon()).getImage(),
+                    newWidth,
+                    newHeight,
+                    ResizeType.valueOf(resizeType)
+            );
+
+        }
+
         label.setIcon(new ImageIcon(resizedImage));
-        //label.setSize(newWidth, newHeight);
-        imageWorks.setImage(resizedImage);
+        imageCache.cacheImage(label.getName(), resizedImage);
     }
 
     @Override
     protected void initializeParams(Map<String, Object>[] params, String effectName) {
         super.initializeParams(params, effectName);
-
-        // Убедимся, что resizeType правильно задан
         if (resizeType == null) {
             AnimationFactory.logger.log(System.Logger.Level.WARNING, "resizeType is not set. Using default value: SCALE_TO_COVER");
             resizeType = "SCALE_TO_COVER";
         }
     }
 
-    /**
-     * Типы изменения размеров.
-     */
     public enum ResizeType {
         SCALE_TO_COVER,
         SCALE_TO_FIT,

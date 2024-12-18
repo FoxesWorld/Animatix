@@ -3,12 +3,12 @@
     {
       name: "diamondAnimation",
       type: "image",
-      imagePath: "img/diamond.png",
+      imagePath: "img/fox.png",
       visible: true,
       bounds: {
         x: 0,
         y: 12,
-        width: 128,
+        width: 256,
         height: 128
       },
       phases: [
@@ -20,35 +20,10 @@
               params: {
                 startWidth: 128,
                 startHeight: 128,
-                endWidth: 64,
-                endHeight: 64,
-                resizeType: "SCALE_TO_FIT"
+                endWidth: 85,
+                endHeight: 85,
+                resizeType: "STRETCH"
               }
-            }
-          ]
-        },
-        {
-          duration: 1500,
-          delay: 900,
-          effects: [
-            {
-              type: "move",
-              params: {
-                starX: 0,
-                startY: 0,
-                endX: 430,
-                endY: 12,
-                resizeType: "SCALE_TO_FIT"
-              }
-            }
-          ]
-        },
-        {
-          duration: 800,
-          delay: 2900,
-          effects: [
-            {
-              type: "decay"
             }
           ]
         }
@@ -59,10 +34,10 @@
       repeat: true,
       visible: false,
       type: "text",
-      text: "Animatix 0.0.12",
+      text: "Animatix 0.0.13",
       bounds: {
-        x: 60,
-        y: 60,
+        x: 90,
+        y: 50,
         width: 512,
         height: 128
       },

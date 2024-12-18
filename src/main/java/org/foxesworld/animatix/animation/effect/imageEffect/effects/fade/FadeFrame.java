@@ -44,8 +44,8 @@ public class FadeFrame extends ImageAnimationFrame {
     @Override
     public void update(float progress) {
         float alpha = (float) (startAlpha + progress * (endAlpha - startAlpha));
-        BufferedImage fadedImage = imageWorks.applyAlphaEffect(imageWorks.getImage(), alpha, fadeSpeed);
+        BufferedImage fadedImage = imageWorks.applyAlphaEffect(image, alpha, fadeSpeed);
         label.setIcon(new ImageIcon(fadedImage));
-        imageWorks.setImage(fadedImage);
+        imageCache.cacheImage(label.getName(), fadedImage);
     }
 }

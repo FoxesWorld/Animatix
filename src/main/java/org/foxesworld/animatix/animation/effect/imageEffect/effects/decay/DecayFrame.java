@@ -1,12 +1,11 @@
 package org.foxesworld.animatix.animation.effect.imageEffect.effects.decay;
 
-import javax.swing.*;
-import java.awt.image.BufferedImage;
-import java.util.Map;
-
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.config.AnimationPhase;
 import org.foxesworld.animatix.animation.effect.imageEffect.ImageAnimationFrame;
+
+import javax.swing.*;
+import java.util.Map;
 
 public class DecayFrame extends ImageAnimationFrame {
 
@@ -30,11 +29,15 @@ public class DecayFrame extends ImageAnimationFrame {
     protected void initializeParams(Map<String, Object>[] params, String effectName) {
         super.initializeParams(params, effectName);
     }
+
     @Override
     public void update(float progress) {
         float alpha = (float) (startAlpha + progress * (endAlpha - startAlpha));
-        BufferedImage decayedImage = imageWorks.applyPixelDecayEffect(imageWorks.getImage(), alpha, decaySpeed);
-        label.setIcon(new ImageIcon(decayedImage));
-        imageWorks.setImage((BufferedImage) decayedImage);
+
+        image = imageWorks.applyPixelDecayEffect(image, alpha, decaySpeed);
+        imageCache.cacheImage(label.getName(), image);
+
+
+        label.setIcon(new ImageIcon(image));
     }
 }

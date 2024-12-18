@@ -35,13 +35,12 @@ public class SpinFrame extends ImageAnimationFrame {
 
     @Override
     public void update(float progress) {
-        // Вычисляем текущий угол поворота
         double currentAngle = startAngle + progress * (endAngle - startAngle);
 
         // Применяем вращение к изображению
-        BufferedImage rotatedImage = rotateImage(imageWorks.getImage(), currentAngle);
+        BufferedImage rotatedImage = rotateImage(imageCache.getCachedImage(label.getName()), currentAngle);
         label.setIcon(new ImageIcon(rotatedImage));
-        imageWorks.setImage(rotatedImage);
+        imageCache.cacheImage(label.getName(), rotatedImage);
     }
 
     /**
@@ -60,17 +59,14 @@ public class SpinFrame extends ImageAnimationFrame {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
-        // Вычисляем центр изображения
         double centerX = width / 2.0;
         double centerY = height / 2.0;
 
-        // Создаём AffineTransform для вращения
         AffineTransform transform = new AffineTransform();
         transform.translate(centerX, centerY);
         transform.rotate(Math.toRadians(angle));
         transform.translate(-centerX, -centerY);
 
-        // Рисуем изображение с применением трансформации
         g2d.drawImage(image, transform, null);
         g2d.dispose();
 

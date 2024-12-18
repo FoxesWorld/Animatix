@@ -5,7 +5,6 @@ import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.effect.imageEffect.effects.resize.ResizeFrame;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
@@ -13,49 +12,22 @@ import java.util.Objects;
 
 public class ImageWorks {
 
-    private BufferedImage image;
-    private JLabel label;
-
-    public ImageWorks(JLabel label) {
-        this.label = label;
-        this.image = (BufferedImage) ((ImageIcon) label.getIcon()).getImage();
-
-    }
-
-    public static ImageWorks createFromLabel(JLabel label) {
-        BufferedImage img = label.getIcon() instanceof ImageIcon
-                ? (BufferedImage) ((ImageIcon) label.getIcon()).getImage()
-                : null;
-
-        ImageWorks imageWorks = new ImageWorks(label);
-        imageWorks.setImage(img);
-        return imageWorks;
-    }
-
-    public static ImageWorks createFromImage(BufferedImage image) {
-        JLabel label = new JLabel(new ImageIcon(image));
-        ImageWorks imageWorks = new ImageWorks(label);
-        imageWorks.setImage(image);
-        return imageWorks;
+    public ImageWorks() {
     }
 
 
-    public BufferedImage resizeImage(int targetWidth, int targetHeight, ResizeFrame.ResizeType resizeType) {
-        // Получаем исходные размеры изображения
+    public BufferedImage resizeImage(BufferedImage image, int targetWidth, int targetHeight, ResizeFrame.ResizeType resizeType) {
         int originalWidth = image.getWidth();
         int originalHeight = image.getHeight();
 
-        // Рассчитываем исходные и целевые соотношения сторон
         float originalAspect = (float) originalWidth / originalHeight;
         float targetAspect = (float) targetWidth / targetHeight;
 
-        // Определяем размеры для нового изображения с учетом типа ресайза
         int newWidth = targetWidth;
         int newHeight = targetHeight;
 
         switch (resizeType) {
             case SCALE_TO_FIT -> {
-                // Масштабируем так, чтобы изображение полностью помещалось в целевые размеры (не выходило за границы)
                 if (originalAspect > targetAspect) {
                     newWidth = targetWidth;
                     newHeight = (int) (targetWidth / originalAspect);
@@ -65,7 +37,6 @@ public class ImageWorks {
                 }
             }
             case SCALE_TO_COVER -> {
-                // Масштабируем так, чтобы изображение полностью покрывало целевую область (могут быть обрезки)
                 if (originalAspect > targetAspect) {
                     newHeight = targetHeight;
                     newWidth = (int) (targetHeight * originalAspect);
@@ -75,31 +46,25 @@ public class ImageWorks {
                 }
             }
             case STRETCH -> {
-                // Просто растягиваем изображение по целевым размерам
                 newWidth = targetWidth;
                 newHeight = targetHeight;
             }
             default -> throw new IllegalArgumentException("Unsupported ResizeType: " + resizeType);
         }
 
-        // Если новое изображение меньше исходного по размеру, не изменяем его (используем оригинал)
         if (newWidth >= originalWidth && newHeight >= originalHeight) {
-            // В случае уменьшения изображения, возвращаем оригинал, чтобы избежать размытия
             return image;
         }
 
-        // Создаем новое изображение для ресайза
         BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = resizedImage.createGraphics();
 
-        // Устанавливаем более качественные параметры интерполяции для уменьшения или растягивания изображения
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         g.drawImage(image, 0, 0, newWidth, newHeight, null);
         g.dispose();
 
         return resizedImage;
     }
-
 
     public double applyBounceEffect(double startValue, double endValue, double elapsedTime, double duration, boolean bounce) {
         double progress = elapsedTime / duration;
@@ -109,7 +74,7 @@ public class ImageWorks {
         return startValue + (endValue - startValue) * Math.min(1.0, Math.max(0.0, progress));
     }
 
-    public BufferedImage applyRotationEffect(double angle, Runnable cleanupCallback) {
+    public BufferedImage applyRotationEffect(BufferedImage image, double angle, Runnable cleanupCallback) {
         long startTime = System.nanoTime();
         BufferedImage rotatedImage = null;
 
@@ -177,7 +142,6 @@ public class ImageWorks {
         return newImage;
     }
 
-
     public static BufferedImage setBaseAlpha(BufferedImage image, float alpha) {
         BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
@@ -195,28 +159,7 @@ public class ImageWorks {
         return newImage;
     }
 
-
-
-    public void setImage(BufferedImage image) {
-        this.image = image;
-    }
-
-    public BufferedImage getImage() {
-        return image;
-    }
-
-    public Rectangle getImageBounds() {
-        return image.getAlphaRaster().getBounds();
-    }
-
     public void dispose() {
-        if (image != null) {
-            image = null;
-        }
         System.gc();
-    }
-
-    public JLabel getLabel() {
-        return label;
     }
 }

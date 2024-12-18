@@ -18,11 +18,10 @@ public class AnimationPhaseExecutor {
     /**
      * Выполняет заданный этап анимации.
      *
-     * @param animationFactory Фабрика анимаций.
      * @param animationFrames  Список кадров анимации для выполнения.
      * @param phaseNum         Номер текущего этапа.
      */
-    public void executePhase(AnimationFactory animationFactory, List<AnimationFrame> animationFrames, AnimationPhase phase, int phaseNum) {
+    public void executePhase(List<AnimationFrame> animationFrames, AnimationPhase phase, int phaseNum) {
 
         long phaseDuration = phase.getDuration();
         AnimationFactory.logger.log(System.Logger.Level.INFO,

@@ -1,5 +1,7 @@
 package org.foxesworld.animatix;
 
+import org.foxesworld.animatix.animation.cache.CacheKey;
+import org.foxesworld.animatix.animation.cache.ImageCache;
 import org.foxesworld.animatix.animation.task.TaskExecutor;
 import org.foxesworld.animatix.animation.effect.AnimationEffectFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
@@ -25,19 +27,21 @@ public class AnimationFactory implements AnimationStatus {
     private final AnimationConfigLoader configLoader = new AnimationConfigLoader();
     private final AnimationEffectFactory effectFactory;
     private final AnimationPhaseExecutor phaseExecutor;
-    private final Map<AnimationPhase, List<AnimationFrame>> cachedFrames = new ConcurrentHashMap<>();
+    private final Map<CacheKey, List<AnimationFrame>> cachedFrames = new ConcurrentHashMap<>();
     private AnimationConfig config;
     private volatile boolean isPaused = false;
-
+    private ImageWorks imageWorks;
+    private final ImageCache imageCache;
     public AnimationFactory(String configPath) {
         this.taskExecutor = new TaskExecutor();
-        effectFactory = new AnimationEffectFactory(this);
-        phaseExecutor = new AnimationPhaseExecutor(this);
+        this.effectFactory = new AnimationEffectFactory(this);
+        this.phaseExecutor = new AnimationPhaseExecutor(this);
+        this.imageCache = new ImageCache();
         loadConfig(configPath);
     }
 
     private void loadConfig(String configPath) {
-        try (InputStream inputStream = Main.class.getClassLoader().getResourceAsStream(configPath)) {
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(configPath)) {
             if (inputStream == null) {
                 throw new IllegalArgumentException("Configuration file not found: " + configPath);
             }
@@ -50,11 +54,10 @@ public class AnimationFactory implements AnimationStatus {
 
     public void createAnimation(Object window) {
         validateConfig();
-
         for (AnimationConfig.AnimConf animConf : config.getAnimObj()) {
             Rectangle objectBounds = animConf.getBounds();
-
             JLabel animLabel = new JLabel();
+            animLabel.setName(animConf.getName());
             animLabel.setBounds(objectBounds);
             addLabelToWindow(window, animLabel);
             animLabel.setVisible(animConf.isVisible());
@@ -74,108 +77,93 @@ public class AnimationFactory implements AnimationStatus {
     }
 
     private void runAnimation(JLabel animLabel, AnimationConfig.AnimConf animConf) {
-        int phaseNum = 0;
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         try {
-            // ScheduledExecutorService to avoid using Thread.sleep() and handle delays better
-            do {
-                for (AnimationPhase phase : animConf.getPhases()) {
-                    if (isPaused) {
-                        synchronized (this) {
-                            wait();
-                        }
-                    }
-                    this.phaseSetUp(animConf.getType(), animLabel, animConf, phase);
-
-                    if (phase.getDelay() > 0) {
-                        logger.log(System.Logger.Level.INFO,
-                                "Delaying phase {0} for {1} ms", phaseNum, phase.getDelay());
-                        // Using scheduler to handle delay asynchronously
-                        int finalPhaseNum = phaseNum;
-                        scheduler.schedule(() -> {
-                            try {
-                                List<AnimationFrame> frames = getOrCacheAnimationFrames(animConf, phase, animLabel);
-                                logger.log(System.Logger.Level.INFO,
-                                        "Executing phase {0} of animation: {1}", finalPhaseNum, animConf.getName());
-                                phaseExecutor.executePhase(this, frames, phase, finalPhaseNum);
-                                waitForPhaseCompletion(phase.getDuration());
-                            } catch (Exception ex) {
-                                logger.log(System.Logger.Level.ERROR,
-                                        "Error during phase execution: {0}", ex.getMessage(), ex);
-                            }
-                        }, phase.getDelay(), TimeUnit.MILLISECONDS);
-                    } else {
-                        List<AnimationFrame> frames = getOrCacheAnimationFrames(animConf, phase, animLabel);
-                        logger.log(System.Logger.Level.INFO,
-                                "Executing phase {0} of animation: {1}", phaseNum, animConf.getName());
-                        phaseExecutor.executePhase(this, frames, phase, phaseNum);
-                        waitForPhaseCompletion(phase.getDuration());
-                    }
-
-                    phaseNum++;
-                }
-            } while (animConf.isRepeat() && phaseNum < animConf.getPhases().size());
-
-            logger.log(System.Logger.Level.INFO,
-                    "Animation for {0} completed.", animConf.getName());
-
+            for (int phaseNum = 0; phaseNum < animConf.getPhases().size(); phaseNum++) {
+                AnimationPhase phase = animConf.getPhases().get(phaseNum);
+                waitIfPaused();
+                phaseSetUp(animConf.getType(), animLabel, animConf, phase);
+                delayBeforePhase(phase);
+                List<AnimationFrame> frames = getOrCacheAnimationFrames(animConf, phase, animLabel);
+                logger.log(System.Logger.Level.INFO, "Executing phase {0} of animation: {1}", phaseNum, animConf.getName());
+                phaseExecutor.executePhase(frames, phase, phaseNum);
+                waitForPhaseCompletion(phase.getDuration());
+                logger.log(System.Logger.Level.INFO, "Phase {0} completed successfully.", phaseNum);
+            }
+            logger.log(System.Logger.Level.INFO, "Animation for {0} completed.", animConf.getName());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            logger.log(System.Logger.Level.ERROR,
-                    "Animation interrupted: {0}", e.getMessage(), e);
+            logger.log(System.Logger.Level.ERROR, "Animation interrupted: {0}", e.getMessage(), e);
         } catch (Exception e) {
-            logger.log(System.Logger.Level.ERROR,
-                    "Unexpected error during animation: {0}", e.getMessage(), e);
+            logger.log(System.Logger.Level.ERROR, "Unexpected error during animation: {0}", e.getMessage(), e);
         } finally {
             scheduler.shutdown();
+            try {
+                if (!scheduler.awaitTermination(60, TimeUnit.MILLISECONDS)) {
+                    scheduler.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                scheduler.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
         }
     }
 
-    private void phaseSetUp(String type, JLabel label, AnimationConfig.AnimConf config, AnimationPhase phase){
-        switch (type){
+    private void waitIfPaused() throws InterruptedException {
+        synchronized (this) {
+            while (isPaused) {
+                wait();
+            }
+        }
+    }
+
+    private void phaseSetUp(String type, JLabel label, AnimationConfig.AnimConf config, AnimationPhase phase) {
+        switch (type) {
             case "text" -> setupTextPhase(config.getText(), label, phase);
             case "image" -> setupImagePhase(config.getImagePath(), label, phase);
+            default -> throw new IllegalArgumentException("Unsupported animation type: " + type);
         }
     }
-
 
     private void setupTextPhase(String text, JLabel animLabel, AnimationPhase phase) {
         animLabel.setText(text);
         animLabel.setFont(new Font(phase.getFont(), Font.PLAIN, phase.getFontSize()));
-        if(phase.getTextColor() != null) {animLabel.setForeground(Color.decode(phase.getTextColor()));}
+        if (phase.getTextColor() != null) {
+            animLabel.setForeground(Color.decode(phase.getTextColor()));
+        }
         animLabel.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
     private void setupImagePhase(String imgPath, JLabel animLabel, AnimationPhase phase) {
         BufferedImage labelImage = ImageWorks.getImageFromStream(imgPath);
-        animLabel.setIcon(new ImageIcon(labelImage));
-
         if (phase.getAlpha() != 0) {
-                labelImage = ImageWorks.setBaseAlpha(labelImage, (float) phase.getAlpha());
+            labelImage = ImageWorks.setBaseAlpha(labelImage, (float) phase.getAlpha());
         }
-
         animLabel.setIcon(new ImageIcon(labelImage));
+        this.imageWorks = new ImageWorks();
     }
 
-
     private List<AnimationFrame> getOrCacheAnimationFrames(AnimationConfig.AnimConf animConf, AnimationPhase phase, JLabel label) {
-        return cachedFrames.computeIfAbsent(phase, p -> {
-            if (animConf.getType().equals("text")) {
-                return effectFactory.createTextEffects(p, label);
-            } else if (animConf.getType().equals("image")) {
-                return effectFactory.createImageEffects(p, label);
-            }
-            return Collections.emptyList();
+        CacheKey cacheKey = new CacheKey(animConf, phase);
+        return cachedFrames.computeIfAbsent(cacheKey, key -> {
+            List<AnimationFrame> frames = switch (animConf.getType()) {
+                case "text" -> effectFactory.createTextEffects(phase, label);
+                case "image" -> effectFactory.createImageEffects(phase, label);
+                default -> Collections.emptyList();
+            };
+            return frames;
         });
     }
 
-    private void waitForPhaseCompletion(long duration) {
-        try {
-            Thread.sleep(duration);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            logger.log(System.Logger.Level.WARNING, "Phase wait interrupted. Duration: {0} ms", duration);
+    private void delayBeforePhase(AnimationPhase phase) throws InterruptedException {
+        if (phase.getDelay() > 0) {
+            logger.log(System.Logger.Level.INFO, "Delaying phase for {0} ms", phase.getDelay());
+            Thread.sleep(phase.getDelay());
         }
+    }
+
+    private void waitForPhaseCompletion(long duration) throws InterruptedException {
+        Thread.sleep(duration);
     }
 
     public synchronized void pause() {
@@ -207,5 +195,13 @@ public class AnimationFactory implements AnimationStatus {
 
     public TaskExecutor getTaskExecutor() {
         return taskExecutor;
+    }
+
+    public ImageWorks getImageWorks() {
+        return imageWorks;
+    }
+
+    public ImageCache getImageCache() {
+        return imageCache;
     }
 }

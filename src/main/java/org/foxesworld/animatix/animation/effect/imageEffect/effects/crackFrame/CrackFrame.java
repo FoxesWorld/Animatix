@@ -51,12 +51,11 @@ public class CrackFrame extends ImageAnimationFrame {
     }
 
     private void drawCracks(float progress) {
-        BufferedImage currentImage = imageWorks.getImage();
-        if (currentImage == null) return;
+        if (image == null) return;
 
-        BufferedImage rgbImage = new BufferedImage(currentImage.getWidth(), currentImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+        BufferedImage rgbImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g = rgbImage.createGraphics();
-        g.drawImage(currentImage, 0, 0, null);
+        g.drawImage(image, 0, 0, null);
 
         g.setColor(Color.BLACK);
         g.setStroke(new BasicStroke(2));
@@ -67,16 +66,19 @@ public class CrackFrame extends ImageAnimationFrame {
 
         g.dispose();
 
-        for (int y = 0; y < currentImage.getHeight(); y++) {
-            for (int x = 0; x < currentImage.getWidth(); x++) {
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
                 int rgb = rgbImage.getRGB(x, y);
-                int alpha = currentImage.getRGB(x, y) & 0xFF000000;
+                int alpha = image.getRGB(x, y) & 0xFF000000;
                 int finalColor = alpha | (rgb & 0x00FFFFFF);
-                currentImage.setRGB(x, y, finalColor);
+                image.setRGB(x, y, finalColor);
             }
         }
 
-        SwingUtilities.invokeLater(() -> label.setIcon(new ImageIcon(currentImage)));
+        SwingUtilities.invokeLater(() -> {
+            label.setIcon(new ImageIcon(image));
+            imageCache.cacheImage(label.getName(), image);
+        });
     }
 
     private class Crack {

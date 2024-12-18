@@ -35,39 +35,38 @@ public class MoveFrame extends ImageAnimationFrame {
 
     @Override
     public void update(float progress) {
-        // Вычисляем новые координаты
+        label.setIcon(new ImageIcon(image));
         int newX = (int) (startX + progress * (endX - startX));
         int newY = (int) (startY + progress * (endY - startY));
 
-        // Добавляем текущую точку в путь
         pathPoints.add(new Point(newX, newY));
 
-        // Устанавливаем новые координаты для JLabel
         label.setLocation(newX, newY);
         //drawTrace();
     }
 
     private void drawTrace() {
-        BufferedImage currentImage = imageWorks.getImage();
-        if (currentImage == null) return;
+        if (image == null) return;
 
-        // Создаем графику для рисования трейса
-        Graphics2D g = currentImage.createGraphics();
-        g.setColor(traceColor);
-        g.setStroke(new BasicStroke(traceThickness));
+            Graphics2D g = image.createGraphics();
+            g.setColor(traceColor);
+            g.setStroke(new BasicStroke(traceThickness));
 
-        // Рисуем линии между точками в пути
-        for (int i = 1; i < pathPoints.size(); i++) {
-            Point p1 = pathPoints.get(i - 1);
-            Point p2 = pathPoints.get(i);
-            g.drawLine(p1.x, p1.y, p2.x, p2.y);
-        }
+            for (int i = 1; i < pathPoints.size(); i++) {
+                Point p1 = pathPoints.get(i - 1);
+                Point p2 = pathPoints.get(i);
+                g.drawLine(p1.x, p1.y, p2.x, p2.y);
+            }
 
-        g.dispose();
+            g.dispose();
 
+            imageCache.cacheImage(label.getName(), image);
+
+        BufferedImage finalCurrentImage = image;
         SwingUtilities.invokeLater(() -> {
-            label.setIcon(new ImageIcon(currentImage));
-            imageWorks.setImage(currentImage);
+            label.setIcon(new ImageIcon(finalCurrentImage));
+            //imageWorks.setImage(finalCurrentImage);
+            imageCache.cacheImage(label.getName(), finalCurrentImage);
             label.repaint();
         });
     }
@@ -75,10 +74,5 @@ public class MoveFrame extends ImageAnimationFrame {
     @Override
     protected void initializeParams(Map<String, Object>[] params, String effectName) {
         super.initializeParams(params, effectName);
-    }
-
-    @Override
-    public void run() {
-        super.run();
     }
 }
