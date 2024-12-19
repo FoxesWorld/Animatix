@@ -2,8 +2,7 @@ package org.foxesworld.animatix.animation.effect.textEffect.effects;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
-import org.foxesworld.animatix.animation.config.AnimationPhase;
-import org.foxesworld.animatix.animation.config.KeyFrame;
+import org.foxesworld.animatix.animation.config.Phase;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,8 +19,8 @@ public class TextColorChangeFrame extends AnimationFrame {
 
     private Color startColor, endColor;
 
-    public TextColorChangeFrame(AnimationFactory animationFactory, KeyFrame keyFrame, AnimationPhase phase, JLabel label) {
-        super(animationFactory, phase, keyFrame, label);
+    public TextColorChangeFrame(AnimationFactory animationFactory, Phase phase, JLabel label) {
+        super(animationFactory, phase, label);
         initializeParams(params, effectName);
     }
 

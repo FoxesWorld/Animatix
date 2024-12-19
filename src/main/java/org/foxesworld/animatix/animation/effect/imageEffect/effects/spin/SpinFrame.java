@@ -1,14 +1,11 @@
 package org.foxesworld.animatix.animation.effect.imageEffect.effects.spin;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 
 import org.foxesworld.animatix.AnimationFactory;
-import org.foxesworld.animatix.animation.config.AnimationPhase;
-import org.foxesworld.animatix.animation.config.KeyFrame;
+import org.foxesworld.animatix.animation.config.Phase;
 import org.foxesworld.animatix.animation.effect.imageEffect.ImageAnimationFrame;
 
 public class SpinFrame extends ImageAnimationFrame {
@@ -24,8 +21,8 @@ public class SpinFrame extends ImageAnimationFrame {
     private double startAngle, endAngle;
     private int spinSpeed;
 
-    public SpinFrame(AnimationFactory animationFactory, KeyFrame keyFrame,  AnimationPhase phase, JLabel label) {
-        super(animationFactory, keyFrame, phase, label);
+    public SpinFrame(AnimationFactory animationFactory, Phase phase, JLabel label) {
+        super(animationFactory, phase, label);
         initializeParams(params, effectName);
     }
 

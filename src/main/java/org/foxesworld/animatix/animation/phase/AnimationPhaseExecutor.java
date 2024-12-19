@@ -2,8 +2,7 @@ package org.foxesworld.animatix.animation.phase;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
-import org.foxesworld.animatix.animation.config.AnimationPhase;
-import org.foxesworld.animatix.animation.config.KeyFrame;
+import org.foxesworld.animatix.animation.config.Phase;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -23,8 +22,8 @@ public class AnimationPhaseExecutor {
      * @param phase           Current animation phase.
      * @param phaseNum        Phase number.
      */
-    public void executePhase(KeyFrame keyFrame, List<AnimationFrame> animationFrames, AnimationPhase phase, int phaseNum) {
-        long phaseDuration = keyFrame.getDuration();
+    public void executePhase(List<AnimationFrame> animationFrames, Phase phase, int phaseNum) {
+        long phaseDuration = phase.getDuration();
         AnimationFactory.logger.log(System.Logger.Level.INFO,
                 "Starting execution of phase {0}. Duration: {1} ms", phaseNum, phaseDuration);
 
@@ -91,7 +90,7 @@ public class AnimationPhaseExecutor {
      * @param phase     Current animation phase.
      * @param phaseNum  Phase number.
      */
-    private void notifyPhaseCompleted(AnimationPhase phase, int phaseNum) {
+    private void notifyPhaseCompleted(Phase phase, int phaseNum) {
         AnimationFactory.logger.log(System.Logger.Level.INFO,
                 "Notifying factory about phase {0} completion.", phaseNum);
         animationFactory.onPhaseCompleted(phase);

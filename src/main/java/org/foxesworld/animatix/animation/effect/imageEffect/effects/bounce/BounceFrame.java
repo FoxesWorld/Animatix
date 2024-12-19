@@ -1,15 +1,14 @@
 package org.foxesworld.animatix.animation.effect.imageEffect.effects.bounce;
 
 import org.foxesworld.animatix.AnimationFactory;
-import org.foxesworld.animatix.animation.config.AnimationPhase;
-import org.foxesworld.animatix.animation.config.KeyFrame;
+import org.foxesworld.animatix.animation.config.Phase;
 import org.foxesworld.animatix.animation.effect.imageEffect.ImageAnimationFrame;
 
 import javax.swing.*;
 
 public class BounceFrame extends ImageAnimationFrame {
-    public BounceFrame(AnimationFactory animationFactory, KeyFrame keyFrame, AnimationPhase phase, JLabel label) {
-        super(animationFactory, keyFrame, phase, label);
+    public BounceFrame(AnimationFactory animationFactory, Phase phase, JLabel label) {
+        super(animationFactory, phase, label);
     }
 
     @Override
@@ -22,7 +21,7 @@ public class BounceFrame extends ImageAnimationFrame {
     private double startWidth, endWidth, startHeight, endHeight;
     private double duration;
 
-    public BounceFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
+    public BounceFrame(AnimationFactory animationFactory, Phase phase, JLabel label) {
         super(animationFactory, phase, label);
 
         this.bounce = phase.isBounce();

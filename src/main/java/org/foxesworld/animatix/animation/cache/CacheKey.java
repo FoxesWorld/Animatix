@@ -1,7 +1,7 @@
 package org.foxesworld.animatix.animation.cache;
 
-import org.foxesworld.animatix.animation.config.AnimationConfig;
-import org.foxesworld.animatix.animation.config.AnimationPhase;
+import org.foxesworld.animatix.animation.config.Animation;
+import org.foxesworld.animatix.animation.config.Phase;
 
 import java.util.Objects;
 
@@ -12,9 +12,9 @@ public class CacheKey {
     private final float alpha;
     private final long delay;
 
-    public CacheKey(AnimationConfig.AnimConf animConf, AnimationPhase phase) {
-        this.animType = animConf.getType();
-        this.animName = animConf.getName();
+    public CacheKey(Animation animation, Phase phase) {
+        this.animType = animation.getType();
+        this.animName = animation.getName();
         this.phaseNum = phase.getPhaseNum();
         this.alpha = (float) phase.getAlpha();
         this.delay = phase.getDelay();

@@ -1,8 +1,7 @@
 package org.foxesworld.animatix.animation.effect.imageEffect.effects.decay;
 
 import org.foxesworld.animatix.AnimationFactory;
-import org.foxesworld.animatix.animation.config.AnimationPhase;
-import org.foxesworld.animatix.animation.config.KeyFrame;
+import org.foxesworld.animatix.animation.config.Phase;
 import org.foxesworld.animatix.animation.effect.imageEffect.ImageAnimationFrame;
 
 import javax.swing.*;
@@ -21,8 +20,8 @@ public class DecayFrame extends ImageAnimationFrame {
     private Double startAlpha, endAlpha;
     private int decaySpeed;
 
-    public DecayFrame(AnimationFactory animationFactory, KeyFrame keyFrame, AnimationPhase phase, JLabel label) {
-        super(animationFactory, keyFrame, phase, label);
+    public DecayFrame(AnimationFactory animationFactory, Phase phase, JLabel label) {
+        super(animationFactory, phase, label);
         initializeParams(params, effectName);
     }
 

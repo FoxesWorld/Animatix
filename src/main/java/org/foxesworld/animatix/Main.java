@@ -40,17 +40,5 @@ public class Main {
 
         // Отображение окна
         frame.setVisible(true);
-
-        // Обновление статуса анимации
-        Timer timer = new Timer(1000, e -> {
-            if (animationFactory.isPaused()) {
-                statusLabel.setText("Animation paused...");
-            } else if (animationFactory.isRunning()) {
-                statusLabel.setText("Animation running...");
-            } else {
-                statusLabel.setText("Animation stopped.");
-            }
-        });
-        timer.start();
     }
 }

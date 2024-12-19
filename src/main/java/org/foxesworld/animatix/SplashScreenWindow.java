@@ -27,7 +27,7 @@ public class SplashScreenWindow extends JWindow {
         getContentPane().add(content);
         setSize(700, 560);
         setLocationRelativeTo(null);
-        setBackground(Color.CYAN);
+        //setBackground(Color.CYAN);
 
         // Передаем эту панель в метод создания анимации
         animationFactory.createAnimation(content);  // Передаем панель 'content'

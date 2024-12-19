@@ -1,8 +1,7 @@
 package org.foxesworld.animatix.animation.effect.imageEffect.effects.move;
 
 import org.foxesworld.animatix.AnimationFactory;
-import org.foxesworld.animatix.animation.config.AnimationPhase;
-import org.foxesworld.animatix.animation.config.KeyFrame;
+import org.foxesworld.animatix.animation.config.Phase;
 import org.foxesworld.animatix.animation.effect.imageEffect.ImageAnimationFrame;
 
 import javax.swing.*;
@@ -28,8 +27,8 @@ public class MoveFrame extends ImageAnimationFrame {
     private Color traceColor;
     private int traceThickness;
 
-    public MoveFrame(AnimationFactory animationFactory, KeyFrame keyFrame, AnimationPhase phase, JLabel label) {
-        super(animationFactory, keyFrame, phase, label);
+    public MoveFrame(AnimationFactory animationFactory, Phase phase, JLabel label) {
+        super(animationFactory, phase, label);
         pathPoints = new ArrayList<>();
         initializeParams(params, effectName);
     }

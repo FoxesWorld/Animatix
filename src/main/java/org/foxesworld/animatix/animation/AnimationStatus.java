@@ -1,7 +1,7 @@
 package org.foxesworld.animatix.animation;
 
-import org.foxesworld.animatix.animation.config.AnimationPhase;
+import org.foxesworld.animatix.animation.config.Phase;
 
 public interface AnimationStatus {
-    void onPhaseCompleted(AnimationPhase phase);
+    void onPhaseCompleted(Phase phase);
 }

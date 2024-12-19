@@ -1,8 +1,7 @@
 package org.foxesworld.animatix.animation.effect.imageEffect.effects.borderHighlight;
 
 import org.foxesworld.animatix.AnimationFactory;
-import org.foxesworld.animatix.animation.config.AnimationPhase;
-import org.foxesworld.animatix.animation.config.KeyFrame;
+import org.foxesworld.animatix.animation.config.Phase;
 import org.foxesworld.animatix.animation.effect.imageEffect.ImageAnimationFrame;
 
 import javax.swing.*;
@@ -26,8 +25,8 @@ public class BorderHighlightFrame extends ImageAnimationFrame {
     private String borderColor, shadowColor;
     private int borderSize, shadowSize;
 
-    public BorderHighlightFrame(AnimationFactory animationFactory, KeyFrame keyFrame, AnimationPhase phase, JLabel label) {
-        super(animationFactory, keyFrame, phase, label);
+    public BorderHighlightFrame(AnimationFactory animationFactory, Phase phase, JLabel label) {
+        super(animationFactory, phase, label);
         initializeParams(params, effectName);
     }
 
