@@ -3,6 +3,7 @@ package org.foxesworld.animatix.animation.effect.textEffect.effects;
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
 import org.foxesworld.animatix.animation.config.AnimationPhase;
+import org.foxesworld.animatix.animation.config.KeyFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,8 +24,8 @@ public class FadeTextAnimationFrame extends AnimationFrame {
     private String fadeType;
     private int fadeSpeed;
 
-    public FadeTextAnimationFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
-        super(animationFactory, phase, label);
+    public FadeTextAnimationFrame(AnimationFactory animationFactory, KeyFrame keyFrame, AnimationPhase phase, JLabel label) {
+        super(animationFactory, phase, keyFrame, label);
         initializeParams(params, effectName);
     }
 

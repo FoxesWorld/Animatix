@@ -4,6 +4,7 @@ import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
 import org.foxesworld.animatix.animation.config.AnimationPhase;
 import org.foxesworld.animatix.animation.config.Effect;
+import org.foxesworld.animatix.animation.config.KeyFrame;
 import org.foxesworld.animatix.animation.effect.imageEffect.effects.ImageEffects;
 import org.foxesworld.animatix.animation.effect.imageEffect.effects.borderHighlight.BorderHighlightFrame;
 import org.foxesworld.animatix.animation.effect.imageEffect.effects.bounce.BounceFrame;
@@ -28,23 +29,23 @@ public class AnimationEffectFactory {
         this.animationFactory = animationFactory;
     }
 
-    public List<AnimationFrame> createImageEffects(AnimationPhase phase, JLabel label) {
+    public List<AnimationFrame> createImageEffects(AnimationPhase phase, JLabel label, KeyFrame keyFrame) {
         List<AnimationFrame> frames = new ArrayList<>();
 
-        for (Effect effect : phase.getEffects()) {
+        for (Effect effect : keyFrame.getEffects()) {
             ImageEffects imageEffect = ImageEffects.fromString(effect.getType());
 
             switch (imageEffect) {
-                case RESIZE -> frames.add(new ResizeFrame(animationFactory, phase, label));
-                case MOVE -> frames.add(new MoveFrame(animationFactory, phase, label));
+                case RESIZE -> frames.add(new ResizeFrame(animationFactory, keyFrame, phase, label));
+                case MOVE -> frames.add(new MoveFrame(animationFactory, keyFrame,phase, label));
                 //case ROTATE -> frames.add(new RotateFrame(animationFactory, phase, label));
-                case BOUNCE -> frames.add(new BounceFrame(animationFactory, phase, label));
-                case DECAY -> frames.add(new DecayFrame(animationFactory, phase, label));
-                case CRACK -> frames.add(new CrackFrame(animationFactory, phase, label));
-                case FADE -> frames.add(new FadeFrame(animationFactory, phase, label));
-                case COLORFADE -> frames.add(new ColorFadeFrame(animationFactory, phase, label));
-                case SPIN -> frames.add(new SpinFrame(animationFactory, phase, label));
-                case BORDERHIGHLIGHT -> frames.add(new BorderHighlightFrame(animationFactory, phase, label));
+                case BOUNCE -> frames.add(new BounceFrame(animationFactory, keyFrame, phase, label));
+                case DECAY -> frames.add(new DecayFrame(animationFactory, keyFrame, phase, label));
+                case CRACK -> frames.add(new CrackFrame(animationFactory, keyFrame, phase, label));
+                case FADE -> frames.add(new FadeFrame(animationFactory, keyFrame, phase, label));
+                case COLORFADE -> frames.add(new ColorFadeFrame(animationFactory, keyFrame, phase, label));
+                case SPIN -> frames.add(new SpinFrame(animationFactory, keyFrame, phase, label));
+                case BORDERHIGHLIGHT -> frames.add(new BorderHighlightFrame(animationFactory, keyFrame, phase, label));
                 default -> throw new UnsupportedOperationException("Effect type not supported: " + effect.getType());
             }
         }
@@ -52,18 +53,18 @@ public class AnimationEffectFactory {
         return frames;
     }
 
-    public List<AnimationFrame> createTextEffects(AnimationPhase phase, JLabel label) {
+    public List<AnimationFrame> createTextEffects(AnimationPhase phase, JLabel label, KeyFrame keyFrame) {
         List<AnimationFrame> frames = new ArrayList<>();
 
-        for (Effect effect : phase.getEffects()) {
+        for (Effect effect : keyFrame.getEffects()) {
             switch (effect.getType().toLowerCase()) {
-                case "fade" -> frames.add(new FadeTextAnimationFrame(this.animationFactory, phase, label));
-                case "slide" -> frames.add(new SlideTextAnimationFrame(this.animationFactory, phase, label));
-                case "bounce" -> frames.add(new BounceTextAnimationFrame(this.animationFactory, phase, label));
-                case "colorchange" -> frames.add(new TextColorChangeFrame(this.animationFactory, phase, label));
-                case "flip" -> frames.add(new FlipTextAnimationFrame(this.animationFactory, phase, label));
-                case "fontchange" -> frames.add(new FontChangePixelAnimationFrame(this.animationFactory, phase, label));
-                case "letterfade" -> frames.add(new FadeInTextAnimationFrame(this.animationFactory, phase, label));
+                case "fade" -> frames.add(new FadeTextAnimationFrame(this.animationFactory, keyFrame, phase, label));
+                case "slide" -> frames.add(new SlideTextAnimationFrame(this.animationFactory, keyFrame, phase, label));
+                case "bounce" -> frames.add(new BounceTextAnimationFrame(this.animationFactory, keyFrame, phase, label));
+                case "colorchange" -> frames.add(new TextColorChangeFrame(this.animationFactory,  keyFrame,phase, label));
+                case "flip" -> frames.add(new FlipTextAnimationFrame(this.animationFactory, keyFrame, phase, label));
+                case "fontchange" -> frames.add(new FontChangePixelAnimationFrame(this.animationFactory, keyFrame, phase, label));
+                case "letterfade" -> frames.add(new FadeInTextAnimationFrame(this.animationFactory, keyFrame, phase, label));
 
                 // Добавьте другие эффекты
                 default -> throw new UnsupportedOperationException("Text effect type not supported: " + effect.getType());

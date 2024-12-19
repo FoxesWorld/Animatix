@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.config.AnimationPhase;
+import org.foxesworld.animatix.animation.config.KeyFrame;
 import org.foxesworld.animatix.animation.effect.imageEffect.ImageAnimationFrame;
 
 public class FadeFrame extends ImageAnimationFrame {
@@ -23,8 +24,8 @@ public class FadeFrame extends ImageAnimationFrame {
     private String fadeType;
     private int fadeSpeed;
 
-    public FadeFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
-        super(animationFactory, phase, label);
+    public FadeFrame(AnimationFactory animationFactory, KeyFrame keyFrame, AnimationPhase phase, JLabel label) {
+        super(animationFactory, keyFrame, phase, label);
         initializeParams(params, effectName);
     }
 

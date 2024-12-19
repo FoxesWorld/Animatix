@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.List;
 
 public class AnimationConfig {
-    private List<AnimConf> objects;
+    private List<AnimConf> animation;
 
     public static class AnimConf {
         private String name, type, imagePath, text;
@@ -57,6 +57,6 @@ public class AnimationConfig {
     }
 
     public List<AnimConf> getAnimObj() {
-        return objects;
+        return animation;
     }
 }

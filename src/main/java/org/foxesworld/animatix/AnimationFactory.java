@@ -2,6 +2,7 @@ package org.foxesworld.animatix;
 
 import org.foxesworld.animatix.animation.cache.CacheKey;
 import org.foxesworld.animatix.animation.cache.ImageCache;
+import org.foxesworld.animatix.animation.config.KeyFrame;
 import org.foxesworld.animatix.animation.element.BaseAnimationElement;
 import org.foxesworld.animatix.animation.element.ImageAnimationElement;
 import org.foxesworld.animatix.animation.element.TextAnimationElement;
@@ -72,7 +73,7 @@ public class AnimationFactory implements AnimationStatus {
                         new Font("Default", Font.PLAIN, 12),
                         Color.BLACK
                 );
-                case "image" -> new ImageAnimationElement(
+                case "image" -> new ImageAnimationElement(this,
                         animConf.getName(),
                         animConf.getBounds(),
                         animConf.isVisible(),
@@ -113,11 +114,14 @@ public class AnimationFactory implements AnimationStatus {
         try {
             for (AnimationPhase phase : animConf.getPhases()) {
                 waitIfPaused();
-                setupPhase(animConf.getType(), animLabel, animConf, phase);
-                delayBeforePhase(phase);
-                List<AnimationFrame> frames = getOrCacheAnimationFrames(animConf, phase, animLabel);
-                phaseExecutor.executePhase(frames, phase, animConf.getPhases().indexOf(phase));
-                waitForPhaseCompletion(phase.getDuration());
+                animLabel.setName(animConf.getName());
+                for (KeyFrame keyFrame: phase.getKeyFrames()){
+                    setupPhase(animLabel, animConf, phase, keyFrame);
+                    delayBeforePhase(phase);
+                    List<AnimationFrame> frames = getOrCacheAnimationFrames(animConf, phase, animLabel, keyFrame);
+                    phaseExecutor.executePhase(keyFrame, frames, phase, animConf.getPhases().indexOf(phase));
+                    waitForPhaseCompletion(keyFrame.getDuration());
+                }
                 phase.setPhaseNum(animConf.getPhases().size());
             }
             logger.log(System.Logger.Level.INFO, "Animation for {0} completed.", animConf.getName());
@@ -140,15 +144,15 @@ public class AnimationFactory implements AnimationStatus {
         }
     }
 
-    private void setupPhase(String type, JLabel label, AnimationConfig.AnimConf config, AnimationPhase phase) {
-        switch (type) {
-            case "text" -> setupTextPhase(config.getText(), label, phase);
-            case "image" -> setupImagePhase(config.getImagePath(), label, phase);
-            default -> throw new IllegalArgumentException("Unsupported animation type: " + type);
+    private void setupPhase(JLabel label, AnimationConfig.AnimConf config, AnimationPhase phase, KeyFrame keyFrame) {
+        switch (config.getType()) {
+            case "text" -> setupTextPhase(config.getText(), label, phase, keyFrame);
+            case "image" -> setupImagePhase(config.getImagePath(), label, keyFrame);
+            default -> throw new IllegalArgumentException("Unsupported animation type: " + config.getType());
         }
     }
 
-    private void setupTextPhase(String text, JLabel animLabel, AnimationPhase phase) {
+    private void setupTextPhase(String text, JLabel animLabel, AnimationPhase phase, KeyFrame keyFrame) {
         animLabel.setText(text);
         animLabel.setFont(new Font(phase.getFont(), Font.PLAIN, phase.getFontSize()));
         if (phase.getTextColor() != null) {
@@ -157,20 +161,20 @@ public class AnimationFactory implements AnimationStatus {
         animLabel.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
-    private void setupImagePhase(String imgPath, JLabel animLabel, AnimationPhase phase) {
+    private void setupImagePhase(String imgPath, JLabel animLabel, KeyFrame keyFrame) {
         BufferedImage labelImage = ImageWorks.getImageFromStream(imgPath);
-        if (phase.getAlpha() != 0) {
-            labelImage = ImageWorks.setBaseAlpha(labelImage, (float) phase.getAlpha());
+        if (keyFrame.getAlpha() != 0) {
+            labelImage = ImageWorks.setBaseAlpha(labelImage, (float) keyFrame.getAlpha());
         }
         animLabel.setIcon(new ImageIcon(labelImage));
         this.imageWorks = new ImageWorks();
     }
 
-    private List<AnimationFrame> getOrCacheAnimationFrames(AnimationConfig.AnimConf animConf, AnimationPhase phase, JLabel label) {
+    private List<AnimationFrame> getOrCacheAnimationFrames(AnimationConfig.AnimConf animConf, AnimationPhase phase, JLabel label, KeyFrame keyFrame) {
         CacheKey cacheKey = new CacheKey(animConf, phase);
         return cachedFrames.computeIfAbsent(cacheKey, key -> switch (animConf.getType()) {
-            case "text" -> effectFactory.createTextEffects(phase, label);
-            case "image" -> effectFactory.createImageEffects(phase, label);
+            case "text" -> effectFactory.createTextEffects(phase, label, keyFrame);
+            case "image" -> effectFactory.createImageEffects(phase, label, keyFrame);
             default -> Collections.emptyList();
         });
     }

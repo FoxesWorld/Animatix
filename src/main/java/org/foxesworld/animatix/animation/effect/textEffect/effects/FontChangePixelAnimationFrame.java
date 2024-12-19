@@ -3,6 +3,7 @@ package org.foxesworld.animatix.animation.effect.textEffect.effects;
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
 import org.foxesworld.animatix.animation.config.AnimationPhase;
+import org.foxesworld.animatix.animation.config.KeyFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,8 +23,8 @@ public class FontChangePixelAnimationFrame extends AnimationFrame {
     private String text;
     private Font startFont, endFont;
 
-    public FontChangePixelAnimationFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
-        super(animationFactory, phase, label);
+    public FontChangePixelAnimationFrame(AnimationFactory animationFactory, KeyFrame keyFrame, AnimationPhase phase, JLabel label) {
+        super(animationFactory, phase, keyFrame, label);
         label.setVisible(true);
         initializeParams(params, effectName);
     }

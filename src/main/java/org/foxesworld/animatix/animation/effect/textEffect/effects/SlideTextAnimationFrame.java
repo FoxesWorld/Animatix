@@ -3,6 +3,7 @@ package org.foxesworld.animatix.animation.effect.textEffect.effects;
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
 import org.foxesworld.animatix.animation.config.AnimationPhase;
+import org.foxesworld.animatix.animation.config.KeyFrame;
 
 import javax.swing.*;
 import java.util.Map;
@@ -20,8 +21,8 @@ public class SlideTextAnimationFrame extends AnimationFrame {
 
     private int startX, endX, startY, endY;
 
-    public SlideTextAnimationFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
-        super(animationFactory, phase, label);
+    public SlideTextAnimationFrame(AnimationFactory animationFactory, KeyFrame keyFrame, AnimationPhase phase, JLabel label) {
+        super(animationFactory, phase, keyFrame, label);
         initializeParams(params, effectName);
     }
 

@@ -3,6 +3,7 @@ package org.foxesworld.animatix.animation.effect.textEffect;
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
 import org.foxesworld.animatix.animation.config.AnimationPhase;
+import org.foxesworld.animatix.animation.config.KeyFrame;
 
 import javax.swing.*;
 
@@ -14,8 +15,8 @@ public abstract class TextAnimationFrame extends AnimationFrame {
     protected final int fontSize;
     protected final String textColor;
 
-    public TextAnimationFrame(AnimationFactory animationFactory, AnimationPhase animationPhase, JLabel label) {
-        super(animationFactory, animationPhase, label);
+    public TextAnimationFrame(AnimationFactory animationFactory, KeyFrame keyFrame, AnimationPhase animationPhase, JLabel label) {
+        super(animationFactory, animationPhase, keyFrame, label);
         this.text = "text";
         this.font =  "Arial";
         this.fontSize = 16;

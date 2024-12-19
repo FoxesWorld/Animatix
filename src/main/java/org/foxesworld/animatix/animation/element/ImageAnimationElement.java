@@ -1,5 +1,7 @@
 package org.foxesworld.animatix.animation.element;
 
+import org.foxesworld.animatix.AnimationFactory;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -7,9 +9,10 @@ import java.awt.image.BufferedImage;
 public class ImageAnimationElement extends BaseAnimationElement {
     private BufferedImage image;
 
-    public ImageAnimationElement(String name, Rectangle bounds, boolean visible, BufferedImage image) {
+    public ImageAnimationElement(AnimationFactory animationFactory,String name, Rectangle bounds, boolean visible, BufferedImage image) {
         super(name, bounds, visible);
         this.image = image;
+        animationFactory.getImageCache().cacheImage(name, image);
     }
 
     @Override

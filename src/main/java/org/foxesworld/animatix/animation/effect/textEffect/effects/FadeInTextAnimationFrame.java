@@ -3,6 +3,7 @@ package org.foxesworld.animatix.animation.effect.textEffect.effects;
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
 import org.foxesworld.animatix.animation.config.AnimationPhase;
+import org.foxesworld.animatix.animation.config.KeyFrame;
 import org.foxesworld.animatix.animation.effect.textEffect.TextSplitter;
 
 import javax.swing.*;
@@ -24,8 +25,8 @@ public class FadeInTextAnimationFrame extends AnimationFrame {
     private final Map<JLabel, Point> originalPositions = new HashMap<>();
     private final List<JLabel> letterLabels;
 
-    public FadeInTextAnimationFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
-        super(animationFactory, phase, label);
+    public FadeInTextAnimationFrame(AnimationFactory animationFactory, KeyFrame keyFrame, AnimationPhase phase, JLabel label) {
+        super(animationFactory, phase, keyFrame, label);
         initializeParams(params, effectName);
 
         String text = label.getText();

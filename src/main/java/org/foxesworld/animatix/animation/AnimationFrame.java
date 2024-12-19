@@ -2,6 +2,7 @@ package org.foxesworld.animatix.animation;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.config.AnimationPhase;
+import org.foxesworld.animatix.animation.config.KeyFrame;
 import org.foxesworld.animatix.animation.effect.imageEffect.ImageWorks;
 
 import javax.swing.*;
@@ -18,15 +19,16 @@ public abstract class AnimationFrame implements Runnable {
     private long startTime;
     private boolean finished = false;
     protected final AnimationPhase phase;
+    protected final KeyFrame keyFrame;
     protected ImageWorks imageWorks;
     protected JLabel label;
 
-    public AnimationFrame(AnimationFactory animationFactory, AnimationPhase phase, JLabel label) {
+    public AnimationFrame(AnimationFactory animationFactory, AnimationPhase phase, KeyFrame keyFrame, JLabel label) {
         this.animationFactory = animationFactory;
         this.phase = phase;
+        this.keyFrame = keyFrame;
         this.label = label;
-
-        this.duration = phase.getDuration();
+        this.duration = keyFrame.getDuration();
     }
 
     /**
@@ -104,7 +106,7 @@ public abstract class AnimationFrame implements Runnable {
                 Object defaultValue = param.get("defaultValue");
 
                 // Get parameter value from phase configuration
-                Object value = phase.getEffectParam(effectName, paramName, type);
+                Object value = keyFrame.getEffectParam(effectName, paramName, type);
                 if (value == null) {
                     value = defaultValue;
                 }

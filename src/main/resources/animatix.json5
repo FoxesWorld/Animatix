@@ -1,116 +1,41 @@
 {
-  objects: [
+  animation: [
     {
-      name: "diamondAnimation",
-      type: "image",
-      imagePath: "img/fox.png",
-      visible: true,
+      name: "diamondAnimation" ,
+      type: "image" ,
+      imagePath: "img/fox.png" ,
+      visible: true ,
       bounds: {
-        x: 0,
-        y: 12,
-        width: 256,
+        x: 0 ,
+        y: 12 ,
+        width: 256 ,
         height: 128
-      },
+      } ,
       phases: [
         {
-          duration: 900,
-          effects: [
+          "keyFrames": [
             {
-              type: "resize",
-              params: {
-                startWidth: 256,
-                startHeight: 256,
-                endWidth: 85,
-                endHeight: 85,
-                resizeType: "STRETCH"
-              }
-            },
-            {
-              type: "spin",
-              params: {
-                spinSpeed: 1,
-                startAngle: 500,
-                endAngle: 90
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      name: "brand",
-      repeat: true,
-      visible: false,
-      type: "text",
-      text: "Animatix 0.0.14",
-      bounds: {
-        x: 200,
-        y: 50,
-        width: 512,
-        height: 128
-      },
-      phases: [
-        {
-          font: "Lucida Console",
-          delay: 2000,
-          duration: 1000,
-          alpha: 1.0,
-          fontSize: 44,
-          effects: [
-            {
-              type: "letterfade",
-              params: {
-                fadeSpeed: 0.9,
-                fadeType: "fadeIn",
-                startAlpha: 0.0,
-                endAlpha: 1.0
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      name: "versionText",
-      type: "text",
-      text: "SNAPSHOT",
-      bounds: {
-        x: 620,
-        y: 35,
-        width: 128,
-        height: 28
-      },
-      phases: [
-        {
-          font: "Consolas",
-          fontSize: 14,
-          duration: 1300,
-          delay: 500,
-          alpha: 0.4,
-          effects: [
-            {
-              type: "colorchange",
-              params: {
-                startColor: "#986801",
-                endColor: "#951ac8"
-              }
-            }
-          ]
-        },
-        {
-          font: "Consolas",
-          fontSize: 15,
-          duration: 1100,
-          delay: 5200,
-          alpha: 0.4,
-          effects: [
-            {
-              type: "bounce",
-              params: {
-                bounceHeight: 10,
-                bounceSpeed: 350,
-                spacing: 1
-              }
+              duration: 5000,
+              effects: [
+                {
+                  type: "resize" ,
+                  params: {
+                    startWidth: 256 ,
+                    startHeight: 256 ,
+                    endWidth: 85 ,
+                    endHeight: 85 ,
+                    resizeType: "STRETCH"
+                  }
+                } ,
+                {
+                  type: "spin" ,
+                  params: {
+                    spinSpeed: 1 ,
+                    startAngle: 500 ,
+                    endAngle: 90
+                  }
+                }
+              ]
             }
           ]
         }
