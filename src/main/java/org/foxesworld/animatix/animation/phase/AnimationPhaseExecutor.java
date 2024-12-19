@@ -16,16 +16,17 @@ public class AnimationPhaseExecutor {
     }
 
     /**
-     * Выполняет заданный этап анимации.
+     * Executes the specified animation phase.
      *
-     * @param animationFrames  Список кадров анимации для выполнения.
-     * @param phaseNum         Номер текущего этапа.
+     * @param animationFrames List of animation frames to execute.
+     * @param phase           Current animation phase.
+     * @param phaseNum        Phase number.
      */
     public void executePhase(List<AnimationFrame> animationFrames, AnimationPhase phase, int phaseNum) {
-
         long phaseDuration = phase.getDuration();
         AnimationFactory.logger.log(System.Logger.Level.INFO,
                 "Starting execution of phase {0}. Duration: {1} ms", phaseNum, phaseDuration);
+
         List<Callable<Void>> tasks = prepareTasks(animationFrames);
 
         try {
@@ -44,10 +45,10 @@ public class AnimationPhaseExecutor {
     }
 
     /**
-     * Подготавливает список задач для выполнения.
+     * Prepares a list of tasks to execute.
      *
-     * @param animationFrames Список кадров анимации.
-     * @return Список задач в формате Callable.
+     * @param animationFrames List of animation frames.
+     * @return List of tasks as Callable.
      */
     private List<Callable<Void>> prepareTasks(List<AnimationFrame> animationFrames) {
         return animationFrames.stream()
@@ -66,11 +67,12 @@ public class AnimationPhaseExecutor {
     }
 
     /**
-     * Выполняет задачи через TaskExecutor с учетом времени выполнения.
+     * Executes tasks with a specified timeout.
      *
-     * @param tasks         Список задач.
-     * @param phaseDuration Длительность этапа.
-     * @param phaseNum      Номер текущего этапа.
+     * @param tasks         List of tasks.
+     * @param phaseDuration Phase duration.
+     * @param phaseNum      Phase number.
+     * @throws Exception If task execution fails.
      */
     private void executeTasksWithTimeout(List<Callable<Void>> tasks, long phaseDuration, int phaseNum) throws Exception {
         animationFactory.getTaskExecutor().executeTasksWithTimeout(
@@ -83,9 +85,10 @@ public class AnimationPhaseExecutor {
     }
 
     /**
-     * Уведомляет фабрику о завершении текущего этапа.
+     * Notifies the factory about the completion of the current phase.
      *
-     * @param phaseNum Номер текущего этапа.
+     * @param phase     Current animation phase.
+     * @param phaseNum  Phase number.
      */
     private void notifyPhaseCompleted(AnimationPhase phase, int phaseNum) {
         AnimationFactory.logger.log(System.Logger.Level.INFO,

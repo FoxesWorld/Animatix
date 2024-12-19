@@ -85,11 +85,6 @@ public abstract class AnimationFrame implements Runnable {
         }
         finished = true;
     }
-
-    public boolean isFinished() {
-        return finished;
-    }
-
     public AnimationPhase getPhase() {
         return phase;
     }

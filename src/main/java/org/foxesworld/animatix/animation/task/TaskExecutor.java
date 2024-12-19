@@ -19,12 +19,12 @@ public class TaskExecutor {
     }
 
     /**
-     * Выполняет список задач параллельно с ожиданием завершения.
+     * Executes a collection of tasks in parallel and waits for completion with a timeout.
      *
-     * @param tasks   Список задач для выполнения.
-     * @param timeout Тайм-аут в миллисекундах.
-     * @param onError Обработчик ошибок выполнения задач.
-     * @throws InterruptedException Если выполнение прервано.
+     * @param tasks   List of tasks to execute.
+     * @param timeout Timeout in milliseconds.
+     * @param onError Error handler for task failures.
+     * @throws InterruptedException If execution is interrupted.
      */
     public void executeTasksWithTimeout(Collection<? extends Callable<?>> tasks, long timeout, Consumer<Exception> onError) throws InterruptedException {
         List<Future<?>> futures = new ArrayList<>();
@@ -54,15 +54,15 @@ public class TaskExecutor {
     }
 
     /**
-     * Выполняет одиночную задачу с таймаутом.
+     * Executes a single task with a timeout.
      *
-     * @param task    Задача для выполнения.
-     * @param timeout Тайм-аут в миллисекундах.
-     * @param <T>     Тип возвращаемого значения.
-     * @return Результат выполнения задачи.
-     * @throws TimeoutException      Если задача не завершилась вовремя.
-     * @throws InterruptedException  Если выполнение прервано.
-     * @throws ExecutionException    Если задача завершилась с ошибкой.
+     * @param task    The task to execute.
+     * @param timeout Timeout in milliseconds.
+     * @param <T>     Return type.
+     * @return Task result.
+     * @throws TimeoutException If task does not complete in time.
+     * @throws InterruptedException If execution is interrupted.
+     * @throws ExecutionException If task fails.
      */
     public <T> T executeTaskWithTimeout(Callable<T> task, long timeout) throws TimeoutException, InterruptedException, ExecutionException {
         Future<T> future = executorService.submit(task);
@@ -76,10 +76,10 @@ public class TaskExecutor {
     }
 
     /**
-     * Запускает задачу асинхронно.
+     * Submits a task for asynchronous execution.
      *
-     * @param task    Задача для выполнения.
-     * @param onError Обработчик ошибок выполнения задачи.
+     * @param task    The task to execute.
+     * @param onError Error handler for task failures.
      */
     public void submitTask(Runnable task, Consumer<Exception> onError) {
         executorService.submit(() -> {
@@ -93,7 +93,7 @@ public class TaskExecutor {
     }
 
     /**
-     * Завершает работу TaskExecutor и освобождает ресурсы.
+     * Shuts down the TaskExecutor and releases resources.
      */
     public void shutdown() {
         executorService.shutdown();

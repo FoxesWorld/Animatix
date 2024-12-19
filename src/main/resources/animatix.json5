@@ -42,9 +42,9 @@
       repeat: true,
       visible: false,
       type: "text",
-      text: "Animatix 0.0.13",
+      text: "Animatix 0.0.14",
       bounds: {
-        x: 90,
+        x: 200,
         y: 50,
         width: 512,
         height: 128
@@ -75,7 +75,7 @@
       type: "text",
       text: "SNAPSHOT",
       bounds: {
-        x: 480,
+        x: 620,
         y: 35,
         width: 128,
         height: 28
