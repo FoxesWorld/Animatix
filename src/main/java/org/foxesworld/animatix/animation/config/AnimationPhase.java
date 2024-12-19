@@ -8,14 +8,18 @@ import java.util.Map;
 
 public class AnimationPhase {
     private int phaseNum;
+    @Deprecated
     private double alpha;
+    @Deprecated
     private List<Effect> effects;
+    private List<KeyFrame> keyFrames;
+    @Deprecated
     private String font, textColor;
+    @Deprecated
     private int fontSize;
-    private List<String> textEffects;
+    @Deprecated
     private long duration, delay;
 
-    // Геттеры и сеттеры для нового списка эффектов
     public List<Effect> getEffects() {
         return effects;
     }
@@ -24,7 +28,6 @@ public class AnimationPhase {
         this.effects = effects;
     }
 
-    // Метод для получения параметра эффекта
     public <T> T getEffectParam(String effectType, String paramName, Class<T> clazz) {
         if (effects == null) {
             AnimationFactory.logger.log(System.Logger.Level.WARNING, "Effects list is null");
@@ -37,7 +40,6 @@ public class AnimationPhase {
                 if (params != null && params.containsKey(paramName)) {
                     Object value = params.get(paramName);
 
-                    // Преобразование типов, если необходимо
                     if (clazz == Float.class && value instanceof Double) {
                         return clazz.cast(((Double) value).floatValue());
                     }
@@ -62,7 +64,7 @@ public class AnimationPhase {
         return null;
     }
 
-    // Метод для добавления нового эффекта
+    @Deprecated
     public void addEffect(Effect effect) {
         if (effects != null) {
             effects.add(effect);
@@ -108,38 +110,36 @@ public class AnimationPhase {
         this.phaseNum = phaseNum;
     }
 
+    public List<KeyFrame> getKeyFrames() {
+        return keyFrames;
+    }
+
+    @Deprecated
     public double getAlpha() {
         return alpha;
     }
 
+    @Deprecated
     public String getFont() {
         return font;
     }
 
+    @Deprecated
     public String getTextColor() {
         return textColor;
     }
 
+    @Deprecated
     public int getFontSize() {
         return fontSize;
     }
 
-    public List<String> getTextEffects() {
-        return textEffects;
-    }
-
-    public void setTextEffects(List<String> textEffects) {
-        this.textEffects = textEffects;
-    }
-
+    @Deprecated
     public long getDuration() {
         return duration;
     }
 
-    public void setDuration(long duration) {
-        this.duration = duration;
-    }
-
+    @Deprecated
     public long getDelay() {
         return delay;
     }

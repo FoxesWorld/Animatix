@@ -11,11 +11,8 @@ public class SplashScreenWindow extends JWindow {
     public SplashScreenWindow() {
         animationFactory = new AnimationFactory("animatix.json5");
 
-        SwingUtilities.invokeLater(() -> {
-
-        });
-
-        JPanel content = new JPanel(new BorderLayout()) {
+        // Создаем панель для анимации
+        JPanel content = new JPanel(null) {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -24,18 +21,20 @@ public class SplashScreenWindow extends JWindow {
             @Override
             public void setOpaque(boolean isOpaque) {
                 super.setOpaque(false);
-
             }
         };
-
+        
         getContentPane().add(content);
-        setSize(700, 360);
+        setSize(700, 560);
         setLocationRelativeTo(null);
-        setBackground(new Color(0, 0, 0, 0));
-        animationFactory.createAnimation(this);
+        setBackground(Color.CYAN);
+
+        // Передаем эту панель в метод создания анимации
+        animationFactory.createAnimation(content);  // Передаем панель 'content'
     }
 
     public static void main(String[] args) {
+        System.setProperty("System.tracers", "true");
         SwingUtilities.invokeLater(() -> {
             SplashScreenWindow splashScreen = new SplashScreenWindow();
             AnimationFrame.setDefaultFps(60);

@@ -118,6 +118,7 @@ public class AnimationFactory implements AnimationStatus {
                 List<AnimationFrame> frames = getOrCacheAnimationFrames(animConf, phase, animLabel);
                 phaseExecutor.executePhase(frames, phase, animConf.getPhases().indexOf(phase));
                 waitForPhaseCompletion(phase.getDuration());
+                phase.setPhaseNum(animConf.getPhases().size());
             }
             logger.log(System.Logger.Level.INFO, "Animation for {0} completed.", animConf.getName());
             isRunning = false;

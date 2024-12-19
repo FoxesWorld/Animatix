@@ -78,7 +78,6 @@ public class FadeInTextAnimationFrame extends AnimationFrame {
                 Point originalPosition = originalPositions.get(letterLabel);
                 if (originalPosition == null) continue;
 
-                // Рассчитываем задержку для текущей буквы
                 double delay = (double) i / letterLabels.size();
                 double adjustedProgress = progress - delay;
 
@@ -87,7 +86,6 @@ public class FadeInTextAnimationFrame extends AnimationFrame {
 
                 float alpha = (float) adjustedProgress;
 
-                // Обновляем прозрачность буквы
                 letterLabel.setForeground(new Color(
                         letterLabel.getForeground().getRed(),
                         letterLabel.getForeground().getGreen(),
