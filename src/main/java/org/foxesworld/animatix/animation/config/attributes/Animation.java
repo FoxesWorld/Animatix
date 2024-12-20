@@ -1,4 +1,4 @@
-package org.foxesworld.animatix.animation.config;
+package org.foxesworld.animatix.animation.config.attributes;
 
 import java.awt.*;
 import java.util.List;

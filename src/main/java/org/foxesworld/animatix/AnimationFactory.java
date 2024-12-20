@@ -1,20 +1,21 @@
 package org.foxesworld.animatix;
 
+import org.foxesworld.animatix.animation.AnimationFrame;
+import org.foxesworld.animatix.animation.AnimationStatus;
 import org.foxesworld.animatix.animation.cache.CacheKey;
 import org.foxesworld.animatix.animation.cache.ImageCache;
-import org.foxesworld.animatix.animation.config.Animation;
-import org.foxesworld.animatix.animation.config.Phase;
+import org.foxesworld.animatix.animation.config.AnimationConfig;
+import org.foxesworld.animatix.animation.config.AnimationConfigLoader;
+import org.foxesworld.animatix.animation.config.attributes.Animation;
+import org.foxesworld.animatix.animation.config.attributes.KeyFrame;
+import org.foxesworld.animatix.animation.config.attributes.Phase;
+import org.foxesworld.animatix.animation.effect.AnimationEffectFactory;
+import org.foxesworld.animatix.animation.effect.imageEffect.ImageWorks;
 import org.foxesworld.animatix.animation.element.BaseAnimationElement;
 import org.foxesworld.animatix.animation.element.ImageAnimationElement;
 import org.foxesworld.animatix.animation.element.TextAnimationElement;
-import org.foxesworld.animatix.animation.task.TaskExecutor;
-import org.foxesworld.animatix.animation.effect.AnimationEffectFactory;
-import org.foxesworld.animatix.animation.AnimationFrame;
 import org.foxesworld.animatix.animation.phase.AnimationPhaseExecutor;
-import org.foxesworld.animatix.animation.config.AnimationConfigLoader;
-import org.foxesworld.animatix.animation.AnimationStatus;
-import org.foxesworld.animatix.animation.config.AnimationConfig;
-import org.foxesworld.animatix.animation.effect.imageEffect.ImageWorks;
+import org.foxesworld.animatix.animation.task.TaskExecutor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +26,7 @@ import java.util.concurrent.*;
 
 public class AnimationFactory implements AnimationStatus {
 
+    private final Object window;
     public static final System.Logger logger = System.getLogger(AnimationFactory.class.getName());
     private final TaskExecutor taskExecutor;
     private final AnimationEffectFactory effectFactory;
@@ -37,7 +39,8 @@ public class AnimationFactory implements AnimationStatus {
     private volatile boolean isRunning = false;
     private volatile boolean isStopped = true;
 
-    public AnimationFactory(String configPath) {
+    public AnimationFactory(String configPath, Object window) {
+        this.window = window;
         this.taskExecutor = new TaskExecutor();
         this.effectFactory = new AnimationEffectFactory(this);
         this.phaseExecutor = new AnimationPhaseExecutor(this);
@@ -47,38 +50,35 @@ public class AnimationFactory implements AnimationStatus {
         this.config = configLoader.loadConfig(configPath);
     }
 
-
-    public void createAnimation(Object window) {
-        validateConfig();
+    public void createAnimation() {
         isStopped = false;
         isRunning = true;
         for (Animation animation : config.getAnimObj()) {
-            BaseAnimationElement animationElement = switch (animation.getType()) {
-                case "text" -> new TextAnimationElement(
-                        animation.getName(),
-                        animation.getBounds(),
-                        animation.isVisible(),
-                        animation.getText(),
-                        new Font("Default", Font.PLAIN, 12),
-                        Color.BLACK
-                );
-                case "image" -> new ImageAnimationElement(
-                        animation.getName(),
-                        animation.getBounds(),
-                        animation.isVisible(),
-                        ImageWorks.getImageFromStream(animation.getImagePath())
-                );
-                default -> throw new IllegalArgumentException("Unsupported animation type: " + animation.getType());
-            };
-
-            JComponent component = createAnimationComponent(animationElement);
+            JComponent component = createElement(animation);
             addLabelToWindow(window, component);
             taskExecutor.submitTask(() -> runAnimation((JLabel) component, animation), System.out::println);
         }
     }
 
-    private JComponent createAnimationComponent(BaseAnimationElement element) {
-        return element.createComponent();
+    private JComponent createElement(Animation animation) {
+        BaseAnimationElement animationElement = switch (animation.getType()) {
+            case "text" -> new TextAnimationElement(
+                    animation.getName(),
+                    animation.getBounds(),
+                    animation.isVisible(),
+                    animation.getText(),
+                    new Font("Default", Font.PLAIN, 12),
+                    Color.BLACK
+            );
+            case "image" -> new ImageAnimationElement(
+                    animation.getName(),
+                    animation.getBounds(),
+                    animation.isVisible(),
+                    imageWorks.getImageFromStream(animation.getImagePath())
+            );
+            default -> throw new IllegalArgumentException("Unsupported animation type: " + animation.getType());
+        };
+        return animationElement.createComponent();
     }
 
     private void addLabelToWindow(Object window, JComponent component) {
@@ -148,12 +148,11 @@ public class AnimationFactory implements AnimationStatus {
     }
 
     private void setupImagePhase(String imgPath, JLabel animLabel, Phase phase) {
-        BufferedImage labelImage = ImageWorks.getImageFromStream(imgPath);
+        BufferedImage labelImage = imageWorks.getImageFromStream(imgPath);
         if (phase.getAlpha() != 0) {
-            labelImage = ImageWorks.setBaseAlpha(labelImage, (float) phase.getAlpha());
+            labelImage = imageWorks.setBaseAlpha(labelImage, (float) phase.getAlpha());
         }
         animLabel.setIcon(new ImageIcon(labelImage));
-
     }
 
     private List<AnimationFrame> getOrCacheAnimationFrames(Animation animation, Phase phase, JLabel label) {
@@ -195,12 +194,6 @@ public class AnimationFactory implements AnimationStatus {
         isStopped = true;
         taskExecutor.shutdown();
         logger.log(System.Logger.Level.INFO, "Animation stopped.");
-    }
-
-    private void validateConfig() {
-        if (config == null) {
-            throw new IllegalStateException("AnimationConfig must be loaded before creating animation");
-        }
     }
 
     private void shutdownScheduler(ScheduledExecutorService scheduler) {
@@ -247,5 +240,31 @@ public class AnimationFactory implements AnimationStatus {
 
     public boolean isStopped() {
         return isStopped;
+    }
+
+    // Additional methods for keyframe integration
+    private void setupKeyframe(String type, JLabel label, Animation config, KeyFrame keyframe) {
+        switch (type) {
+            case "text" -> setupTextKeyframe(config.getText(), label, keyframe);
+            case "image" -> setupImageKeyframe(config.getImagePath(), label, keyframe);
+            default -> throw new IllegalArgumentException("Unsupported animation type: " + type);
+        }
+    }
+
+    private void setupTextKeyframe(String text, JLabel animLabel, KeyFrame keyframe) {
+        animLabel.setText(text);
+        animLabel.setFont(new Font(keyframe.getFont(), Font.PLAIN, keyframe.getFontSize()));
+        if (keyframe.getTextColor() != null) {
+            animLabel.setForeground(Color.decode(keyframe.getTextColor()));
+        }
+        animLabel.setHorizontalAlignment(SwingConstants.CENTER);
+    }
+
+    private void setupImageKeyframe(String imgPath, JLabel animLabel, KeyFrame keyframe) {
+        BufferedImage labelImage = imageWorks.getImageFromStream(imgPath);
+        if (keyframe.getAlpha() != 0) {
+            labelImage = imageWorks.setBaseAlpha(labelImage, (float) keyframe.getAlpha());
+        }
+        animLabel.setIcon(new ImageIcon(labelImage));
     }
 }

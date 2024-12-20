@@ -1,9 +1,10 @@
-package org.foxesworld.animatix.animation.config;
+package org.foxesworld.animatix.animation.config.attributes;
 
 import java.util.Map;
 
 public class Effect {
-    private String type;
+    private String type, font, textColor;
+    private int fontSize;
     private long duration, delay;
     private Map<String, Object> params;
 

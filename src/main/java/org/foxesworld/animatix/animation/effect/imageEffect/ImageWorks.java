@@ -124,7 +124,7 @@ public class ImageWorks {
         return result;
     }
 
-    public static BufferedImage getImageFromStream(String path) {
+    public BufferedImage getImageFromStream(String path) {
         if (path == null) return null;
         try (InputStream imageStream = AnimationFactory.class.getClassLoader().getResourceAsStream(path)) {
             return ImageIO.read(Objects.requireNonNull(imageStream));
@@ -152,7 +152,7 @@ public class ImageWorks {
         return newImage;
     }
 
-    public static BufferedImage setBaseAlpha(BufferedImage image, float alpha) {
+    public BufferedImage setBaseAlpha(BufferedImage image, float alpha) {
         BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
         for (int x = 0; x < image.getWidth(); x++) {

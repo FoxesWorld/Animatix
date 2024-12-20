@@ -1,7 +1,7 @@
 package org.foxesworld.animatix.animation.effect.imageEffect.effects.borderHighlight;
 
 import org.foxesworld.animatix.AnimationFactory;
-import org.foxesworld.animatix.animation.config.Phase;
+import org.foxesworld.animatix.animation.config.attributes.Phase;
 import org.foxesworld.animatix.animation.effect.imageEffect.ImageAnimationFrame;
 
 import javax.swing.*;

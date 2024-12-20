@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.Map;
 
 import org.foxesworld.animatix.AnimationFactory;
-import org.foxesworld.animatix.animation.config.Phase;
+import org.foxesworld.animatix.animation.config.attributes.Phase;
 import org.foxesworld.animatix.animation.effect.imageEffect.ImageAnimationFrame;
 
 public class SpinFrame extends ImageAnimationFrame {

@@ -3,7 +3,7 @@ package org.foxesworld.animatix.animation.effect.imageEffect;
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
 import org.foxesworld.animatix.animation.cache.ImageCache;
-import org.foxesworld.animatix.animation.config.Phase;
+import org.foxesworld.animatix.animation.config.attributes.Phase;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;

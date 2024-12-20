@@ -1,6 +1,7 @@
 package org.foxesworld.animatix.animation.config;
 
-import java.awt.*;
+import org.foxesworld.animatix.animation.config.attributes.Animation;
+
 import java.util.List;
 
 public class AnimationConfig {

@@ -9,7 +9,7 @@ public class SplashScreenWindow extends JWindow {
     private AnimationFactory animationFactory;
 
     public SplashScreenWindow() {
-        animationFactory = new AnimationFactory("animatix.json5");
+
 
         // Создаем панель для анимации
         JPanel content = new JPanel(null) {
@@ -28,9 +28,8 @@ public class SplashScreenWindow extends JWindow {
         setSize(700, 560);
         setLocationRelativeTo(null);
         //setBackground(Color.CYAN);
-
-        // Передаем эту панель в метод создания анимации
-        animationFactory.createAnimation(content);  // Передаем панель 'content'
+        animationFactory = new AnimationFactory("animatix.json5", content);
+        animationFactory.createAnimation();  // Передаем панель 'content'
     }
 
     public static void main(String[] args) {

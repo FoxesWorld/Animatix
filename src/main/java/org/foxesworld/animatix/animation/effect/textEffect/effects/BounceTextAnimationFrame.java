@@ -2,7 +2,7 @@ package org.foxesworld.animatix.animation.effect.textEffect.effects;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
-import org.foxesworld.animatix.animation.config.Phase;
+import org.foxesworld.animatix.animation.config.attributes.Phase;
 import org.foxesworld.animatix.animation.effect.textEffect.TextSplitter;
 
 import javax.swing.*;

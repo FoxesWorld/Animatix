@@ -6,7 +6,7 @@ import java.awt.*;
 public class Main {
 
     public static void main(String[] args) {
-        AnimationFactory animationFactory = new AnimationFactory("animatix.json5");
+
 
         // Настройка главного окна
         JFrame frame = new JFrame("Animation Demo");
@@ -34,9 +34,8 @@ public class Main {
         // Добавляем панели в главное окно
         frame.add(animationPanel, BorderLayout.CENTER);
         frame.add(statusPanel, BorderLayout.SOUTH);
-
-        // Создание анимации
-        animationFactory.createAnimation(animationPanel);
+        AnimationFactory animationFactory = new AnimationFactory("animatix.json5", animationPanel);
+        animationFactory.createAnimation();
 
         // Отображение окна
         frame.setVisible(true);

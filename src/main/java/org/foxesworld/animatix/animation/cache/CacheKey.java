@@ -1,7 +1,7 @@
 package org.foxesworld.animatix.animation.cache;
 
-import org.foxesworld.animatix.animation.config.Animation;
-import org.foxesworld.animatix.animation.config.Phase;
+import org.foxesworld.animatix.animation.config.attributes.Animation;
+import org.foxesworld.animatix.animation.config.attributes.Phase;
 
 import java.util.Objects;
 

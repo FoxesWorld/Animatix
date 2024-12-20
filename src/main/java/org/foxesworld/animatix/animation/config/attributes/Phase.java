@@ -1,4 +1,4 @@
-package org.foxesworld.animatix.animation.config;
+package org.foxesworld.animatix.animation.config.attributes;
 
 import org.foxesworld.animatix.AnimationFactory;
 
@@ -12,7 +12,6 @@ public class Phase {
     private List<Effect> effects;
     private String font, textColor;
     private int fontSize;
-    private List<String> textEffects;
     private long duration, delay;
     public List<Effect> getEffects() {
         return effects;
@@ -21,8 +20,6 @@ public class Phase {
     public void setEffects(List<Effect> effects) {
         this.effects = effects;
     }
-
-    // Метод для получения параметра эффекта
     public <T> T getEffectParam(String effectType, String paramName, Class<T> clazz) {
         if (effects == null) {
             AnimationFactory.logger.log(System.Logger.Level.WARNING, "Effects list is null");
@@ -60,7 +57,6 @@ public class Phase {
         return null;
     }
 
-    // Метод для добавления нового эффекта
     public void addEffect(Effect effect) {
         if (effects != null) {
             effects.add(effect);
@@ -122,20 +118,8 @@ public class Phase {
         return fontSize;
     }
 
-    public List<String> getTextEffects() {
-        return textEffects;
-    }
-
-    public void setTextEffects(List<String> textEffects) {
-        this.textEffects = textEffects;
-    }
-
     public long getDuration() {
         return duration;
-    }
-
-    public void setDuration(long duration) {
-        this.duration = duration;
     }
 
     public long getDelay() {

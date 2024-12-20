@@ -2,8 +2,8 @@ package org.foxesworld.animatix.animation.effect;
 
 import org.foxesworld.animatix.AnimationFactory;
 import org.foxesworld.animatix.animation.AnimationFrame;
-import org.foxesworld.animatix.animation.config.Phase;
-import org.foxesworld.animatix.animation.config.Effect;
+import org.foxesworld.animatix.animation.config.attributes.Phase;
+import org.foxesworld.animatix.animation.config.attributes.Effect;
 import org.foxesworld.animatix.animation.effect.imageEffect.effects.ImageEffects;
 import org.foxesworld.animatix.animation.effect.imageEffect.effects.borderHighlight.BorderHighlightFrame;
 import org.foxesworld.animatix.animation.effect.imageEffect.effects.bounce.BounceFrame;
