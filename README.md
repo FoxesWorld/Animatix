@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository once represented our ambitious attempt to build an innovative solution for [describe project purpose briefly]. Over time, it became clear that the underlying structure and approach were not viable for long-term success. After careful consideration and analysis, we have decided to terminate this project. While this solution did not meet our expectations, it served as an important learning experience.
+This repository once represented our ambitious attempt to build an innovative solution for making an advanced Swing animation framework. Over time, it became clear that the underlying structure and approach were not viable for long-term success. After careful consideration and analysis, we have decided to terminate this project. While this solution did not meet our expectations, it served as an important learning experience.
 
 ## Lessons Learned
 
