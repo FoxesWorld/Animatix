@@ -1,4 +1,4 @@
-# Project Termination Notice
+# # ![Project Logo](animatix.png) Project Termination Notice
 
 ## Overview
 
